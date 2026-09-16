@@ -24,12 +24,15 @@ public class CustomerServiceManager
 
     private final CustomerRepository repository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokenManager jwtTokenManager;
 
     @Autowired
     public CustomerServiceManager(CustomerRepository repository,
-                                  PasswordEncoder passwordEncoder) {
+                                  PasswordEncoder passwordEncoder,
+                                  JwtTokenManager jwtTokenManager) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtTokenManager = jwtTokenManager;
     }
 
     @Override
@@ -70,11 +73,9 @@ public class CustomerServiceManager
         String email = data.getEmail().trim().toLowerCase(Locale.ROOT);
 
         Customer customer = repository.findByEmail(email)
-                .orElseThrow(() ->
-                        new InvalidCredentialsException(
-                                "Invalid email or password"
-                        )
-                );
+                .orElseThrow(() -> new InvalidCredentialsException(
+                        "Invalid email or password"
+                ));
 
         if (!passwordEncoder.matches(data.getPassword(), customer.getPassword())) {
             throw new InvalidCredentialsException(
@@ -87,6 +88,7 @@ public class CustomerServiceManager
         loginQuery.setFirstName(customer.getFirstName());
         loginQuery.setLastName(customer.getLastName());
         loginQuery.setEmail(customer.getEmail());
+        loginQuery.setToken(jwtTokenManager.createToken(customer));
 
         return loginQuery;
     }
@@ -124,7 +126,6 @@ public class CustomerServiceManager
     private CustomerQuery mapToCustomerQuery(Customer customer) {
 
         CustomerQuery query = new CustomerQuery();
-
         query.setCustomerId(customer.getCustomerId());
         query.setFirstName(customer.getFirstName());
         query.setLastName(customer.getLastName());

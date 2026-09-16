@@ -8,10 +8,8 @@ import com.loan.customerservice.services.implementations.CustomerServiceManager;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/customers")
@@ -39,5 +37,15 @@ public class CustomerController {
         LoginQuery loginQuery = customerServiceManager.login(command);
 
         return new ResponseEntity<>(loginQuery, HttpStatus.OK);
+    }
+
+    @GetMapping("/token-test")
+    public ResponseEntity<String> testToken(Authentication authentication) {
+
+        String loggedInEmail = authentication.getName();
+
+        return ResponseEntity.ok(
+                "Authenticated customer: " + loggedInEmail
+        );
     }
 }

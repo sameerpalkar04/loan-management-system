@@ -1,3 +1,4 @@
+
 package com.loan.customerservice.dtos;
 
 public class LoginQuery {
@@ -6,6 +7,7 @@ public class LoginQuery {
     private String firstName;
     private String lastName;
     private String email;
+    private String token;
 
     public Long getCustomerId() {
         return customerId;
@@ -37,5 +39,13 @@ public class LoginQuery {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
