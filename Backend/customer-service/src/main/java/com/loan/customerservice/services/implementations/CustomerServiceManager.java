@@ -24,15 +24,22 @@ public class CustomerServiceManager
 
     private final CustomerRepository repository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtTokenManager jwtTokenManager;
+//    private final JwtTokenManager jwtTokenManager;
+
+//    @Autowired
+//    public CustomerServiceManager(CustomerRepository repository,
+//                                  PasswordEncoder passwordEncoder,
+//                                  JwtTokenManager jwtTokenManager) {
+//        this.repository = repository;
+//        this.passwordEncoder = passwordEncoder;
+//        this.jwtTokenManager = jwtTokenManager;
+//    }
 
     @Autowired
     public CustomerServiceManager(CustomerRepository repository,
-                                  PasswordEncoder passwordEncoder,
-                                  JwtTokenManager jwtTokenManager) {
+                                  PasswordEncoder passwordEncoder) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
-        this.jwtTokenManager = jwtTokenManager;
     }
 
     @Override
@@ -88,7 +95,7 @@ public class CustomerServiceManager
         loginQuery.setFirstName(customer.getFirstName());
         loginQuery.setLastName(customer.getLastName());
         loginQuery.setEmail(customer.getEmail());
-        loginQuery.setToken(jwtTokenManager.createToken(customer));
+//        loginQuery.setToken(jwtTokenManager.createToken(customer));
 
         return loginQuery;
     }
