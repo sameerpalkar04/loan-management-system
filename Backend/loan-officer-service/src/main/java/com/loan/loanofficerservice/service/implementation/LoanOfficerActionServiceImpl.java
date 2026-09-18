@@ -44,12 +44,10 @@ public class LoanOfficerActionServiceImpl implements LoanOfficerActionService {
     @Override
     public void approveApplication(
             Long applicationId,
-            ApproveLoanRequest approveLoanRequest,
-            Long loanOfficerId
+            ApproveLoanRequest approveLoanRequest
     ) {
         LoanApplication application = getApplication(applicationId);
         application.setStatus("APPROVED");
-        application.setReviewedByOfficerId(loanOfficerId);
         application.setReviewedAt(LocalDateTime.now());
         application.setValuation(approveLoanRequest.getValuation());
         loanApplicationRepository.save(application);
@@ -57,12 +55,10 @@ public class LoanOfficerActionServiceImpl implements LoanOfficerActionService {
 
     @Override
     public void rejectApplication(Long applicationId,
-                                  RejectLoanRequest rejectLoanRequest,
-                                  Long loanOfficerId
+                                  RejectLoanRequest rejectLoanRequest
     ) {
         LoanApplication application = getApplication(applicationId);
         application.setStatus("REJECTED");
-        application.setReviewedByOfficerId(loanOfficerId);
         application.setReviewedAt(LocalDateTime.now());
         application.setValuation(rejectLoanRequest.getValuation());
         loanApplicationRepository.save(application);
@@ -70,8 +66,7 @@ public class LoanOfficerActionServiceImpl implements LoanOfficerActionService {
 
     @Override
     public void updateLoanType(Long loanTypeId,
-                               LoanTypeUpdateRequest loanTypeUpdateRequest,
-                               Long loanOfficerId
+                               LoanTypeUpdateRequest loanTypeUpdateRequest
     ) {
         LoanType loanType = loanTypeRepository.findById(loanTypeId)
                 .orElseThrow(() -> new LoanApplicationNotFoundException(
@@ -89,7 +84,7 @@ public class LoanOfficerActionServiceImpl implements LoanOfficerActionService {
 
     @Override
     @Transactional
-    public void deleteCustomer(Long customerId, Long loanOfficerId) {
+    public void deleteCustomer(Long customerId) {
 
         Customer customer = customerRepository.findCustomerForDeletion(customerId)
                 .orElseThrow(() -> new CustomerNotFoundException(

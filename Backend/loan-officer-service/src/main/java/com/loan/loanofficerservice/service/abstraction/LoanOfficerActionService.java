@@ -15,24 +15,18 @@ public interface LoanOfficerActionService {
 
     void approveApplication(
             Long applicationId,
-            ApproveLoanRequest approveLoanRequest,
-            Long loanOfficerId
+            ApproveLoanRequest approveLoanRequest
     );
 
     void rejectApplication(
             Long applicationId,
-            RejectLoanRequest rejectLoanRequest,
-            Long loanOfficerId
+            RejectLoanRequest rejectLoanRequest
     );
 
     void updateLoanType(
             Long loanTypeId,
-            LoanTypeUpdateRequest loanTypeUpdateRequest,
-            Long loanOfficerId
+            LoanTypeUpdateRequest loanTypeUpdateRequest
     );
 
-    void deleteCustomer(
-            Long customerId,
-            Long loanOfficerId
-    );
+    void deleteCustomer(Long customerId);
 }

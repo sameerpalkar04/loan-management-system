@@ -5,7 +5,6 @@ import com.loan.loanofficerservice.service.abstraction.LoanOfficerActionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
@@ -36,13 +35,11 @@ public class LoanOfficerController {
     @PutMapping("/applications/{applicationId}/approve")
     public ResponseEntity<Void> approveApplication(
             @PathVariable Long applicationId,
-            @Valid @RequestBody ApproveLoanRequest approveLoanRequest,
-            @AuthenticationPrincipal LoanOfficerPrincipal loanOfficer
+            @Valid @RequestBody ApproveLoanRequest approveLoanRequest
     ) {
         loanOfficerActionService.approveApplication(
                 applicationId,
-                approveLoanRequest,
-                loanOfficer.getOfficerId()
+                approveLoanRequest
         );
 
         return ResponseEntity.accepted().build();
@@ -51,13 +48,11 @@ public class LoanOfficerController {
     @PutMapping("/applications/{applicationId}/reject")
     public ResponseEntity<Void> rejectApplication(
             @PathVariable Long applicationId,
-            @Valid @RequestBody RejectLoanRequest rejectLoanRequest,
-            @AuthenticationPrincipal LoanOfficerPrincipal loanOfficer
+            @Valid @RequestBody RejectLoanRequest rejectLoanRequest
     ) {
         loanOfficerActionService.rejectApplication(
                 applicationId,
-                rejectLoanRequest,
-                loanOfficer.getOfficerId()
+                rejectLoanRequest
         );
 
         return ResponseEntity.accepted().build();
@@ -66,13 +61,11 @@ public class LoanOfficerController {
     @PutMapping("/loan-types/{loanTypeId}")
     public ResponseEntity<Void> updateLoanType(
             @PathVariable Long loanTypeId,
-            @Valid @RequestBody LoanTypeUpdateRequest loanTypeUpdateRequest,
-            @AuthenticationPrincipal LoanOfficerPrincipal loanOfficer
+            @Valid @RequestBody LoanTypeUpdateRequest loanTypeUpdateRequest
     ) {
         loanOfficerActionService.updateLoanType(
                 loanTypeId,
-                loanTypeUpdateRequest,
-                loanOfficer.getOfficerId()
+                loanTypeUpdateRequest
         );
 
         return ResponseEntity.accepted().build();
@@ -80,13 +73,9 @@ public class LoanOfficerController {
 
     @DeleteMapping("/customers/{customerId}")
     public ResponseEntity<DeleteCustomerResponse> deleteCustomer(
-            @PathVariable Long customerId,
-            @AuthenticationPrincipal LoanOfficerPrincipal loanOfficer
+            @PathVariable Long customerId
     ) {
-        loanOfficerActionService.deleteCustomer(
-                customerId,
-                loanOfficer.getOfficerId()
-        );
+        loanOfficerActionService.deleteCustomer(customerId);
 
         return ResponseEntity.ok(
                 new DeleteCustomerResponse(

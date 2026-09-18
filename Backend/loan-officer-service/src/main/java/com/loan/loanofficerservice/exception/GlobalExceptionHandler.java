@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
-import org.springframework.security.access.AccessDeniedException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -46,22 +45,6 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(error);
-    }
-
-    @ExceptionHandler(AccessDeniedException.class)
-    public  ResponseEntity<ApiError> handleAccessDeniedException(
-            AccessDeniedException exception
-    ) {
-        ApiError error = new ApiError (
-                LocalDateTime.now(),
-                HttpStatus.FORBIDDEN.value(),
-                "Forbidden",
-                "You are not authorized to perform this action"
-        );
-
-        return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
                 .body(error);
     }
 
