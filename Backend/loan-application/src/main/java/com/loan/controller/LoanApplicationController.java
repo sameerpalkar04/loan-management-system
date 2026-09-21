@@ -4,8 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.*;
 
 import com.loan.dto.request.CreateLoanApplicationRequest;
@@ -28,10 +27,10 @@ public class LoanApplicationController {
 
     @PostMapping
     public ResponseEntity<LoanApplicationResponse> createApplication(
-            @AuthenticationPrincipal Jwt jwt,
+            @RequestHeader("X-Customer-Id") Long customerId,
+            @RequestHeader("X-User-Role") String role,
             @Valid @RequestBody CreateLoanApplicationRequest request) {
-
-        Long customerId = requiredLongClaim(jwt, "customer_id");
+        requireRole(role, "CUSTOMER");
 
         LoanApplicationResponse response =
                 loanApplicationService.createApplication(
@@ -44,9 +43,9 @@ public class LoanApplicationController {
 
     @GetMapping("/me")
     public ResponseEntity<List<LoanApplicationResponse>> getMyApplications(
-            @AuthenticationPrincipal Jwt jwt) {
-
-        Long customerId = requiredLongClaim(jwt, "customer_id");
+            @RequestHeader("X-Customer-Id") Long customerId,
+            @RequestHeader("X-User-Role") String role) {
+        requireRole(role, "CUSTOMER");
 
         return ResponseEntity.ok(
                 loanApplicationService.getCustomerApplications(customerId)
@@ -54,14 +53,20 @@ public class LoanApplicationController {
     }
 
     @GetMapping
-    public ResponseEntity<List<LoanApplicationResponse>> getAllApplications() {
+    public ResponseEntity<List<LoanApplicationResponse>> getAllApplications(
+            @RequestHeader("X-User-Role") String role) {
+        requireRole(role, "LOAN_OFFICER");
+
         return ResponseEntity.ok(
                 loanApplicationService.getAllApplications()
         );
     }
 
     @GetMapping("/pending")
-    public ResponseEntity<List<LoanApplicationResponse>> getPendingApplications() {
+    public ResponseEntity<List<LoanApplicationResponse>> getPendingApplications(
+            @RequestHeader("X-User-Role") String role) {
+        requireRole(role, "LOAN_OFFICER");
+
         return ResponseEntity.ok(
                 loanApplicationService.getPendingApplications()
         );
@@ -69,7 +74,9 @@ public class LoanApplicationController {
 
     @GetMapping("/{applicationId}")
     public ResponseEntity<LoanApplicationResponse> getApplicationById(
+            @RequestHeader("X-User-Role") String role,
             @PathVariable Long applicationId) {
+        requireRole(role, "LOAN_OFFICER");
 
         return ResponseEntity.ok(
                 loanApplicationService.getApplicationById(applicationId)
@@ -78,11 +85,11 @@ public class LoanApplicationController {
 
     @PatchMapping("/{applicationId}/status")
     public ResponseEntity<LoanApplicationResponse> updateApplicationStatus(
-            @AuthenticationPrincipal Jwt jwt,
+            @RequestHeader("X-Officer-Id") Long officerId,
+            @RequestHeader("X-User-Role") String role,
             @PathVariable Long applicationId,
             @Valid @RequestBody UpdateApplicationStatus request) {
-
-        Long officerId = requiredLongClaim(jwt, "officer_id");
+        requireRole(role, "LOAN_OFFICER");
 
         return ResponseEntity.ok(
                 loanApplicationService.updateApplicationStatus(
@@ -93,25 +100,13 @@ public class LoanApplicationController {
         );
     }
 
-    private Long requiredLongClaim(Jwt jwt, String claimName) {
-        Object claim = jwt.getClaim(claimName);
-
-        if (claim instanceof Number number) {
-            return number.longValue();
+    private void requireRole(String actualRole, String requiredRole) {
+        if (!requiredRole.equalsIgnoreCase(actualRole)) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "You are not authorized to perform this operation"
+            );
         }
-
-        if (claim instanceof String value) {
-            try {
-                return Long.valueOf(value);
-            } catch (NumberFormatException exception) {
-                throw new IllegalArgumentException(
-                        "JWT claim " + claimName + " must be numeric"
-                );
-            }
-        }
-
-        throw new IllegalArgumentException(
-                "JWT is missing required claim: " + claimName
-        );
     }
+
 }
