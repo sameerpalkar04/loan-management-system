@@ -5,7 +5,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 import java.math.BigDecimal;
@@ -15,12 +14,7 @@ import java.math.BigDecimal;
 public class LoanType {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "loanTypeSequenceGenerator")
-    @SequenceGenerator(
-            name = "loanTypeSequenceGenerator",
-            sequenceName = "SYSTEM.LOAN_TYPE_SEQ",
-            allocationSize = 1
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "LOAN_TYPE_ID", nullable = false)
     private Long loanTypeId;
 

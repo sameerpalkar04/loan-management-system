@@ -4,9 +4,11 @@ import com.loan.customerservice.daos.entities.Customer;
 import com.loan.customerservice.daos.repositories.CustomerRepository;
 import com.loan.customerservice.dtos.CustomerQuery;
 import com.loan.customerservice.dtos.CustomerRegistrationCommand;
+import com.loan.customerservice.events.CustomerRegisteredEvent;
 import com.loan.customerservice.exceptions.CustomerAlreadyExistsException;
 import com.loan.customerservice.services.abstractions.ServiceManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,11 +23,15 @@ public class CustomerServiceManager
 
     private final CustomerRepository repository;
     private final PasswordEncoder passwordEncoder;
+    private final KafkaTemplate<String, CustomerRegisteredEvent> kafkaTemplate;
+
     @Autowired
     public CustomerServiceManager(CustomerRepository repository,
-                                  PasswordEncoder passwordEncoder) {
+                                  PasswordEncoder passwordEncoder,
+                                  KafkaTemplate<String, CustomerRegisteredEvent> kafkaTemplate) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
+        this.kafkaTemplate = kafkaTemplate;
     }
 
     @Override
@@ -57,6 +63,14 @@ public class CustomerServiceManager
         customer.setMonthlyIncome(data.getMonthlyIncome());
 
         Customer addedCustomer = repository.save(customer);
+        kafkaTemplate.send(
+                "customer.registered",
+                addedCustomer.getPanNumber(),
+                new CustomerRegisteredEvent(
+                        addedCustomer.getCustomerId(),
+                        addedCustomer.getPanNumber()
+                )
+        );
 
         return mapToCustomerQuery(addedCustomer);
     }
