@@ -12,6 +12,7 @@ import com.loan.dto.request.CreateLoanApplicationRequest;
 import com.loan.dto.request.UpdateApplicationStatus;
 import com.loan.dto.response.LoanApplicationResponse;
 import com.loan.service.LoanApplicationServices;
+import com.loan.dto.response.PanCardImageResponse;
 
 import jakarta.validation.Valid;
 
@@ -31,7 +32,18 @@ public class LoanApplicationController {
             @AuthenticationPrincipal Jwt jwt,
             @Valid @RequestBody CreateLoanApplicationRequest request) {
 
+<<<<<<< HEAD
         Long customerId = requiredLongClaim(jwt, "customer_id");
+=======
+            @Valid
+            @RequestPart("application")
+            CreateLoanApplicationRequest request,
+
+            @RequestPart("panCardImage")
+            MultipartFile panCardImage
+    ) {
+        requireRole(role, "CUSTOMER");
+>>>>>>> f99ff8d (Backup current loan management system)
 
         LoanApplicationResponse response =
                 loanApplicationService.createApplication(
@@ -96,6 +108,7 @@ public class LoanApplicationController {
     private Long requiredLongClaim(Jwt jwt, String claimName) {
         Object claim = jwt.getClaim(claimName);
 
+<<<<<<< HEAD
         if (claim instanceof Number number) {
             return number.longValue();
         }
@@ -115,3 +128,20 @@ public class LoanApplicationController {
         );
     }
 }
+=======
+    @GetMapping("/{applicationId}/pan-card-image")
+    public ResponseEntity<byte[]> getPanCardImage(
+            @RequestHeader("X-User-Role") String role,
+            @PathVariable Long applicationId
+    ) {
+        requireRole(role, "LOAN_OFFICER");
+
+        PanCardImageResponse image =
+                loanApplicationService.getPanCardImage(applicationId);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(image.contentType()))
+                .body(image.imageBytes());
+    }
+}
+>>>>>>> f99ff8d (Backup current loan management system)
