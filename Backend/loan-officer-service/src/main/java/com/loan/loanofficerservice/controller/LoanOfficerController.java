@@ -4,9 +4,10 @@ import com.loan.loanofficerservice.dto.*;
 import com.loan.loanofficerservice.service.abstraction.LoanOfficerActionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -34,10 +35,12 @@ public class LoanOfficerController {
 
     @PutMapping("/applications/{applicationId}/approve")
     public ResponseEntity<Void> approveApplication(
+            @RequestHeader("X-Officer-Id") Long officerId,
             @PathVariable Long applicationId,
             @Valid @RequestBody ApproveLoanRequest approveLoanRequest
     ) {
         loanOfficerActionService.approveApplication(
+                officerId,
                 applicationId,
                 approveLoanRequest
         );
@@ -47,10 +50,12 @@ public class LoanOfficerController {
 
     @PutMapping("/applications/{applicationId}/reject")
     public ResponseEntity<Void> rejectApplication(
+            @RequestHeader("X-Officer-Id") Long officerId,
             @PathVariable Long applicationId,
             @Valid @RequestBody RejectLoanRequest rejectLoanRequest
     ) {
         loanOfficerActionService.rejectApplication(
+                officerId,
                 applicationId,
                 rejectLoanRequest
         );
@@ -58,30 +63,22 @@ public class LoanOfficerController {
         return ResponseEntity.accepted().build();
     }
 
-    @PutMapping("/loan-types/{loanTypeId}")
-    public ResponseEntity<Void> updateLoanType(
-            @PathVariable Long loanTypeId,
-            @Valid @RequestBody LoanTypeUpdateRequest loanTypeUpdateRequest
+    @GetMapping("/applications/{applicationId}/pan-card-image")
+    public ResponseEntity<byte[]> viewPanCardImage(
+            @RequestHeader("X-User-Role") String role,
+            @PathVariable Long applicationId
     ) {
-        loanOfficerActionService.updateLoanType(
-                loanTypeId,
-                loanTypeUpdateRequest
-        );
+        requireLoanOfficer(role);
 
-        return ResponseEntity.accepted().build();
+        return loanOfficerActionService.viewPanCardImage(applicationId);
     }
 
-    @DeleteMapping("/customers/{customerId}")
-    public ResponseEntity<DeleteCustomerResponse> deleteCustomer(
-            @PathVariable Long customerId
-    ) {
-        loanOfficerActionService.deleteCustomer(customerId);
-
-        return ResponseEntity.ok(
-                new DeleteCustomerResponse(
-                        "Customer deleted successfully",
-                        customerId
-                )
-        );
+    private void requireLoanOfficer(String role) {
+        if (!"LOAN_OFFICER".equalsIgnoreCase(role)) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Only loan officers can view PAN-card images"
+            );
+        }
     }
 }

@@ -1,120 +1,132 @@
 package com.loan.loanofficerservice.service.implementation;
 
-import com.loan.loanofficerservice.dao.entity.Customer;
-import com.loan.loanofficerservice.dao.entity.LoanApplication;
-import com.loan.loanofficerservice.dao.entity.LoanType;
-import com.loan.loanofficerservice.dao.repository.CustomerRepository;
-import com.loan.loanofficerservice.dao.repository.LoanApplicationRepository;
-import com.loan.loanofficerservice.dao.repository.LoanTypeRepository;
 import com.loan.loanofficerservice.dto.ApproveLoanRequest;
+import com.loan.loanofficerservice.dto.LoanApplicationDecisionRequest;
 import com.loan.loanofficerservice.dto.LoanApplicationResponse;
-import com.loan.loanofficerservice.dto.LoanTypeUpdateRequest;
 import com.loan.loanofficerservice.dto.RejectLoanRequest;
-import com.loan.loanofficerservice.exception.CustomerNotFoundException;
-import com.loan.loanofficerservice.exception.LoanApplicationNotFoundException;
 import com.loan.loanofficerservice.service.abstraction.LoanOfficerActionService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
+import org.springframework.http.ResponseEntity;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class LoanOfficerActionServiceImpl implements LoanOfficerActionService {
 
-    private final CustomerRepository customerRepository;
-    private final LoanApplicationRepository loanApplicationRepository;
-    private final LoanTypeRepository loanTypeRepository;
+    private static final String LOAN_APPLICATION_PATH =
+            "/api/v1/loan-applications";
+
+    private final LoadBalancerClient loadBalancerClient;
 
     @Override
     public List<LoanApplicationResponse> viewAllApplications() {
-        return loanApplicationRepository.findAll()
-                .stream()
-                .map(this::toResponse)
-                .toList();
+        List<LoanApplicationResponse> applications = client()
+                .get()
+                .uri(LOAN_APPLICATION_PATH)
+                .header("X-User-Role", "LOAN_OFFICER")
+                .retrieve()
+                .body(new ParameterizedTypeReference<>() { });
+
+        return applications == null ? List.of() : applications;
     }
 
     @Override
     public LoanApplicationResponse viewApplicationById(Long applicationId) {
-        return toResponse(getApplication(applicationId));
+        return client()
+                .get()
+                .uri(LOAN_APPLICATION_PATH + "/{applicationId}", applicationId)
+                .header("X-User-Role", "LOAN_OFFICER")
+                .retrieve()
+                .body(LoanApplicationResponse.class);
     }
 
     @Override
     public void approveApplication(
+            Long officerId,
             Long applicationId,
-            ApproveLoanRequest approveLoanRequest
-    ) {
-        LoanApplication application = getApplication(applicationId);
-        application.setStatus("APPROVED");
-        application.setReviewedAt(LocalDateTime.now());
-        application.setValuation(approveLoanRequest.getValuation());
-        loanApplicationRepository.save(application);
-    }
+            ApproveLoanRequest request) {
 
-    @Override
-    public void rejectApplication(Long applicationId,
-                                  RejectLoanRequest rejectLoanRequest
-    ) {
-        LoanApplication application = getApplication(applicationId);
-        application.setStatus("REJECTED");
-        application.setReviewedAt(LocalDateTime.now());
-        application.setValuation(rejectLoanRequest.getValuation());
-        loanApplicationRepository.save(application);
-    }
-
-    @Override
-    public void updateLoanType(Long loanTypeId,
-                               LoanTypeUpdateRequest loanTypeUpdateRequest
-    ) {
-        LoanType loanType = loanTypeRepository.findById(loanTypeId)
-                .orElseThrow(() -> new LoanApplicationNotFoundException(
-                        "Loan type not found: " + loanTypeId
-                ));
-        loanType.setLoanName(loanTypeUpdateRequest.getLoanName());
-        loanType.setBaseInterestRate(loanTypeUpdateRequest.getBaseInterestRate());
-        loanType.setMaximumTenureMonths(
-                loanTypeUpdateRequest.getMaximumTenureMonths()
+        updateDecision(
+                officerId,
+                applicationId,
+                new LoanApplicationDecisionRequest(
+                        "APPROVED",
+                        null,
+                        request.getApprovedPrincipal(),
+                        request.getAnnualInterestRate(),
+                        request.getTenureMonths(),
+                        request.getValuation()
+                )
         );
-        loanType.setMaximumLoanAmount(loanTypeUpdateRequest.getMaximumLoanAmount());
-        loanType.setDescription(loanTypeUpdateRequest.getDescription());
-        loanTypeRepository.save(loanType);
     }
 
     @Override
-    @Transactional
-    public void deleteCustomer(Long customerId) {
+    public void rejectApplication(
+            Long officerId,
+            Long applicationId,
+            RejectLoanRequest request) {
 
-        Customer customer = customerRepository.findCustomerForDeletion(customerId)
-                .orElseThrow(() -> new CustomerNotFoundException(
-                        "Customer not found: " + customerId
-                ));
-
-        customerRepository.delete(customer);
-        customerRepository.flush();
-
-    }
-
-    private LoanApplication getApplication(Long applicationId) {
-        return loanApplicationRepository.findById(applicationId)
-                .orElseThrow(() -> new LoanApplicationNotFoundException(
-                        "Loan application not found: " + applicationId
-                ));
-    }
-
-    private LoanApplicationResponse toResponse(LoanApplication application) {
-        return new LoanApplicationResponse(
-                application.getApplicationId(),
-                application.getCustomerId(),
-                application.getLoanTypeId(),
-                application.getReviewedByOfficerId(),
-                application.getRequestedAmount(),
-                application.getRequestedTenureMonths(),
-                application.getStatus(),
-                application.getAppliedAt(),
-                application.getReviewedAt(),
-                application.getValuation()
+        updateDecision(
+                officerId,
+                applicationId,
+                new LoanApplicationDecisionRequest(
+                        "REJECTED",
+                        null,
+                        null,
+                        null,
+                        null,
+                        request.getValuation()
+                )
         );
+    }
+
+    @Override
+    public ResponseEntity<byte[]> viewPanCardImage(Long applicationId) {
+        return client()
+                .get()
+                .uri(
+                        LOAN_APPLICATION_PATH
+                                + "/{applicationId}/pan-card-image",
+                        applicationId
+                )
+                .header("X-User-Role", "LOAN_OFFICER")
+                .retrieve()
+                .toEntity(byte[].class);
+    }
+
+    private void updateDecision(
+            Long officerId,
+            Long applicationId,
+            LoanApplicationDecisionRequest request) {
+
+        client()
+                .patch()
+                .uri(LOAN_APPLICATION_PATH + "/{applicationId}/status", applicationId)
+                .header("X-User-Role", "LOAN_OFFICER")
+                .header("X-Officer-Id", officerId.toString())
+                .body(request)
+                .retrieve()
+                .toBodilessEntity();
+    }
+
+    private RestClient client() {
+        ServiceInstance instance = loadBalancerClient
+                .choose("loan-application-service");
+
+        if (instance == null) {
+            throw new IllegalStateException(
+                    "loan-application-service is not available in Eureka"
+            );
+        }
+
+        return RestClient.builder()
+                .baseUrl(instance.getUri().toString())
+                .build();
     }
 }

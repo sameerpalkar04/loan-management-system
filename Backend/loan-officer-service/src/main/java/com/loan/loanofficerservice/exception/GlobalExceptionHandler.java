@@ -11,86 +11,39 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(InvalidCredentialsException.class)
-    public ResponseEntity<ApiError> handleInvalidCredentials(
-            InvalidCredentialsException exception
-    ) {
-        ApiError error = new ApiError (
-                LocalDateTime.now(),
-                HttpStatus.UNAUTHORIZED.value(),
-                "unauthorised",
-                exception.getMessage()
-        );
-
-        return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
-                .body(error);
-    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiError> handleValidationException(
-            MethodArgumentNotValidException exception
-    ) {
+            MethodArgumentNotValidException exception) {
+
         String message = exception.getBindingResult()
                 .getFieldErrors()
                 .get(0)
                 .getDefaultMessage();
 
-        ApiError error = new ApiError (
-                LocalDateTime.now(),
-                HttpStatus.BAD_REQUEST.value(),
-                "validation failed",
-                message
-        );
-
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(error);
-    }
-
-    @ExceptionHandler(LoanApplicationNotFoundException.class)
-    public ResponseEntity<ApiError> handleLoanApplicationNotFound(
-            LoanApplicationNotFoundException exception
-    ) {
-        ApiError error = new ApiError(
-                LocalDateTime.now(),
-                HttpStatus.NOT_FOUND.value(),
-                "Not Found",
-                exception.getMessage()
-        );
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+        return error(HttpStatus.BAD_REQUEST, "validation failed", message);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiError> handleGeneralException(
-            Exception exception
-    ) {
-        ApiError error = new ApiError (
-                LocalDateTime.now(),
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+    public ResponseEntity<ApiError> handleGeneralException(Exception exception) {
+        return error(
+                HttpStatus.INTERNAL_SERVER_ERROR,
                 "Internal Server Error",
                 "An unexpected error occurred"
         );
-
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(error);
     }
 
-    @ExceptionHandler(CustomerNotFoundException.class)
-    public ResponseEntity<ApiError> handleCustomerNotFound(
-            CustomerNotFoundException exception
-    ) {
-        ApiError error = new ApiError(
+    private ResponseEntity<ApiError> error(
+            HttpStatus status,
+            String error,
+            String message) {
+
+        ApiError body = new ApiError(
                 LocalDateTime.now(),
-                HttpStatus.NOT_FOUND.value(),
-                "Not Found",
-                exception.getMessage()
+                status.value(),
+                error,
+                message
         );
 
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(error);
+        return ResponseEntity.status(status).body(body);
     }
 }
