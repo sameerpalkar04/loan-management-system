@@ -25,7 +25,13 @@ export const createLoanType = (loanType) =>
 export const updateLoanType = (loanTypeId, loanType) =>
   USE_MOCK_DATA ? mockUpdateLoanType(loanTypeId, loanType) : apiRequest(`/api/loan-types/${loanTypeId}`, {
     method: "PUT",
-    body: JSON.stringify(loanType),
+    body: JSON.stringify({
+      loanName: loanType.loanName,
+      baseInterestRate: loanType.baseInterestRate,
+      maximumTenureMonths: loanType.maximumTenureMonths,
+      description: loanType.description,
+      maximumLoanAmount: loanType.maximumLoanAmount,
+    }),
   });
 
 export const deleteLoanType = (loanTypeId) =>

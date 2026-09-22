@@ -13,7 +13,7 @@ export const createLoanApplication = (application, panCardImage) => {
 
   const formData = new FormData();
   formData.append("application", new Blob([JSON.stringify(application)], { type: "application/json" }));
-  formData.append("panCardImage", panCardImage);
+  formData.append("panCardInage", panCardImage);
 
   return apiRequest("/api/v1/loan-applications", {
     method: "POST",
@@ -40,4 +40,4 @@ export const updateApplicationStatus = (applicationId, status) =>
   });
 
 export const getApplicationPanCard = (applicationId) =>
-  USE_MOCK_DATA ? wait(null) : apiRequest(`/api/v1/loan-applications/${applicationId}/pan-card-image`);
+  USE_MOCK_DATA ? wait(null) : apiRequest(`/api/v1/loan-applications/${applicationId}/pan-card-image`, { responseType: "blob" });

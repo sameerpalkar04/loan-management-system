@@ -1,0 +1,353 @@
+/* ============================================================
+   Setu Credit — Loan officer console
+   Import once: import "./officer.css";
+   Fonts (add to index.html <head>):
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+   ============================================================ */
+
+.officer-console{
+  --paper:#EBEEF3; --surface:#FFFFFF; --surface-2:#F5F7FA;
+  --ink:#0E1726; --ink-soft:#42506A; --muted:#6B7891;
+  --line:#D7DDE7; --line-soft:#E6EAF1;
+  --rail-bg:#0E1726; --rail-fg:#C3CDDE; --rail-active:#1D2A41; --rail-line:#22304A;
+  --brass:#A8752C; --brass-bg:#F7EEDD;
+  --teal:#0C5A4A; --teal-bg:#DCEEE7;
+  --clay:#8E2A2A; --clay-bg:#F8E3E1;
+  --focus:#2E6BE6;
+  --shadow:0 1px 2px rgba(14,23,38,.05), 0 8px 24px -12px rgba(14,23,38,.18);
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  color-scheme:light;
+  background:var(--paper); color:var(--ink);
+  font-family:"Instrument Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:15px; line-height:1.55; -webkit-font-smoothing:antialiased;
+  font-variant-numeric:tabular-nums;
+  min-height:100%;
+}
+@media (prefers-color-scheme:dark){
+  .officer-console:not([data-theme="light"]){
+    --paper:#080D16; --surface:#121A28; --surface-2:#18212F;
+    --ink:#E7ECF5; --ink-soft:#AFBACD; --muted:#8494AC;
+    --line:#263144; --line-soft:#1D2637;
+    --rail-bg:#0B121E; --rail-fg:#B9C5DA; --rail-active:#1A2537; --rail-line:#1E2A3D;
+    --brass:#D9A85C; --brass-bg:#2C2314;
+    --teal:#5FC5A8; --teal-bg:#0F2A24;
+    --clay:#E58C86; --clay-bg:#2E1616;
+    --focus:#7BA6FF;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.7);
+    color-scheme:dark;
+  }
+}
+.officer-console[data-theme="dark"]{
+  --paper:#080D16; --surface:#121A28; --surface-2:#18212F;
+  --ink:#E7ECF5; --ink-soft:#AFBACD; --muted:#8494AC;
+  --line:#263144; --line-soft:#1D2637;
+  --rail-bg:#0B121E; --rail-fg:#B9C5DA; --rail-active:#1A2537; --rail-line:#1E2A3D;
+  --brass:#D9A85C; --brass-bg:#2C2314;
+  --teal:#5FC5A8; --teal-bg:#0F2A24;
+  --clay:#E58C86; --clay-bg:#2E1616;
+  --focus:#7BA6FF;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.7);
+  color-scheme:dark;
+}
+.officer-console *,
+.officer-console *::before,
+.officer-console *::after{box-sizing:inherit}
+.officer-console h1,.officer-console h2,.officer-console h3,.officer-console h4{
+  margin:0; font-weight:600; letter-spacing:-.018em; line-height:1.18;
+}
+.officer-console p{margin:0}
+.officer-console button,
+.officer-console input,
+.officer-console select,
+.officer-console textarea{font:inherit; color:inherit}
+.officer-console :focus-visible{outline:2px solid var(--focus); outline-offset:2px; border-radius:4px}
+.officer-console .serif{font-family:"Instrument Serif",Georgia,"Times New Roman",serif; font-weight:400; letter-spacing:-.01em}
+
+/* ---------- top bar ---------- */
+.officer-console .topbar{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:40;
+  display:flex; align-items:center; gap:14px;
+  padding:0 18px; height:60px;
+  background:var(--rail-bg); color:var(--rail-fg);
+  border-bottom:1px solid var(--rail-line);
+}
+.officer-console .brand{display:flex; align-items:center; gap:10px; margin-right:auto; min-width:0}
+.officer-console .mark{
+  width:30px; height:30px; flex:none; border-radius:9px;
+  background:linear-gradient(150deg,var(--brass),#6F4A16);
+  display:grid; place-items:center; color:#fff;
+  font-family:"Instrument Serif",serif; font-size:19px; line-height:1;
+}
+.officer-console .brand b{color:#fff; font-weight:600; font-size:15.5px; letter-spacing:-.01em}
+.officer-console .brand span{font-size:12.5px; opacity:.62; margin-left:2px; white-space:nowrap}
+@media (max-width:620px){.officer-console .brand span{display:none}}
+
+.officer-console .session{display:flex; align-items:center; gap:8px}
+.officer-console .who{
+  display:flex; align-items:center; gap:9px; padding:5px 11px 5px 6px;
+  border:1px solid var(--rail-line); border-radius:999px; background:rgba(255,255,255,.04);
+  cursor:pointer; color:inherit;
+}
+.officer-console .who:hover{background:rgba(255,255,255,.09)}
+.officer-console .avatar{
+  width:24px; height:24px; border-radius:50%; flex:none; display:grid; place-items:center;
+  font-size:11px; font-weight:600; color:#0E1726; background:#C3CDDE;
+}
+.officer-console .avatar.off{background:var(--brass); color:#1C1205}
+.officer-console .who small{display:block; font-size:11px; opacity:.6; line-height:1.1}
+.officer-console .who strong{display:block; font-size:12.5px; font-weight:500; color:#fff; line-height:1.25}
+.officer-console .icobtn{
+  width:34px; height:34px; display:grid; place-items:center; border-radius:9px;
+  background:transparent; border:1px solid var(--rail-line); color:var(--rail-fg); cursor:pointer;
+}
+.officer-console .icobtn:hover{background:rgba(255,255,255,.08)}
+
+/* ---------- shell ---------- */
+.officer-console .shell{display:flex; min-height:calc(100vh - 60px); align-items:stretch}
+.officer-console .rail{
+  width:238px; flex:none; padding:18px 12px 28px;
+  background:var(--rail-bg); border-right:1px solid var(--rail-line);
+}
+.officer-console .railgroup+.railgroup{margin-top:20px}
+.officer-console .railtitle{font-size:11.5px; color:#6E7F9C; padding:0 10px 7px; letter-spacing:.01em}
+.officer-console .navitem{
+  display:flex; align-items:center; gap:10px; width:100%;
+  padding:9px 10px; border-radius:9px; border:0; background:transparent;
+  text-align:left; cursor:pointer; color:var(--rail-fg); font-size:14px; line-height:1.3;
+}
+.officer-console .navitem svg{flex:none; opacity:.75}
+.officer-console .navitem:hover{background:var(--rail-active); color:#fff}
+.officer-console .navitem[aria-current="page"]{background:var(--brass); color:#180F02; font-weight:500}
+.officer-console .navitem[aria-current="page"] svg{opacity:1}
+.officer-console .navitem .pip{
+  margin-left:auto; min-width:20px; text-align:center; font-size:11.5px; font-weight:600;
+  background:var(--brass-bg); color:var(--brass); border-radius:999px; padding:1px 6px;
+}
+.officer-console .navitem[aria-current="page"] .pip{background:rgba(0,0,0,.2); color:#180F02}
+.officer-console .railnote{
+  margin:22px 10px 0; padding:12px; border-radius:11px;
+  background:var(--rail-active); border:1px solid var(--rail-line);
+  font-size:12.5px; color:#93A3BE; line-height:1.5;
+}
+.officer-console main{flex:1; min-width:0; padding:26px 30px 70px; max-width:1180px}
+@media (max-width:920px){
+  .officer-console .shell{display:block}
+  .officer-console .rail{
+    width:auto; display:flex; gap:8px; overflow-x:auto; padding:10px 14px;
+    border-right:0; border-bottom:1px solid var(--rail-line);
+    position:sticky; top:calc(60px + env(safe-area-inset-top,0px)); z-index:30;
+  }
+  .officer-console .railgroup{display:contents}
+  .officer-console .railgroup+.railgroup{margin:0}
+  .officer-console .railtitle,.officer-console .railnote{display:none}
+  .officer-console .navitem{width:auto; white-space:nowrap; padding:7px 12px; border-radius:999px; border:1px solid var(--rail-line)}
+  .officer-console main{padding:20px 16px 64px}
+}
+
+/* ---------- page furniture ---------- */
+.officer-console .pagehead{display:flex; align-items:flex-end; gap:16px; flex-wrap:wrap; margin-bottom:20px}
+.officer-console .pagehead h1{font-size:25px}
+.officer-console .pagehead p{color:var(--muted); font-size:14px; margin-top:5px; max-width:62ch}
+.officer-console .pagehead .spacer{margin-left:auto}
+
+.officer-console .card{background:var(--surface); border:1px solid var(--line); border-radius:14px}
+.officer-console .pad{padding:18px}
+
+.officer-console .btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:7px;
+  padding:9px 15px; border-radius:9px; border:1px solid var(--line);
+  background:var(--surface); color:var(--ink); cursor:pointer; font-size:14px; font-weight:500;
+}
+.officer-console .btn:hover{background:var(--surface-2)}
+.officer-console .btn.primary{background:var(--ink); border-color:var(--ink); color:var(--surface)}
+.officer-console .btn.primary:hover{opacity:.88; background:var(--ink)}
+.officer-console .btn.approve{background:var(--teal); border-color:var(--teal); color:#fff}
+.officer-console .btn.decline{background:transparent; border-color:var(--clay); color:var(--clay)}
+.officer-console .btn.decline:hover{background:var(--clay-bg)}
+.officer-console .btn.sm{padding:6px 11px; font-size:13px; border-radius:8px}
+.officer-console .btn[disabled]{opacity:.45; cursor:not-allowed}
+.officer-console[data-theme="dark"] .btn.approve,
+.officer-console[data-theme="dark"] .btn.primary{color:#0A101C}
+@media (prefers-color-scheme:dark){
+  .officer-console:not([data-theme="light"]) .btn.approve,
+  .officer-console:not([data-theme="light"]) .btn.primary{color:#0A101C}
+}
+
+.officer-console .tag{
+  display:inline-flex; align-items:center; gap:6px; padding:3px 9px; border-radius:999px;
+  font-size:12px; font-weight:600; line-height:1.5; white-space:nowrap;
+}
+.officer-console .tag::before{content:""; width:6px; height:6px; border-radius:50%; background:currentColor}
+.officer-console .tag.pending{background:var(--brass-bg); color:var(--brass)}
+.officer-console .tag.approved{background:var(--teal-bg); color:var(--teal)}
+.officer-console .tag.declined{background:var(--clay-bg); color:var(--clay)}
+.officer-console .tag.plain{background:var(--surface-2); color:var(--muted)}
+
+.officer-console .money{font-family:"Instrument Serif",Georgia,serif; letter-spacing:-.015em; font-variant-numeric:tabular-nums}
+.officer-console .label{font-size:12.5px; color:var(--muted)}
+.officer-console .hr{height:1px; background:var(--line-soft); border:0; margin:16px 0}
+
+/* ---------- product cards ---------- */
+.officer-console .types{display:grid; grid-template-columns:repeat(auto-fill,minmax(268px,1fr)); gap:14px}
+.officer-console .type{
+  background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:17px;
+  display:flex; flex-direction:column; position:relative; overflow:hidden;
+}
+.officer-console .type::before{content:""; position:absolute; inset:0 auto 0 0; width:3px; background:var(--accent,var(--brass))}
+.officer-console .type h3{font-size:16.5px; display:flex; align-items:center; gap:8px}
+.officer-console .type .tagline{font-size:13px; color:var(--muted); margin-top:5px; line-height:1.5; min-height:39px}
+.officer-console .type .rate{display:flex; align-items:baseline; gap:6px; margin:14px 0 12px}
+.officer-console .type .rate b{font-family:"Instrument Serif",serif; font-size:32px; font-weight:400; line-height:1}
+.officer-console .type .rate span{font-size:12.5px; color:var(--muted)}
+.officer-console .specs{display:grid; grid-template-columns:1fr 1fr; gap:9px 12px; font-size:13px; border-top:1px solid var(--line-soft); padding-top:12px; margin:0}
+.officer-console .specs dt{color:var(--muted); font-size:12px}
+.officer-console .specs dd{margin:1px 0 0; font-weight:500}
+.officer-console .type .cta{margin-top:14px}
+.officer-console .type.off{opacity:.55}
+
+/* ---------- table ---------- */
+.officer-console .tablewrap{overflow-x:auto; border:1px solid var(--line); border-radius:14px; background:var(--surface)}
+.officer-console table{border-collapse:collapse; width:100%; min-width:680px; font-size:13.5px}
+.officer-console th{
+  text-align:left; font-weight:600; font-size:12.5px; color:var(--muted);
+  padding:11px 14px; border-bottom:1px solid var(--line); background:var(--surface-2); white-space:nowrap;
+}
+.officer-console th.sortable{cursor:pointer; user-select:none}
+.officer-console th.sortable:hover{color:var(--ink)}
+.officer-console td{padding:12px 14px; border-bottom:1px solid var(--line-soft); vertical-align:middle}
+.officer-console tbody tr:last-child td{border-bottom:0}
+.officer-console td.num,.officer-console th.num{text-align:right; font-variant-numeric:tabular-nums}
+.officer-console .pan{font-size:12.5px; color:var(--muted); letter-spacing:.03em}
+
+.officer-console .bandbar{display:flex; align-items:center; gap:9px}
+.officer-console .bandbar .track{width:72px; height:5px; border-radius:3px; background:var(--line); overflow:hidden; flex:none}
+.officer-console .bandbar .fill{height:100%; border-radius:3px; display:block}
+.officer-console .bandbar b{font-family:"Instrument Serif",serif; font-size:19px; font-weight:400; min-width:34px}
+
+/* ---------- forms ---------- */
+.officer-console .field{margin-bottom:15px}
+.officer-console .field label{display:block; font-size:13px; font-weight:500; margin-bottom:6px}
+.officer-console .field .hint{font-size:12px; color:var(--muted); font-weight:400; margin-left:6px}
+.officer-console .input{
+  width:100%; padding:10px 12px; border-radius:9px; border:1px solid var(--line);
+  background:var(--surface-2); font-size:14.5px;
+}
+.officer-console .input:focus{outline:2px solid var(--focus); outline-offset:-1px; border-color:transparent}
+.officer-console textarea.input{resize:vertical; min-height:80px; font-size:14px}
+.officer-console .input[aria-invalid="true"]{border-color:var(--clay); background:var(--clay-bg)}
+.officer-console .err{color:var(--clay); font-size:12.5px; margin-top:5px}
+.officer-console .two{display:grid; grid-template-columns:1fr 1fr; gap:0 14px}
+@media (max-width:560px){.officer-console .two{grid-template-columns:1fr}}
+
+.officer-console .sumrow{display:flex; justify-content:space-between; gap:12px; padding:8px 0; font-size:13.5px; border-bottom:1px solid var(--line-soft)}
+.officer-console .sumrow:last-of-type{border-bottom:0}
+.officer-console .sumrow span{color:var(--muted)}
+.officer-console .sumrow b{font-weight:600}
+
+/* ---------- application rows ---------- */
+.officer-console .applist{display:flex; flex-direction:column; gap:10px}
+.officer-console .app{
+  background:var(--surface); border:1px solid var(--line); border-radius:13px; padding:15px 17px;
+  display:grid; grid-template-columns:1fr auto; gap:12px 18px; align-items:center;
+  width:100%; text-align:left; cursor:pointer; font:inherit; color:inherit;
+}
+.officer-console .app:hover{border-color:var(--ink-soft)}
+.officer-console .app .lead{display:flex; align-items:center; gap:11px; flex-wrap:wrap}
+.officer-console .app .lead h3{font-size:15.5px}
+.officer-console .app .sub{font-size:12.5px; color:var(--muted); margin-top:5px}
+.officer-console .app .amt{text-align:right}
+.officer-console .app .amt .money{font-size:25px; display:block; line-height:1.15}
+.officer-console .app .amt span{font-size:12px; color:var(--muted)}
+@media (max-width:560px){
+  .officer-console .app{grid-template-columns:1fr}
+  .officer-console .app .amt{text-align:left}
+}
+
+.officer-console .empty{
+  border:1px dashed var(--line); border-radius:14px; padding:38px 22px; text-align:center; background:var(--surface);
+}
+.officer-console .empty h3{font-size:16px; margin-bottom:6px}
+.officer-console .empty p{color:var(--muted); font-size:13.5px; max-width:42ch; margin:0 auto 16px}
+
+.officer-console .filters{display:flex; gap:7px; flex-wrap:wrap; margin-bottom:16px; align-items:center}
+.officer-console .fchip{
+  padding:6px 12px; border-radius:999px; border:1px solid var(--line); background:var(--surface);
+  font-size:13px; cursor:pointer; color:var(--ink-soft);
+}
+.officer-console .fchip[aria-pressed="true"]{background:var(--ink); border-color:var(--ink); color:var(--surface); font-weight:500}
+.officer-console .search{
+  margin-left:auto; min-width:210px; padding:8px 12px; border-radius:9px;
+  border:1px solid var(--line); background:var(--surface); font-size:14px;
+}
+@media (max-width:560px){.officer-console .search{margin-left:0; width:100%}}
+
+/* ---------- gauge ---------- */
+.officer-console .gauge{display:flex; align-items:center; gap:16px}
+.officer-console .gauge svg{flex:none}
+.officer-console .gauge .val{font-family:"Instrument Serif",serif; font-size:38px; line-height:1}
+.officer-console .gauge .bandname{font-size:13px; font-weight:600}
+.officer-console .gauge .out{font-size:12.5px; color:var(--muted); margin-top:3px}
+
+/* ---------- overlay ---------- */
+.officer-console .overlay{
+  position:fixed; inset:0; z-index:90; background:rgba(8,13,22,.55);
+  display:flex; align-items:flex-end; justify-content:center; padding:0;
+  backdrop-filter:blur(3px);
+}
+@media (min-width:700px){.officer-console .overlay{align-items:center; padding:24px}}
+.officer-console .sheet{
+  background:var(--surface); width:100%; max-width:560px; max-height:92vh; overflow-y:auto;
+  border-radius:18px 18px 0 0; border:1px solid var(--line); box-shadow:var(--shadow);
+  padding:22px 22px calc(22px + env(safe-area-inset-bottom,0px));
+}
+@media (min-width:700px){.officer-console .sheet{border-radius:18px; padding:24px}}
+.officer-console .sheet.wide{max-width:660px}
+.officer-console .sheethead{display:flex; align-items:flex-start; gap:12px; margin-bottom:16px}
+.officer-console .sheethead h2{font-size:19px}
+.officer-console .sheethead p{font-size:13px; color:var(--muted); margin-top:4px}
+.officer-console .sheethead .icobtn{margin-left:auto; border-color:var(--line); color:var(--ink-soft)}
+.officer-console .sheethead .icobtn:hover{background:var(--surface-2)}
+
+.officer-console .checks{display:flex; flex-direction:column; gap:8px; margin:4px 0}
+.officer-console .check{display:flex; gap:10px; align-items:flex-start; font-size:13.5px; padding:9px 11px; border-radius:10px; background:var(--surface-2)}
+.officer-console .check .dot{width:18px; height:18px; border-radius:50%; flex:none; display:grid; place-items:center; font-size:11px; font-weight:700; margin-top:1px}
+.officer-console .check.pass .dot{background:var(--teal-bg); color:var(--teal)}
+.officer-console .check.fail .dot{background:var(--clay-bg); color:var(--clay)}
+.officer-console .check b{font-weight:600}
+.officer-console .check .detail{display:block; color:var(--muted); font-size:12.5px}
+
+.officer-console .sheetactions{display:flex; gap:9px; margin-top:18px; flex-wrap:wrap}
+.officer-console .sheetactions .btn{flex:1; min-width:130px}
+
+.officer-console .timeline{list-style:none; margin:0; padding:0; font-size:13px}
+.officer-console .timeline li{display:flex; gap:11px; padding-bottom:14px; position:relative}
+.officer-console .timeline li:not(:last-child)::before{content:""; position:absolute; left:5px; top:14px; bottom:0; width:1px; background:var(--line)}
+.officer-console .timeline .node{width:11px; height:11px; border-radius:50%; flex:none; margin-top:4px; background:var(--line); border:2px solid var(--surface)}
+.officer-console .timeline .node.on{background:var(--brass)}
+.officer-console .timeline .node.ok{background:var(--teal)}
+.officer-console .timeline .node.no{background:var(--clay)}
+.officer-console .timeline b{font-weight:600; display:block}
+.officer-console .timeline span{color:var(--muted); font-size:12.5px}
+
+/* ---------- toasts ---------- */
+.officer-console .toasts{
+  position:fixed; z-index:120; left:50%; transform:translateX(-50%);
+  bottom:calc(18px + env(safe-area-inset-bottom,0px));
+  display:flex; flex-direction:column; gap:8px; width:min(420px,calc(100% - 28px));
+}
+.officer-console .toast{
+  background:var(--ink); color:var(--paper); padding:11px 14px; border-radius:11px;
+  font-size:13.5px; box-shadow:var(--shadow); display:flex; gap:9px; align-items:center;
+  animation:setu-rise .22s ease-out;
+}
+.officer-console .toast.good{background:var(--teal); color:#fff}
+.officer-console .toast.bad{background:var(--clay); color:#fff}
+@keyframes setu-rise{from{opacity:0; transform:translateY(10px)}to{opacity:1; transform:none}}
+@media (prefers-reduced-motion:reduce){
+  .officer-console *{animation-duration:.01ms !important; transition-duration:.01ms !important}
+}
+

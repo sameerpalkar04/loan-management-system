@@ -26,4 +26,4 @@ export const rejectApplication = (applicationId, payload) =>
   });
 
 export const getOfficerPanCard = (applicationId) =>
-  USE_MOCK_DATA ? wait(null) : apiRequest(`/api/loan-officer/applications/${applicationId}/pan-card-image`);
+  USE_MOCK_DATA ? wait(null) : apiRequest(`/api/loan-officer/applications/${applicationId}/pan-card-image`, { responseType: "blob" });
