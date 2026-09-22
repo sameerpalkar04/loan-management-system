@@ -11,7 +11,6 @@ import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -84,20 +83,6 @@ public class LoanOfficerActionServiceImpl implements LoanOfficerActionService {
                         request.getValuation()
                 )
         );
-    }
-
-    @Override
-    public ResponseEntity<byte[]> viewPanCardImage(Long applicationId) {
-        return client()
-                .get()
-                .uri(
-                        LOAN_APPLICATION_PATH
-                                + "/{applicationId}/pan-card-image",
-                        applicationId
-                )
-                .header("X-User-Role", "LOAN_OFFICER")
-                .retrieve()
-                .toEntity(byte[].class);
     }
 
     private void updateDecision(
