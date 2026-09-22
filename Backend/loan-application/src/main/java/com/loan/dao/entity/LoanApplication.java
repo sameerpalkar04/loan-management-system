@@ -165,4 +165,36 @@ public class LoanApplication {
     public void setReviewedAt(LocalDateTime reviewedAt) {
         this.reviewedAt = reviewedAt;
     }
+
+    public byte[] getPanCardImage() {
+        return panCardImage;
+    }
+
+    public void setPanCardImage(byte[] panCardImage) {
+        this.panCardImage = panCardImage;
+    }
+
+    public String getPanCardImageContentType() {
+        return panCardImageContentType;
+    }
+
+    public void setPanCardImageContentType(String panCardImageContentType) {
+        this.panCardImageContentType = panCardImageContentType;
+    }
+
+    public String getPanCardImageFileName() {
+        return panCardImageFileName;
+    }
+
+    public void setPanCardImageFileName(String panCardImageFileName) {
+        this.panCardImageFileName = panCardImageFileName;
+    }
+
+    public Long getPanCardImageSizeBytes() {
+        return panCardImageSizeBytes;
+    }
+
+    public void setPanCardImageSizeBytes(Long panCardImageSizeBytes) {
+        this.panCardImageSizeBytes = panCardImageSizeBytes;
+    }
 }

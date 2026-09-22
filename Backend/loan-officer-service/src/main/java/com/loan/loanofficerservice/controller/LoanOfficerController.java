@@ -4,8 +4,10 @@ import com.loan.loanofficerservice.dto.*;
 import com.loan.loanofficerservice.service.abstraction.LoanOfficerActionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -61,4 +63,22 @@ public class LoanOfficerController {
         return ResponseEntity.accepted().build();
     }
 
+    @GetMapping("/applications/{applicationId}/pan-card-image")
+    public ResponseEntity<byte[]> viewPanCardImage(
+            @RequestHeader("X-User-Role") String role,
+            @PathVariable Long applicationId
+    ) {
+        requireLoanOfficer(role);
+
+        return loanOfficerActionService.viewPanCardImage(applicationId);
+    }
+
+    private void requireLoanOfficer(String role) {
+        if (!"LOAN_OFFICER".equalsIgnoreCase(role)) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Only loan officers can view PAN-card images"
+            );
+        }
+    }
 }
