@@ -8,11 +8,18 @@ const createMockApplication = (application) => {
   return wait(record);
 };
 
-export const createLoanApplication = (application) =>
-  USE_MOCK_DATA ? createMockApplication(application) : apiRequest("/api/v1/loan-applications", {
+export const createLoanApplication = (application, panCardImage) => {
+  if (USE_MOCK_DATA) return createMockApplication(application);
+
+  const formData = new FormData();
+  formData.append("application", new Blob([JSON.stringify(application)], { type: "application/json" }));
+  formData.append("panCardImage", panCardImage);
+
+  return apiRequest("/api/v1/loan-applications", {
     method: "POST",
-    body: JSON.stringify(application),
+    body: formData,
   });
+};
 
 export const getMyApplications = () =>
   USE_MOCK_DATA ? wait([mockApplications[0]]) : apiRequest("/api/v1/loan-applications/me");
