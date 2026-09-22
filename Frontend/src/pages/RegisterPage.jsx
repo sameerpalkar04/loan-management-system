@@ -1,0 +1,13 @@
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { registerCustomer } from "../api/customerApi";
+import Logo from "../components/common/Logo";
+import "./auth.css";
+
+export default function RegisterPage() {
+  const [form, setForm] = useState({ firstName: "", lastName: "", dateOfBirth: "", email: "", password: "", panNumber: "", employmentType: "Salaried", monthlyIncome: "" });
+  const [message, setMessage] = useState(""); const [error, setError] = useState(""); const [saving, setSaving] = useState(false); const navigate = useNavigate();
+  const update = (event) => setForm((old) => ({ ...old, [event.target.name]: event.target.value }));
+  const submit = async (event) => { event.preventDefault(); setSaving(true); setError(""); try { await registerCustomer({ ...form, monthlyIncome: Number(form.monthlyIncome) }); setMessage("Registration complete. You can now sign in with the customer demo account."); setTimeout(() => navigate("/login"), 1000); } catch (requestError) { setError(requestError.message); } finally { setSaving(false); } };
+  return <main className="register-page"><header><Logo /><Link to="/login">Already registered? Sign in</Link></header><section><p className="eyebrow">CUSTOMER REGISTRATION</p><h1>Start with the details we need.</h1><p>Create your profile before applying for a loan.</p><form onSubmit={submit}><div className="register-grid"><label>First name<input name="firstName" value={form.firstName} onChange={update} required /></label><label>Last name<input name="lastName" value={form.lastName} onChange={update} required /></label><label>Date of birth<input name="dateOfBirth" type="date" value={form.dateOfBirth} onChange={update} required /></label><label>Email address<input name="email" type="email" value={form.email} onChange={update} required /></label><label>Password<input name="password" type="password" value={form.password} onChange={update} required /></label><label>PAN number<input name="panNumber" value={form.panNumber} onChange={update} maxLength="10" required /></label><label>Employment type<select name="employmentType" value={form.employmentType} onChange={update}><option>Salaried</option><option>Self-employed</option><option>Business owner</option></select></label><label>Monthly income<input name="monthlyIncome" type="number" min="0" value={form.monthlyIncome} onChange={update} required /></label></div>{error && <p className="form-error">{error}</p>}{message && <p className="success-message">{message}</p>}<button className="button button--primary" disabled={saving}>{saving ? "Creating account…" : "Create customer account"}</button></form></section></main>;
+}
