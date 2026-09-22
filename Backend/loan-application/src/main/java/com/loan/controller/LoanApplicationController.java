@@ -6,6 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.loan.dto.request.CreateLoanApplicationRequest;
 import com.loan.dto.request.UpdateApplicationStatus;
@@ -29,13 +32,21 @@ public class LoanApplicationController {
     public ResponseEntity<LoanApplicationResponse> createApplication(
             @RequestHeader("X-Customer-Id") Long customerId,
             @RequestHeader("X-User-Role") String role,
-            @Valid @RequestBody CreateLoanApplicationRequest request) {
+
+            @Valid
+            @RequestPart("application")
+            CreateLoanApplicationRequest request,
+
+            @RequestPart("panCardInage")
+            MultipartFile panCardImage
+    ) {
         requireRole(role, "CUSTOMER");
 
         LoanApplicationResponse response =
                 loanApplicationService.createApplication(
                         customerId,
-                        request
+                        request,
+                        panCardImage
                 );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);

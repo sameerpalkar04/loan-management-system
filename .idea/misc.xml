@@ -5,15 +5,17 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/Backend/api-gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/Backend/auth-service/pom.xml" />
+        <option value="$PROJECT_DIR$/Backend/credit-score/pom.xml" />
+        <option value="$PROJECT_DIR$/Backend/customer-service/pom.xml" />
+        <option value="$PROJECT_DIR$/Backend/loan-application/pom.xml" />
+        <option value="$PROJECT_DIR$/Backend/loan-officer-service/pom.xml" />
+        <option value="$PROJECT_DIR$/Backend/loan-type-service/pom.xml" />
+        <option value="$PROJECT_DIR$/Backend/service-registry/pom.xml" />
       </list>
     </option>
-    <option name="ignoredFiles">
-      <set>
-        <option value="$PROJECT_DIR$/Backend/api-gateway/pom.xml" />
-      </set>
-    </option>
   </component>
-  <component name="ProjectRootManager" version="2">
+  <component name="ProjectRootManager" version="2" project-jdk-name="17" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>

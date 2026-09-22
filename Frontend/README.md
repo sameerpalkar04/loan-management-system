@@ -1,13 +1,16 @@
-# Luma Finance frontend
+# React + Vite
 
-React + Vite starter for the loan management system.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Start locally
+Currently, two official plugins are available:
 
-1. Copy `.env.example` to `.env` and adjust service URLs if necessary.
-2. Run `npm install`.
-3. Run `npm run dev`.
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-## Backend integration
+## React Compiler
 
-All backend communication lives in `src/api/client.js`. Update only the paths there when the final controller routes differ. The client reads base URLs from `.env`, sends JSON by default, and attaches a stored bearer token when `luma_token` is present.
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+
+## Expanding the ESLint configuration
+
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.

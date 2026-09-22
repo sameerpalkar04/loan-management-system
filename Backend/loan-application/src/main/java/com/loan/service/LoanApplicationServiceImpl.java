@@ -1,6 +1,5 @@
 package com.loan.service;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -18,6 +17,7 @@ import com.loan.dto.request.UpdateApplicationStatus;
 import com.loan.dto.response.LoanApplicationResponse;
 import com.loan.exception.BusinessException;
 import com.loan.exception.ResourceNotFoundException;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional
@@ -38,7 +38,7 @@ public class LoanApplicationServiceImpl
     @Override
     public LoanApplicationResponse createApplication(
             Long customerId,
-            CreateLoanApplicationRequest request) {
+            CreateLoanApplicationRequest request, MultipartFile panCardImage) {
 
         LoanApplication application = new LoanApplication();
 
