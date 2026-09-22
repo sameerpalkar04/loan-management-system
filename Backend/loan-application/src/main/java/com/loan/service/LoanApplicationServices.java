@@ -5,18 +5,15 @@ import java.util.List;
 import com.loan.dto.request.CreateLoanApplicationRequest;
 import com.loan.dto.request.UpdateApplicationStatus;
 import com.loan.dto.response.LoanApplicationResponse;
-<<<<<<< HEAD
-=======
 import org.springframework.web.multipart.MultipartFile;
 import com.loan.dto.response.PanCardImageResponse;
->>>>>>> f99ff8d (Backup current loan management system)
 
 public interface LoanApplicationServices {
 
     LoanApplicationResponse createApplication(
             Long customerId,
-            CreateLoanApplicationRequest request
-    );
+            CreateLoanApplicationRequest request,
+            MultipartFile panCardImage);
 
     LoanApplicationResponse getApplicationById(
             Long applicationId

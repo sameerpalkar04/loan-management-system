@@ -3,16 +3,7 @@ package com.loan.dao.entity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "loan_application")
@@ -56,6 +47,20 @@ public class LoanApplication {
 
     @Column(name = "reviewed_at")
     private LocalDateTime reviewedAt;
+
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "pan_card_image", nullable = false)
+    private byte[] panCardImage;
+
+    @Column(name = "pan_card_image_content_type", nullable = false, length = 100)
+    private String panCardImageContentType;
+
+    @Column(name = "pan_card_image_file_name", length = 255)
+    private String panCardImageFileName;
+
+    @Column(name = "pan_card_image_size_bytes", nullable = false)
+    private Long panCardImageSizeBytes;
 
     @PrePersist
     public void beforeInsert() {

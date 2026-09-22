@@ -1,6 +1,5 @@
 package com.loan.service;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,13 +18,10 @@ import com.loan.dto.request.UpdateApplicationStatus;
 import com.loan.dto.response.LoanApplicationResponse;
 import com.loan.exception.BusinessException;
 import com.loan.exception.ResourceNotFoundException;
-<<<<<<< HEAD
-=======
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Set;
 
->>>>>>> f99ff8d (Backup current loan management system)
 
 @Service
 @Transactional
@@ -53,7 +49,7 @@ public class LoanApplicationServiceImpl
     @Override
     public LoanApplicationResponse createApplication(
             Long customerId,
-            CreateLoanApplicationRequest request) {
+            CreateLoanApplicationRequest request, MultipartFile panCardImage) {
 
         LoanApplication application = new LoanApplication();
 
@@ -169,19 +165,25 @@ public class LoanApplicationServiceImpl
                 request.decisionReason()
         );
 
+        if (request.valuation() != null) {
+            application.setValuation(request.valuation());
+        }
+
         LoanApplication savedApplication =
                 loanApplicationRepository.save(application);
 
         // If approved, create loan history
         if (request.status() == ApplicationStatus.APPROVED) {
-            createLoanHistory(savedApplication);
+            validateApprovalTerms(request);
+            createLoanHistory(savedApplication, request);
         }
 
         return toResponse(savedApplication);
     }
 
     private void createLoanHistory(
-            LoanApplication application) {
+            LoanApplication application,
+            UpdateApplicationStatus request) {
 
         // Don't create duplicate loan history
         if (loanHistoryRepository.existsById(
@@ -205,22 +207,14 @@ public class LoanApplicationServiceImpl
         );
 
         history.setApprovedPrincipal(
-                application.getRequestedAmount()
+                request.approvedPrincipal()
         );
-
-        /*
-         * Temporary development value.
-         *
-         * Replace this later with the actual
-         * interest rate obtained from the
-         * loan-catalog-service.
-         */
         history.setAnnualInterestRate(
-                new BigDecimal("10.00")
+                request.annualInterestRate()
         );
 
         history.setTenureMonths(
-                application.getRequestedTenureMonths()
+                request.tenureMonths()
         );
 
         history.setStatus(
@@ -228,6 +222,18 @@ public class LoanApplicationServiceImpl
         );
 
         loanHistoryRepository.save(history);
+    }
+
+    private void validateApprovalTerms(UpdateApplicationStatus request) {
+
+        if (request.approvedPrincipal() == null
+                || request.annualInterestRate() == null
+                || request.tenureMonths() == null) {
+
+            throw new BusinessException(
+                    "Approved principal, interest rate, and tenure are required for approval"
+            );
+        }
     }
 
     private LoanApplication findApplication(
