@@ -62,6 +62,9 @@ public class LoanApplication {
     @Column(name = "pan_card_image_size_bytes", nullable = false)
     private Long panCardImageSizeBytes;
 
+    @Column(name = "interest_rate", precision = 5, scale = 2)
+    private BigDecimal interestRate;
+
     @PrePersist
     public void beforeInsert() {
 
@@ -166,20 +169,43 @@ public class LoanApplication {
         this.reviewedAt = reviewedAt;
     }
 
+    public byte[] getPanCardImage() {
+        return panCardImage;
+    }
+
     public void setPanCardImage(byte[] panCardImage) {
         this.panCardImage = panCardImage;
+    }
+
+    public String getPanCardImageContentType() {
+        return panCardImageContentType;
     }
 
     public void setPanCardImageContentType(String panCardImageContentType) {
         this.panCardImageContentType = panCardImageContentType;
     }
 
+    public String getPanCardImageFileName() {
+        return panCardImageFileName;
+    }
+
     public void setPanCardImageFileName(String panCardImageFileName) {
         this.panCardImageFileName = panCardImageFileName;
+    }
+
+    public Long getPanCardImageSizeBytes() {
+        return panCardImageSizeBytes;
     }
 
     public void setPanCardImageSizeBytes(Long panCardImageSizeBytes) {
         this.panCardImageSizeBytes = panCardImageSizeBytes;
     }
 
+    public BigDecimal getInterestRate() {
+        return interestRate;
+    }
+
+    public void setInterestRate(BigDecimal interestRate) {
+        this.interestRate = interestRate;
+    }
 }

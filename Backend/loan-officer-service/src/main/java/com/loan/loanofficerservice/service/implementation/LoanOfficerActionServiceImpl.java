@@ -9,8 +9,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -20,8 +22,8 @@ public class LoanOfficerActionServiceImpl implements LoanOfficerActionService {
 
     private static final String LOAN_APPLICATION_PATH =
             "/api/v1/loan-applications";
-    private static final String CUSTOMER_PATH = "/api/customers/";
 
+    private static final String CUSTOMER_PATH = "/api/customers/";
     private final LoadBalancerClient loadBalancerClient;
 
     @Override
@@ -119,6 +121,7 @@ public class LoanOfficerActionServiceImpl implements LoanOfficerActionService {
                 .build();
     }
 
+
     private LoanApplicationResponse enrichApplication(LoanApplicationResponse application) {
         if (application == null || application.getCustomerId() == null) {
             return application;
@@ -138,6 +141,7 @@ public class LoanOfficerActionServiceImpl implements LoanOfficerActionService {
         return application;
     }
 
+
     private RestClient customerClient() {
         ServiceInstance instance = loadBalancerClient.choose("customer-service");
         if (instance == null) {
@@ -147,4 +151,18 @@ public class LoanOfficerActionServiceImpl implements LoanOfficerActionService {
     }
 
     private record CustomerSummary(String firstName, String lastName, String panNumber) { }
+
+    @Override
+    public ResponseEntity<byte[]> viewPanCardImage(Long applicationId) {
+        return client()
+                .get()
+                .uri(
+                        LOAN_APPLICATION_PATH
+                                + "/{applicationId}/pan-card-image",
+                        applicationId
+                )
+                .header("X-User-Role", "LOAN_OFFICER")
+                .retrieve()
+                .toEntity(byte[].class);
+    }
 }

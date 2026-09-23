@@ -29,10 +29,15 @@ public class CustomerController {
     }
 
     @GetMapping("/{customerId}")
-    public ResponseEntity<CustomerQuery> getCustomer(@PathVariable Long customerId) {
-        return ResponseEntity.ofNullable(customerServiceManager.get(customerId));
+            public ResponseEntity<CustomerQuery> getCustomer(@PathVariable Long customerId) {
+            return ResponseEntity.ofNullable(customerServiceManager.get(customerId));
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<CustomerQuery> getCurrentCustomer(
+            @RequestHeader("X-Customer-Id") Long customerId) {
+        return ResponseEntity.ofNullable(customerServiceManager.get(customerId));
+    }
 //    @GetMapping("/token-test")
 //    public ResponseEntity<String> testToken(Authentication authentication) {
 //
