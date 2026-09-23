@@ -3,6 +3,8 @@ package com.loan.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.loan.client.LoanTypeClient;
+import com.loan.dto.LoanTypeLimitResponse;
 import com.loan.dto.response.PanCardImageResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +32,7 @@ public class LoanApplicationServiceImpl
 
     private final LoanApplicationRepo loanApplicationRepository;
     private final LoanHistoryRepo loanHistoryRepository;
+    private final LoanTypeClient loanTypeClient;
 
     private static final long MAX_PAN_CARD_IMAGE_SIZE = 5 * 1024 * 1024; // 5 MB
 
@@ -40,16 +43,20 @@ public class LoanApplicationServiceImpl
 
     public LoanApplicationServiceImpl(
             LoanApplicationRepo loanApplicationRepository,
-            LoanHistoryRepo loanHistoryRepository) {
+            LoanHistoryRepo loanHistoryRepository,
+            LoanTypeClient loanTypeClient) {
 
         this.loanApplicationRepository = loanApplicationRepository;
         this.loanHistoryRepository = loanHistoryRepository;
+        this.loanTypeClient = loanTypeClient;
     }
 
     @Override
     public LoanApplicationResponse createApplication(
             Long customerId,
             CreateLoanApplicationRequest request, MultipartFile panCardImage) {
+
+        validateLoanTypeConstraints(request);
 
         LoanApplication application = new LoanApplication();
 
@@ -78,6 +85,45 @@ public class LoanApplicationServiceImpl
                 loanApplicationRepository.save(application);
 
         return toResponse(savedApplication);
+    }
+
+    private void validateLoanTypeConstraints(
+            CreateLoanApplicationRequest request) {
+
+        LoanTypeLimitResponse loanType = loanTypeClient
+                .getLoanTypeLimits(request.loanTypeId());
+
+        if (loanType == null
+                || loanType.maximumLoanAmount() == null
+                || loanType.maximumTenureMonths() == null) {
+
+            throw new BusinessException(
+                    "Loan type limits are unavailable for loan type ID: "
+                            + request.loanTypeId()
+            );
+        }
+
+        if (request.requestedAmount()
+                .compareTo(loanType.maximumLoanAmount()) > 0) {
+
+            throw new BusinessException(
+                    "Requested amount exceeds the maximum allowed amount of "
+                            + loanType.maximumLoanAmount()
+                            + " for " + loanType.loanName()
+            );
+        }
+
+        if (request.requestedTenureMonths()
+                > loanType.maximumTenureMonths()) {
+
+            throw new BusinessException(
+                    "Requested tenure of "
+                            + request.requestedTenureMonths()
+                            + " months exceeds the maximum allowed tenure of "
+                            + loanType.maximumTenureMonths()
+                            + " months for " + loanType.loanName()
+            );
+        }
     }
 
     @Override
