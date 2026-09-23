@@ -8,4 +8,6 @@ export const updateLoanType = (loanTypeId, loanType) => apiRequest(`/api/loan-ty
   method: "PUT",
   body: JSON.stringify({ loanName: loanType.loanName, baseInterestRate: loanType.baseInterestRate, maximumTenureMonths: loanType.maximumTenureMonths, description: loanType.description, maximumLoanAmount: loanType.maximumLoanAmount }),
 });
-export const deleteLoanType = (loanTypeId) => apiRequest(`/api/loan-types/${loanTypeId}`, { method: "DELETE" });
+export const deleteLoanType = (loanTypeId) => apiRequest(`/api/loan-types/${loanTypeId}`, { 
+  method: "DELETE" 
+});

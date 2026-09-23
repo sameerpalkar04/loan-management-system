@@ -5,5 +5,9 @@ import "./styles/tokens.css";
 import "./styles/global.css";
 
 export default function App() {
-  return <BrowserRouter><AuthProvider><AppRoutes /></AuthProvider></BrowserRouter>;
+  return <BrowserRouter>
+  <AuthProvider>
+    <AppRoutes />
+  </AuthProvider>
+  </BrowserRouter>;
 }
