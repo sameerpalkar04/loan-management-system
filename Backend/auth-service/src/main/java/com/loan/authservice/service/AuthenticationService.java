@@ -48,6 +48,7 @@ public class AuthenticationService {
                 jwtService.getAccessTokenExpirySeconds(),
                 UserRole.CUSTOMER,
                 customer.getCustomerId(),
+                null,
                 null
         );
     }
@@ -69,7 +70,8 @@ public class AuthenticationService {
                 jwtService.getAccessTokenExpirySeconds(),
                 UserRole.LOAN_OFFICER,
                 null,
-                officer.getOfficerId()
+                officer.getOfficerId(),
+                officer.getName()
         );
     }
 
