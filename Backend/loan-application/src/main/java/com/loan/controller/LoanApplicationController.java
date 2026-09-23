@@ -14,6 +14,7 @@ import com.loan.dto.request.CreateLoanApplicationRequest;
 import com.loan.dto.request.UpdateApplicationStatus;
 import com.loan.dto.response.LoanApplicationResponse;
 import com.loan.service.LoanApplicationServices;
+import com.loan.dto.response.PanCardImageResponse;
 
 import jakarta.validation.Valid;
 
@@ -37,7 +38,7 @@ public class LoanApplicationController {
             @RequestPart("application")
             CreateLoanApplicationRequest request,
 
-            @RequestPart("panCardInage")
+            @RequestPart("panCardImage")
             MultipartFile panCardImage
     ) {
         requireRole(role, "CUSTOMER");
@@ -120,4 +121,18 @@ public class LoanApplicationController {
         }
     }
 
+    @GetMapping("/{applicationId}/pan-card-image")
+    public ResponseEntity<byte[]> getPanCardImage(
+            @RequestHeader("X-User-Role") String role,
+            @PathVariable Long applicationId
+    ) {
+        requireRole(role, "LOAN_OFFICER");
+
+        PanCardImageResponse image =
+                loanApplicationService.getPanCardImage(applicationId);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(image.contentType()))
+                .body(image.imageBytes());
+    }
 }

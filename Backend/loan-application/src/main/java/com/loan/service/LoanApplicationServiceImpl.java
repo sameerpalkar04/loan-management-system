@@ -3,6 +3,7 @@ package com.loan.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.loan.dto.response.PanCardImageResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,9 @@ import com.loan.dto.response.LoanApplicationResponse;
 import com.loan.exception.BusinessException;
 import com.loan.exception.ResourceNotFoundException;
 import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
+import java.util.Set;
+
 
 @Service
 @Transactional
@@ -26,6 +30,13 @@ public class LoanApplicationServiceImpl
 
     private final LoanApplicationRepo loanApplicationRepository;
     private final LoanHistoryRepo loanHistoryRepository;
+
+    private static final long MAX_PAN_CARD_IMAGE_SIZE = 5 * 1024 * 1024; // 5 MB
+
+    private static final Set<String> ALLOWED_PAN_CARD_IMAGE_TYPES = Set.of(
+            "image/jpeg",
+            "image/png"
+    );
 
     public LoanApplicationServiceImpl(
             LoanApplicationRepo loanApplicationRepository,
@@ -50,6 +61,18 @@ public class LoanApplicationServiceImpl
         );
         application.setValuation(request.valuation());
         application.setStatus(ApplicationStatus.PENDING);
+
+        validatePanCardImage(panCardImage);
+
+        try {
+            application.setPanCardImage(panCardImage.getBytes());
+        } catch (IOException exception) {
+            throw new BusinessException("Unable to read PAN card image");
+        }
+
+        application.setPanCardImageContentType(panCardImage.getContentType());
+        application.setPanCardImageFileName(panCardImage.getOriginalFilename());
+        application.setPanCardImageSizeBytes(panCardImage.getSize());
 
         LoanApplication savedApplication =
                 loanApplicationRepository.save(application);
@@ -250,6 +273,46 @@ public class LoanApplicationServiceImpl
                 application.getAppliedAt(),
 
                 application.getReviewedAt()
+        );
+    }
+
+    private void validatePanCardImage(MultipartFile panCardImage) {
+
+        if (panCardImage == null || panCardImage.isEmpty()) {
+            throw new BusinessException("PAN card image is required");
+        }
+
+        if (panCardImage.getContentType() == null
+                || !ALLOWED_PAN_CARD_IMAGE_TYPES.contains(
+                panCardImage.getContentType())) {
+
+            throw new BusinessException(
+                    "PAN card image must be a JPG or PNG file"
+            );
+        }
+
+        if (panCardImage.getSize() > MAX_PAN_CARD_IMAGE_SIZE) {
+            throw new BusinessException(
+                    "PAN card image must not exceed 5 MB"
+            );
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PanCardImageResponse getPanCardImage(Long applicationId) {
+        LoanApplication application = findApplication(applicationId);
+
+        if (application.getPanCardImage() == null) {
+            throw new ResourceNotFoundException(
+                    "PAN-card image not found for application: " + applicationId
+            );
+        }
+
+        return new PanCardImageResponse(
+                application.getPanCardImage(),
+                application.getPanCardImageContentType(),
+                application.getPanCardImageFileName()
         );
     }
 }
