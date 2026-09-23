@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import org.springframework.http.ResponseEntity;
@@ -128,5 +129,19 @@ public class LoanOfficerActionServiceImpl implements LoanOfficerActionService {
         return RestClient.builder()
                 .baseUrl(instance.getUri().toString())
                 .build();
+    }
+
+    @Override
+    public ResponseEntity<byte[]> viewPanCardImage(Long applicationId) {
+        return client()
+                .get()
+                .uri(
+                        LOAN_APPLICATION_PATH
+                                + "/{applicationId}/pan-card-image",
+                        applicationId
+                )
+                .header("X-User-Role", "LOAN_OFFICER")
+                .retrieve()
+                .toEntity(byte[].class);
     }
 }
