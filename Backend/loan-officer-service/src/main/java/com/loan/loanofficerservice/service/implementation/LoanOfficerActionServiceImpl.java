@@ -91,20 +91,6 @@ public class LoanOfficerActionServiceImpl implements LoanOfficerActionService {
         );
     }
 
-    @Override
-    public ResponseEntity<byte[]> viewPanCardImage(Long applicationId) {
-        return client()
-                .get()
-                .uri(
-                        LOAN_APPLICATION_PATH
-                                + "/{applicationId}/pan-card-image",
-                        applicationId
-                )
-                .header("X-User-Role", "LOAN_OFFICER")
-                .retrieve()
-                .toEntity(byte[].class);
-    }
-
     private void updateDecision(
             Long officerId,
             Long applicationId,

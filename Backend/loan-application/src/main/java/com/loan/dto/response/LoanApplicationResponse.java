@@ -14,6 +14,7 @@ public record LoanApplicationResponse(
 
         BigDecimal requestedAmount,
         Integer requestedTenureMonths,
+        BigDecimal interestRate,
         BigDecimal valuation,
 
         ApplicationStatus status,

@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.loan.dto.request.CreateLoanApplicationRequest;
+import com.loan.dto.request.CalculateInterestRateRequest;
 import com.loan.dto.request.UpdateApplicationStatus;
+import com.loan.dto.response.InterestRateCalculationResponse;
 import com.loan.dto.response.LoanApplicationResponse;
 import com.loan.service.LoanApplicationServices;
 import com.loan.dto.response.PanCardImageResponse;
@@ -27,6 +29,18 @@ public class LoanApplicationController {
     public LoanApplicationController(
             LoanApplicationServices loanApplicationService) {
         this.loanApplicationService = loanApplicationService;
+    }
+
+    @PostMapping("/calculate-interest-rate")
+    public ResponseEntity<InterestRateCalculationResponse>
+    calculateInterestRate(
+            @RequestHeader("X-User-Role") String role,
+            @Valid @RequestBody CalculateInterestRateRequest request) {
+        requireRole(role, "CUSTOMER");
+
+        return ResponseEntity.ok(
+                loanApplicationService.calculateInterestRate(request)
+        );
     }
 
     @PostMapping

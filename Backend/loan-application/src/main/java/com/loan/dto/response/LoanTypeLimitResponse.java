@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 public record LoanTypeLimitResponse(
         Long loanTypeId,
         String loanName,
+        BigDecimal baseInterestRate,
         BigDecimal maximumLoanAmount,
         Integer maximumTenureMonths) {
 }
