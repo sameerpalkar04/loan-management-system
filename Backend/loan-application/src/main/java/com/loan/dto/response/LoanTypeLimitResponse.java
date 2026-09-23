@@ -1,4 +1,4 @@
-package com.loan.dto;
+package com.loan.dto.response;
 
 import java.math.BigDecimal;
 

@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.loan.client.LoanTypeClient;
-import com.loan.dto.LoanTypeLimitResponse;
+import com.loan.dto.response.LoanTypeLimitResponse;
 import com.loan.dto.response.PanCardImageResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
