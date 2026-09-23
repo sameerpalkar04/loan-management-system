@@ -5,16 +5,19 @@ const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [session, setSession] = useState(() => {
-    const token = localStorage.getItem("access_token");
-    const role = localStorage.getItem("user_role");
+    const token = localStorage.getItem("access_token") || sessionStorage.getItem("access_token");
+    const role = localStorage.getItem("user_role") || sessionStorage.getItem("user_role");
     return token && role ? { token, role } : null;
   });
 
-  const signIn = async (role, email, password) => {
+  const signIn = async (role, email, password, remember = true) => {
     const response = role === "LOAN_OFFICER" ? await loginOfficer(email, password) : await loginCustomer(email, password);
     const nextSession = { token: response.accessToken, role: response.role };
-    localStorage.setItem("access_token", nextSession.token);
-    localStorage.setItem("user_role", nextSession.role);
+    const storage = remember ? localStorage : sessionStorage;
+    localStorage.removeItem("access_token"); localStorage.removeItem("user_role");
+    sessionStorage.removeItem("access_token"); sessionStorage.removeItem("user_role");
+    storage.setItem("access_token", nextSession.token);
+    storage.setItem("user_role", nextSession.role);
     setSession(nextSession);
     return nextSession;
   };
@@ -22,6 +25,8 @@ export function AuthProvider({ children }) {
   const signOut = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("user_role");
+    sessionStorage.removeItem("access_token");
+    sessionStorage.removeItem("user_role");
     setSession(null);
   };
 

@@ -28,6 +28,11 @@ public class CustomerController {
         return new ResponseEntity<>(customerQuery, HttpStatus.CREATED);
     }
 
+    @GetMapping("/{customerId}")
+    public ResponseEntity<CustomerQuery> getCustomer(@PathVariable Long customerId) {
+        return ResponseEntity.ofNullable(customerServiceManager.get(customerId));
+    }
+
 //    @GetMapping("/token-test")
 //    public ResponseEntity<String> testToken(Authentication authentication) {
 //

@@ -1,5 +1,6 @@
 package com.loan.service;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -50,6 +51,14 @@ public class LoanApplicationServiceImpl
         );
         application.setValuation(request.valuation());
         application.setStatus(ApplicationStatus.PENDING);
+        try {
+            application.setPanCardImage(panCardImage.getBytes());
+        } catch (IOException exception) {
+            throw new BusinessException("Unable to read the PAN card image");
+        }
+        application.setPanCardImageContentType(panCardImage.getContentType());
+        application.setPanCardImageFileName(panCardImage.getOriginalFilename());
+        application.setPanCardImageSizeBytes(panCardImage.getSize());
 
         LoanApplication savedApplication =
                 loanApplicationRepository.save(application);

@@ -20,6 +20,7 @@ public class LoanOfficerActionServiceImpl implements LoanOfficerActionService {
 
     private static final String LOAN_APPLICATION_PATH =
             "/api/v1/loan-applications";
+    private static final String CUSTOMER_PATH = "/api/customers/";
 
     private final LoadBalancerClient loadBalancerClient;
 
@@ -32,17 +33,20 @@ public class LoanOfficerActionServiceImpl implements LoanOfficerActionService {
                 .retrieve()
                 .body(new ParameterizedTypeReference<>() { });
 
-        return applications == null ? List.of() : applications;
+        return applications == null ? List.of() : applications.stream()
+                .map(this::enrichApplication)
+                .toList();
     }
 
     @Override
     public LoanApplicationResponse viewApplicationById(Long applicationId) {
-        return client()
+        LoanApplicationResponse application = client()
                 .get()
                 .uri(LOAN_APPLICATION_PATH + "/{applicationId}", applicationId)
                 .header("X-User-Role", "LOAN_OFFICER")
                 .retrieve()
                 .body(LoanApplicationResponse.class);
+        return enrichApplication(application);
     }
 
     @Override
@@ -114,4 +118,33 @@ public class LoanOfficerActionServiceImpl implements LoanOfficerActionService {
                 .baseUrl(instance.getUri().toString())
                 .build();
     }
+
+    private LoanApplicationResponse enrichApplication(LoanApplicationResponse application) {
+        if (application == null || application.getCustomerId() == null) {
+            return application;
+        }
+
+        CustomerSummary customer = customerClient()
+                .get()
+                .uri(CUSTOMER_PATH + "{customerId}", application.getCustomerId())
+                .retrieve()
+                .body(CustomerSummary.class);
+
+        if (customer != null) {
+            application.setApplicantName(
+                    (customer.firstName() + " " + customer.lastName()).trim());
+            application.setPanNumber(customer.panNumber());
+        }
+        return application;
+    }
+
+    private RestClient customerClient() {
+        ServiceInstance instance = loadBalancerClient.choose("customer-service");
+        if (instance == null) {
+            throw new IllegalStateException("customer-service is not available in Eureka");
+        }
+        return RestClient.builder().baseUrl(instance.getUri().toString()).build();
+    }
+
+    private record CustomerSummary(String firstName, String lastName, String panNumber) { }
 }

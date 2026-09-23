@@ -37,7 +37,7 @@ public class LoanApplicationController {
             @RequestPart("application")
             CreateLoanApplicationRequest request,
 
-            @RequestPart("panCardInage")
+            @RequestPart("panCardImage")
             MultipartFile panCardImage
     ) {
         requireRole(role, "CUSTOMER");
