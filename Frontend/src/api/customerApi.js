@@ -4,3 +4,5 @@ export const registerCustomer = (customer) => apiRequest("/api/customers/registe
   method: "POST",
   body: JSON.stringify(customer),
 });
+
+export const getCurrentCustomer = () => apiRequest("/api/customers/me");

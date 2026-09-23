@@ -23,11 +23,7 @@
 .auth-form-wrap form > label { display: block; margin-top: 1rem; color: #365e8b; font-size: .82rem; font-weight: 600; }
 .input-wrap { position: relative; display: block; margin-top: .5rem; }
 .input-wrap input, .register-grid input, .register-grid select { width: 100%; border: 1px solid #cfe1f2; border-radius: 12px; background: #f8fbff; color: #0b2d5f; padding: .95rem 1rem; outline: none; transition: border-color .2s, box-shadow .2s, background .2s; }
-.input-wrap .password-input, .register-password-wrap .password-input { padding-right: 3.5rem; }
 .input-wrap input:focus, .register-grid input:focus, .register-grid select:focus { border-color: #1680e9; box-shadow: 0 0 0 4px #e1f1ff; background: #fff; }
-.password-toggle { position: absolute; right: .7rem; top: 50%; display: grid; place-items: center; width: 34px; height: 34px; padding: 0; transform: translateY(-50%); border: 0; border-radius: 50%; background: transparent; color: #111827; cursor: pointer; transition: background .2s, color .2s; }
-.password-toggle:hover, .password-toggle:focus-visible { background: #e7f2ff; outline: none; }
-.password-toggle svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .auth-options { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; color: #7089a7; font-size: .75rem; }
 .auth-options label { display: flex; gap: .45rem; align-items: center; }
 .auth-options input { accent-color: #0968df; }
@@ -57,8 +53,6 @@
 .register-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0; }
 .register-grid label { color: #365e8b; font-size: .78rem; font-weight: 600; }
 .register-grid input, .register-grid select { display: block; margin-top: .4rem; }
-.register-password-wrap { position: relative; display: block; margin-top: .4rem; }
-.register-password-wrap .password-input { margin-top: 0; }
 .register-grid input.input--invalid { border-color: #d84a43; background: #fff8f7; }
 .register-grid input.input--invalid:focus { border-color: #d84a43; box-shadow: 0 0 0 4px #fde7e5; }
 .field-error { display: block; margin-top: .32rem; color: #b42318; font-size: .68rem; font-weight: 500; line-height: 1.2; white-space: nowrap; }

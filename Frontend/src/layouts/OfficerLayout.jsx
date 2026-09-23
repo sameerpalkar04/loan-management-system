@@ -1,9 +1,25 @@
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import Logo from "../components/common/Logo";
 import { useAuth } from "../context/AuthContext";
+import "../pages/officer/officer-account.css";
 
 export default function OfficerLayout({ active, children }) {
-  const { signOut } = useAuth();
+  const [profileOpen, setProfileOpen] = useState(false);
+  const profileMenuRef = useRef(null);
+  const { session, signOut } = useAuth();
+  const officerName = session?.displayName || "Loan officer";
+
+  useEffect(() => {
+    const closeProfileMenu = (event) => {
+      if (!profileMenuRef.current?.contains(event.target)) {
+        setProfileOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", closeProfileMenu);
+    return () => document.removeEventListener("mousedown", closeProfileMenu);
+  }, []);
 
   return (
     <main className="officer-workspace">
@@ -14,14 +30,42 @@ export default function OfficerLayout({ active, children }) {
           Retail lending desk · Mumbai
         </div>
 
-        <div className="workspace-profile">
-          <span>Loan officer</span>
+        <div className="officer-account" ref={profileMenuRef}>
+          <button
+            className="officer-profile-trigger"
+            type="button"
+            aria-label={`Account menu for ${officerName}`}
+            aria-expanded={profileOpen}
+            onClick={() => setProfileOpen((open) => !open)}
+          >
+            <span className="officer-avatar" aria-hidden="true">
+              <svg viewBox="0 0 48 48">
+                <circle cx="24" cy="18" r="8" />
+                <path d="M10 42c1.5-8.5 6.2-13 14-13s12.5 4.5 14 13" />
+              </svg>
+            </span>
 
-          <b>Neha Kulkarni</b>
+            <span className="officer-profile-copy">
+              <b>{officerName}</b>
+              <small>Loan officer</small>
+            </span>
 
-          <button onClick={signOut}>
-            Sign out
+            <span className="officer-profile-chevron" aria-hidden="true">
+              &#8964;
+            </span>
           </button>
+
+          {profileOpen && (
+            <div className="officer-account-menu">
+              <div>
+                <span>Signed in as</span>
+                <strong>{officerName}</strong>
+              </div>
+              <button type="button" onClick={signOut}>
+                Sign out
+              </button>
+            </div>
+          )}
         </div>
       </header>
 

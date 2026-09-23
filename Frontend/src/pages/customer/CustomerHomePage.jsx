@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { getLoanTypes } from "../../api/loanTypeApi";
+import { getCurrentCustomer } from "../../api/customerApi";
 import Logo from "../../components/common/Logo";
 import { useAuth } from "../../context/AuthContext";
 import "./customer.css";
+import "./customer-home.css";
 
 const formatCurrency = (value) =>
   new Intl.NumberFormat("en-IN", {
@@ -14,7 +16,14 @@ export default function CustomerHomePage() {
   const [loanTypes, setLoanTypes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [customer, setCustomer] = useState(null);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const profileMenuRef = useRef(null);
   const { signOut } = useAuth();
+
+  const customerName =
+    [customer?.firstName, customer?.lastName].filter(Boolean).join(" ") ||
+    "Customer";
 
   useEffect(() => {
     getLoanTypes()
@@ -25,6 +34,23 @@ export default function CustomerHomePage() {
         setError(requestError.message)
       )
       .finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    getCurrentCustomer()
+      .then(setCustomer)
+      .catch(() => setCustomer(null));
+  }, []);
+
+  useEffect(() => {
+    const closeProfileMenu = (event) => {
+      if (!profileMenuRef.current?.contains(event.target)) {
+        setProfileOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", closeProfileMenu);
+    return () => document.removeEventListener("mousedown", closeProfileMenu);
   }, []);
 
   return (
@@ -49,9 +75,42 @@ export default function CustomerHomePage() {
           </Link>
         </nav>
 
-        <button onClick={signOut}>
-          Sign out
-        </button>
+        <div className="customer-account" ref={profileMenuRef}>
+          <button
+            className="customer-profile"
+            type="button"
+            aria-label={`Account menu for ${customerName}`}
+            aria-expanded={profileOpen}
+            onClick={() => setProfileOpen((open) => !open)}
+          >
+            <div className="customer-avatar" aria-hidden="true">
+              <svg viewBox="0 0 48 48">
+                <circle cx="24" cy="18" r="8" />
+                <path d="M10 42c1.5-8.5 6.2-13 14-13s12.5 4.5 14 13" />
+              </svg>
+            </div>
+            <div className="customer-profile-copy">
+              <strong>{customerName}</strong>
+              <span>Signed in</span>
+            </div>
+
+            <span className="customer-profile-chevron" aria-hidden="true">
+              &#8964;
+            </span>
+          </button>
+
+          {profileOpen && (
+            <div className="customer-account-menu">
+              <div>
+                <span>Signed in as</span>
+                <strong>{customerName}</strong>
+              </div>
+              <button type="button" onClick={signOut}>
+                Sign out
+              </button>
+            </div>
+          )}
+        </div>
       </header>
 
       <section className="customer-main">
@@ -69,17 +128,6 @@ export default function CustomerHomePage() {
             </p>
           </div>
 
-          <div className="customer-balance">
-            <span>Available loan types</span>
-
-            <strong>
-              {loanTypes.length || "—"}
-            </strong>
-
-            <small>
-              Rates sync live from the Luma catalogue
-            </small>
-          </div>
         </div>
 
         {loading && (

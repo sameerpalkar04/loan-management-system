@@ -8,7 +8,6 @@ export default function LoginPage() {
   const [role, setRole] = useState("CUSTOMER");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(true);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -145,12 +144,7 @@ export default function LoginPage() {
 
               <span className="input-wrap">
                 <input
-                  className="password-input"
-                  type={
-                    showPassword
-                      ? "text"
-                      : "password"
-                  }
+                  type="password"
                   value={password}
                   onChange={(event) =>
                     setPassword(event.target.value)
@@ -159,37 +153,6 @@ export default function LoginPage() {
                   autoComplete="current-password"
                   required
                 />
-
-                <button
-                  className="password-toggle"
-                  type="button"
-                  onClick={() =>
-                    setShowPassword(
-                      (value) => !value
-                    )
-                  }
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                  title={showPassword ? "Hide password" : "Show password"}
-                >
-                  {showPassword ? (
-                    <svg
-                      aria-hidden="true"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M4 15c1.6-4.2 4.3-6.3 8-6.3s6.4 2.1 8 6.3" />
-                      <circle cx="12" cy="14" r="3.2" />
-                      <path d="M4 4l16 16" />
-                    </svg>
-                  ) : (
-                    <svg
-                      aria-hidden="true"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M4 15c1.6-4.2 4.3-6.3 8-6.3s6.4 2.1 8 6.3" />
-                      <circle cx="12" cy="14" r="3.2" />
-                    </svg>
-                  )}
-                </button>
               </span>
             </label>
 

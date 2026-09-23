@@ -204,7 +204,6 @@ export default function RegisterPage() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const panIsInvalid =
     form.panNumber.length > 0 && !/^[A-Za-z0-9]{10}$/.test(form.panNumber);
@@ -330,37 +329,14 @@ export default function RegisterPage() {
 
             <label>
               Password
-              <span className="register-password-wrap">
-                <input
-                  className="password-input"
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  value={form.password}
-                  onChange={update}
-                  minLength="8"
-                  required
-                />
-                <button
-                  className="password-toggle"
-                  type="button"
-                  onClick={() => setShowPassword((value) => !value)}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                  title={showPassword ? "Hide password" : "Show password"}
-                >
-                  {showPassword ? (
-                    <svg aria-hidden="true" viewBox="0 0 24 24">
-                      <path d="M4 15c1.6-4.2 4.3-6.3 8-6.3s6.4 2.1 8 6.3" />
-                      <circle cx="12" cy="14" r="3.2" />
-                      <path d="M4 4l16 16" />
-                    </svg>
-                  ) : (
-                    <svg aria-hidden="true" viewBox="0 0 24 24">
-                      <path d="M4 15c1.6-4.2 4.3-6.3 8-6.3s6.4 2.1 8 6.3" />
-                      <circle cx="12" cy="14" r="3.2" />
-                    </svg>
-                  )}
-                </button>
-              </span>
+              <input
+                name="password"
+                type="password"
+                value={form.password}
+                onChange={update}
+                minLength="8"
+                required
+              />
             </label>
 
             <label>
