@@ -158,7 +158,9 @@ export default function OfficerHomePage() {
     ? loanTypes.find((loan) => loan.loanTypeId === selected.loanTypeId)
     : null;
 
-  const approvalRate = Number(product?.baseInterestRate || 0);
+  const approvalRate = Number(
+    selected?.interestRate ?? product?.baseInterestRate ?? 0
+  );
   const loanToValue = selected?.valuation
     ? (selected.requestedAmount / selected.valuation) * 100
     : null;
@@ -397,9 +399,9 @@ export default function OfficerHomePage() {
 
             <div className="rate-engine">
               <div>
-                <span>Product interest rate</span>
+                <span>Application interest rate</span>
                 <strong>{approvalRate.toFixed(2)}%* <small>p.a.</small></strong>
-                <small>* Indicative rate; final pricing depends on applicant and market factors.</small>
+                <small>* Rate calculated from the selected product and requested tenure.</small>
               </div>
             </div>
 

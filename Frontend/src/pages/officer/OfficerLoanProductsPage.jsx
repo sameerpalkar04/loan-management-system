@@ -29,6 +29,7 @@ export default function OfficerLoanProductsPage() {
   const [loans, setLoans] = useState([]);
   const [editing, setEditing] = useState(null);
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -52,6 +53,7 @@ export default function OfficerLoanProductsPage() {
     event.preventDefault();
     setSaving(true);
     setError("");
+    setNotice("");
 
     try {
       const updated = editing.isNew
@@ -81,11 +83,13 @@ export default function OfficerLoanProductsPage() {
 
     setSaving(true);
     setError("");
+    setNotice("");
     try {
       await deleteLoanType(loan.loanTypeId);
       setLoans((items) =>
         items.filter((item) => item.loanTypeId !== loan.loanTypeId)
       );
+      setNotice("The loan type is deleted");
     } catch (requestError) {
       setError(requestError.message);
     } finally {
@@ -119,6 +123,12 @@ export default function OfficerLoanProductsPage() {
       {error && (
         <div className="content-message content-message--error">
           {error}
+        </div>
+      )}
+
+      {notice && (
+        <div className="success-message" role="status">
+          {notice}
         </div>
       )}
 
