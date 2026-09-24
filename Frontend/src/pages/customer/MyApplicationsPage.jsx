@@ -68,6 +68,17 @@ export default function MyApplicationsPage() {
       )
     : null;
 
+  const openApplicationDetails = (application) => {
+    setSelectedApplication(application);
+  };
+
+  const handleApplicationKeyDown = (event, application) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      openApplicationDetails(application);
+    }
+  };
+
   return (
     <CustomerLayout active="applications">
       <section className="application-page">
@@ -99,6 +110,11 @@ export default function MyApplicationsPage() {
             <article
               className="application-row"
               key={app.applicationId}
+              role="button"
+              tabIndex={0}
+              aria-label={`View details for application ${app.applicationId}`}
+              onClick={() => openApplicationDetails(app)}
+              onKeyDown={(event) => handleApplicationKeyDown(event, app)}
             >
               <div>
                 <span
@@ -131,14 +147,12 @@ export default function MyApplicationsPage() {
                 </b>
               </div>
 
-              <button
+              <span
                 className="application-details-trigger"
-                type="button"
-                aria-label={`View details for application ${app.applicationId}`}
-                onClick={() => setSelectedApplication(app)}
+                aria-hidden="true"
               >
                 <span />
-              </button>
+              </span>
             </article>
           ))}
         </div>

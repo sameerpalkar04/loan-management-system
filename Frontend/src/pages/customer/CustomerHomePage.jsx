@@ -32,7 +32,7 @@ export default function CustomerHomePage() {
         <div className="customer-hero">
           <div>
             <p className="eyebrow">
-              EXPLORE LUMA LOANS
+              EXPLORE LOANPOINT LOANS
             </p>
 
             <h1>A clearer way to borrow.</h1>

@@ -83,7 +83,7 @@ export default function LoginPage() {
           {/* <div className="auth-trust">
             <span>256-bit encrypted</span>
             <span>Secure access</span>
-            <span>Protected by Luma</span>
+            <span>Protected by LoanPoint</span>
           </div> */}
         </div>
 
@@ -129,7 +129,7 @@ export default function LoginPage() {
                   }
                   placeholder={
                     officer
-                      ? "officer@luma.finance"
+                      ? "officer@loanpoint.finance"
                       : "you@example.com"
                   }
                   autoComplete="email"
@@ -204,7 +204,7 @@ export default function LoginPage() {
           {/* CUSTOMER REGISTRATION */}
           {!officer && (
             <p className="auth-register">
-              New to Luma?{" "}
+              New to LoanPoint?{" "}
               <Link to="/register">
                 Create a customer account
               </Link>

@@ -237,7 +237,7 @@ export default function RegisterPage() {
       });
 
       setMessage(
-        "Your Luma Finance account is ready. Taking you to sign in…"
+        "Your LoanPoint account is ready. Taking you to sign in…"
       );
 
       setTimeout(() => navigate("/login"), 1000);
@@ -264,7 +264,7 @@ export default function RegisterPage() {
         <div className="register-intro">
           <p className="eyebrow">CUSTOMER REGISTRATION</p>
 
-          <h1>Build your next move with Luma.</h1>
+          <h1>Build your next move with LoanPoint.</h1>
 
           <p>
             Create your secure profile once. We’ll attach it to every
