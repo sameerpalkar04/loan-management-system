@@ -1,0 +1,53 @@
+.officer-products article {
+  display: flex;
+  flex-direction: column;
+}
+
+.officer-products p {
+  min-height: 8.75rem;
+}
+
+.officer-products article > div:first-of-type {
+  margin-top: auto;
+}
+
+.product-modal .collateral-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem;
+  border: 1px solid #d7e6f3;
+  border-radius: 11px;
+  background: #f7fbff;
+  cursor: pointer;
+}
+
+.product-modal .collateral-toggle input {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: #0968df;
+}
+
+.product-modal .collateral-toggle span {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.product-modal .collateral-toggle b {
+  color: #173b65;
+  font-size: 0.75rem;
+}
+
+.product-modal .collateral-toggle small {
+  color: #71869d;
+  font-size: 0.65rem;
+  font-weight: 500;
+}
+
+@media (max-width: 680px) {
+  .officer-products p {
+    min-height: 0;
+  }
+}

@@ -78,5 +78,11 @@ public class LoanTypeService {
         loanType.setMaximumTenureMonths(request.getMaximumTenureMonths());
         loanType.setDescription(request.getDescription());
         loanType.setMaximumLoanAmount(request.getMaximumLoanAmount());
+        loanType.setCollateralRequired(request.getCollateralRequired());
+        loanType.setMaximumLtvPercentage(
+                Boolean.TRUE.equals(request.getCollateralRequired())
+                        ? request.getMaximumLtvPercentage()
+                        : null
+        );
     }
 }

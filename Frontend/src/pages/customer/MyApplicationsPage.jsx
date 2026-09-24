@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { getMyApplications } from "../../api/applicationApi";
 import { getLoanTypes } from "../../api/loanTypeApi";
 import Logo from "../../components/common/Logo";
+import LoanHelpSections from "../../components/common/LoanHelpSections";
 import "./customer.css";
 
 export default function MyApplicationsPage() {
@@ -141,6 +142,8 @@ export default function MyApplicationsPage() {
           </div>
         )}
       </section>
+
+      <LoanHelpSections customerView showFaq={false} />
     </main>
   );
 }

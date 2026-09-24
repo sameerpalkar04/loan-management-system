@@ -43,7 +43,7 @@ public class GatewaySecurityConfig {
                         .hasRole("LOAN_OFFICER")
 
                         .requestMatchers(HttpMethod.GET, "/api/loan-types/**")
-                        .hasAnyRole("CUSTOMER", "LOAN_OFFICER")
+                        .permitAll()
 
                         .requestMatchers(
                                 HttpMethod.POST,

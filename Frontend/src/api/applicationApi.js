@@ -10,6 +10,12 @@ export const createLoanApplication = (application, panCardImage) => {
   });
 };
 
+export const calculateInterestRate = (request) =>
+  apiRequest("/api/v1/loan-applications/calculate-interest-rate", {
+    method: "POST",
+    body: JSON.stringify(request),
+  });
+
 export const getMyApplications = () => apiRequest("/api/v1/loan-applications/me");
 export const getAllApplications = () => apiRequest("/api/v1/loan-applications");
 export const getPendingApplications = () => apiRequest("/api/v1/loan-applications/pending");

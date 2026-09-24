@@ -12,6 +12,8 @@ public class LoanTypeResponse {
     private final Integer maximumTenureMonths;
     private final String description;
     private final BigDecimal maximumLoanAmount;
+    private final Boolean collateralRequired;
+    private final BigDecimal maximumLtvPercentage;
 
     public LoanTypeResponse(
             Long loanTypeId,
@@ -19,7 +21,9 @@ public class LoanTypeResponse {
             BigDecimal baseInterestRate,
             Integer maximumTenureMonths,
             String description,
-            BigDecimal maximumLoanAmount) {
+            BigDecimal maximumLoanAmount,
+            Boolean collateralRequired,
+            BigDecimal maximumLtvPercentage) {
 
         this.loanTypeId = loanTypeId;
         this.loanName = loanName;
@@ -27,6 +31,8 @@ public class LoanTypeResponse {
         this.maximumTenureMonths = maximumTenureMonths;
         this.description = description;
         this.maximumLoanAmount = maximumLoanAmount;
+        this.collateralRequired = collateralRequired;
+        this.maximumLtvPercentage = maximumLtvPercentage;
     }
 
     public static LoanTypeResponse fromEntity(LoanType loanType) {
@@ -36,7 +42,9 @@ public class LoanTypeResponse {
                 loanType.getBaseInterestRate(),
                 loanType.getMaximumTenureMonths(),
                 loanType.getDescription(),
-                loanType.getMaximumLoanAmount()
+                loanType.getMaximumLoanAmount(),
+                loanType.getCollateralRequired(),
+                loanType.getMaximumLtvPercentage()
         );
     }
 
@@ -62,5 +70,13 @@ public class LoanTypeResponse {
 
     public BigDecimal getMaximumLoanAmount() {
         return maximumLoanAmount;
+    }
+
+    public Boolean getCollateralRequired() {
+        return collateralRequired;
+    }
+
+    public BigDecimal getMaximumLtvPercentage() {
+        return maximumLtvPercentage;
     }
 }

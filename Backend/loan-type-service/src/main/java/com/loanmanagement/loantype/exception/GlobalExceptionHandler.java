@@ -28,10 +28,10 @@ public class GlobalExceptionHandler {
             MethodArgumentNotValidException exception) {
 
         String message = exception.getBindingResult()
-                .getFieldErrors()
+                .getAllErrors()
                 .stream()
                 .findFirst()
-                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .map(error -> error.getDefaultMessage())
                 .orElse("Invalid request data");
 
         ApiError error = new ApiError(

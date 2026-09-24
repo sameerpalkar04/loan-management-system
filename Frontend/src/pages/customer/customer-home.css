@@ -91,6 +91,20 @@
   max-width: 720px;
 }
 
+.loan-type-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.loan-description {
+  min-height: 8.75rem;
+}
+
+.loan-details {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: auto;
+}
+
 @media (max-width: 680px) {
   .customer-profile-copy {
     display: grid;
@@ -109,6 +123,18 @@
   .customer-hero h1 {
     font-size: clamp(2.8rem, 13vw, 4rem);
     white-space: normal;
+  }
+
+  .loan-description {
+    min-height: 0;
+  }
+
+  .loan-details {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .loan-details > div:last-child {
+    grid-column: 1 / -1;
   }
 }
 

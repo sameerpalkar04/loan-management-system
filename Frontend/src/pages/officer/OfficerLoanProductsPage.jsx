@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getLoanTypes, updateLoanType } from "../../api/loanTypeApi";
 import OfficerLayout from "../../layouts/OfficerLayout";
 import "./officer.css";
+import "./officer-products.css";
 
 export default function OfficerLoanProductsPage() {
   const [loans, setLoans] = useState([]);
@@ -19,7 +20,9 @@ export default function OfficerLoanProductsPage() {
     setEditing((loan) => ({
       ...loan,
       [event.target.name]:
-        event.target.type === "number"
+        event.target.type === "checkbox"
+          ? event.target.checked
+          : event.target.type === "number"
           ? Number(event.target.value)
           : event.target.value,
     }));
@@ -111,6 +114,15 @@ export default function OfficerLoanProductsPage() {
               <b>{loan.maximumTenureMonths} months</b>
             </div>
 
+            <div>
+              <small>Collateral</small>
+              <b>
+                {loan.collateralRequired
+                  ? `Required · ${loan.maximumLtvPercentage}% LTV`
+                  : "Not required"}
+              </b>
+            </div>
+
             <button onClick={() => setEditing({ ...loan })}>
               Edit rate & limits
             </button>
@@ -190,6 +202,37 @@ export default function OfficerLoanProductsPage() {
                 />
               </label>
             </div>
+
+            <label className="collateral-toggle">
+              <input
+                name="collateralRequired"
+                type="checkbox"
+                checked={Boolean(editing.collateralRequired)}
+                onChange={update}
+              />
+              <span>
+                <b>Collateral required</b>
+                <small>
+                  Customers must provide an asset valuation for this product.
+                </small>
+              </span>
+            </label>
+
+            {editing.collateralRequired && (
+              <label>
+                Maximum loan-to-value percentage
+                <input
+                  name="maximumLtvPercentage"
+                  type="number"
+                  min="0.01"
+                  max="100"
+                  step="0.01"
+                  value={editing.maximumLtvPercentage || ""}
+                  onChange={update}
+                  required
+                />
+              </label>
+            )}
 
             <label>
               Description

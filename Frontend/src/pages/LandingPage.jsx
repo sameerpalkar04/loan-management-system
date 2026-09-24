@@ -2,7 +2,17 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getLoanTypes } from "../api/loanTypeApi";
 import Logo from "../components/common/Logo";
+import LoanHelpSections from "../components/common/LoanHelpSections";
 import "./landing.css";
+
+const landingLoanDescriptions = {
+  "Home Loan": "A home loan for your next chapter.",
+  "Car Loan": "Drive your plans forward.",
+  "Education Loan": "Invest in your future.",
+  "Personal Loan": "Finance for life's important moments.",
+  "Gold Loan": "Unlock value from your gold.",
+  "Business Loan": "Fuel your business growth.",
+};
 
 export default function LandingPage() {
   const [loans, setLoans] = useState([]);
@@ -41,7 +51,7 @@ export default function LandingPage() {
         <h3>{loan.loanName}</h3>
 
         <div>
-          {loan.description ||
+          {landingLoanDescriptions[loan.loanName] ||
             "Flexible finance designed for your next move."}
         </div>
 
@@ -242,6 +252,8 @@ export default function LandingPage() {
           ))}
         </ol>
       </section>
+
+      <LoanHelpSections />
     </main>
   );
 }

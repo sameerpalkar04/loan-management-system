@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { getLoanTypes } from "../../api/loanTypeApi";
 import { getCurrentCustomer } from "../../api/customerApi";
 import Logo from "../../components/common/Logo";
+import LoanHelpSections from "../../components/common/LoanHelpSections";
 import { useAuth } from "../../context/AuthContext";
 import "./customer.css";
 import "./customer-home.css";
@@ -199,6 +200,16 @@ export default function CustomerHomePage() {
                       {loanType.maximumTenureMonths} months
                     </b>
                   </div>
+
+                  <div>
+                    <span>Collateral</span>
+
+                    <b>
+                      {loanType.collateralRequired
+                        ? `${loanType.maximumLtvPercentage}% LTV`
+                        : "Not required"}
+                    </b>
+                  </div>
                 </div>
 
                 <Link
@@ -212,6 +223,8 @@ export default function CustomerHomePage() {
           </div>
         )}
       </section>
+
+      <LoanHelpSections customerView showFaq={false} />
     </main>
   );
 }

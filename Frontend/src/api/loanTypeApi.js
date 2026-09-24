@@ -6,7 +6,7 @@ export const getLoanTypeById = (loanTypeId) => apiRequest(`/api/loan-types/${loa
 export const createLoanType = (loanType) => apiRequest("/api/loan-types", { method: "POST", body: JSON.stringify(loanType) });
 export const updateLoanType = (loanTypeId, loanType) => apiRequest(`/api/loan-types/${loanTypeId}`, {
   method: "PUT",
-  body: JSON.stringify({ loanName: loanType.loanName, baseInterestRate: loanType.baseInterestRate, maximumTenureMonths: loanType.maximumTenureMonths, description: loanType.description, maximumLoanAmount: loanType.maximumLoanAmount }),
+  body: JSON.stringify({ loanName: loanType.loanName, baseInterestRate: loanType.baseInterestRate, maximumTenureMonths: loanType.maximumTenureMonths, description: loanType.description, maximumLoanAmount: loanType.maximumLoanAmount, collateralRequired: loanType.collateralRequired, maximumLtvPercentage: loanType.collateralRequired ? loanType.maximumLtvPercentage : null }),
 });
 export const deleteLoanType = (loanTypeId) => apiRequest(`/api/loan-types/${loanTypeId}`, { 
   method: "DELETE" 
