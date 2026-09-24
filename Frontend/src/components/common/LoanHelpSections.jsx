@@ -87,7 +87,7 @@ export default function LoanHelpSections({
           </div>
 
           <div>
-            <h3>{customerView ? "Loan workspace" : "Explore Luma"}</h3>
+            <h3>{customerView ? "Loan workspace" : "Explore LoanPoint"}</h3>
             <Link to={customerView ? "/customer/loan-types" : "/#loans"}>
               Loan products
             </Link>
@@ -127,7 +127,7 @@ export default function LoanHelpSections({
         </div>
 
         <div className="customer-footer-bottom">
-          <span>© 2026 luma.finance. All rights reserved.</span>
+          <span>© 2026 LoanPoint. All rights reserved.</span>
           <div>
             <span>Privacy</span>
             <span>Terms</span>

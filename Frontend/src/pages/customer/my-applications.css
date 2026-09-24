@@ -11,6 +11,12 @@
   transform: translateY(-2px);
 }
 
+.application-row:focus-visible {
+  border-color: #1680e9;
+  outline: 3px solid #cce7ff;
+  outline-offset: 3px;
+}
+
 .application-stat {
   display: grid;
   gap: 0.45rem;
@@ -46,16 +52,16 @@
   transition: box-shadow 0.2s ease;
 }
 
-.application-details-trigger:hover,
-.application-details-trigger:focus-visible {
+.application-row:hover .application-details-trigger,
+.application-row:focus-visible .application-details-trigger {
   border-color: #a9d1f3;
   background: #f0f8ff;
   outline: none;
   transform: scale(1.08);
 }
 
-.application-details-trigger:hover span,
-.application-details-trigger:focus-visible span {
+.application-row:hover .application-details-trigger span,
+.application-row:focus-visible .application-details-trigger span {
   box-shadow: 0 0 0 7px #cce7ff;
 }
 

@@ -33,7 +33,7 @@ const loanCardAccents = [
 const testimonials = [
   {
     quote:
-      "I needed funds urgently for a family expense. Luma Finance made the gold loan application simple, and I was able to get the financial support I needed without a complicated process.",
+      "I needed funds urgently for a family expense. LoanPoint made the gold loan application simple, and I was able to get the financial support I needed without a complicated process.",
     name: "Priya S.",
     location: "Mumbai",
     product: "Gold Loan",
@@ -41,7 +41,7 @@ const testimonials = [
   },
   {
     quote:
-      "Getting an education loan through Luma Finance made it easier for me to manage my college expenses. The application process was straightforward, and I could focus more on my studies.",
+      "Getting an education loan through LoanPoint made it easier for me to manage my college expenses. The application process was straightforward, and I could focus more on my studies.",
     name: "Rahul M.",
     location: "Pune",
     product: "Education Loan",
@@ -49,7 +49,7 @@ const testimonials = [
   },
   {
     quote:
-      "I had been planning to buy my first car for a long time. The car loan from Luma Finance helped me make the purchase without putting too much pressure on my savings.",
+      "I had been planning to buy my first car for a long time. The car loan from LoanPoint helped me make the purchase without putting too much pressure on my savings.",
     name: "Neha K.",
     location: "Bengaluru",
     product: "Car Loan",
@@ -57,7 +57,7 @@ const testimonials = [
   },
   {
     quote:
-      "I needed additional funds for an unexpected expense. The personal loan application with Luma Finance was convenient, and the process was easy to understand.",
+      "I needed additional funds for an unexpected expense. The personal loan application with LoanPoint was convenient, and the process was easy to understand.",
     name: "Amit R.",
     location: "Delhi",
     product: "Personal Loan",
@@ -65,7 +65,7 @@ const testimonials = [
   },
   {
     quote:
-      "The business loan from Luma Finance helped me arrange the funds needed to expand my small business. It gave me the flexibility to invest in new equipment and grow my operations.",
+      "The business loan from LoanPoint helped me arrange the funds needed to expand my small business. It gave me the flexibility to invest in new equipment and grow my operations.",
     name: "Suresh P.",
     location: "Ahmedabad",
     product: "Business Loan",
@@ -73,7 +73,7 @@ const testimonials = [
   },
   {
     quote:
-      "Buying a home felt like a big step for my family. The home loan from Luma Finance helped us plan our finances and move closer to owning our dream home.",
+      "Buying a home felt like a big step for my family. The home loan from LoanPoint helped us plan our finances and move closer to owning our dream home.",
     name: "Ananya & Karan",
     location: "Hyderabad",
     product: "Home Loan",
@@ -217,7 +217,7 @@ export default function LandingPage() {
         <div className="banking-preview">
           <div className="preview-top">
             <span>Live loan catalogue</span>
-            <small>SYNCED WITH LUMA API</small>
+            <small>SYNCED WITH LOANPOINT API</small>
           </div>
 
           <strong>{loans.length || "—"} products</strong>
