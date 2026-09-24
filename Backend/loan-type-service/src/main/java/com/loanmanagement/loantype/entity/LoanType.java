@@ -33,6 +33,12 @@ public class LoanType {
     @Column(name = "MAXIMUM_LOAN_AMOUNT", precision = 15, scale = 2)
     private BigDecimal maximumLoanAmount;
 
+    @Column(name = "COLLATERAL_REQUIRED", nullable = false)
+    private Boolean collateralRequired;
+
+    @Column(name = "MAXIMUM_LTV_PERCENTAGE", precision = 5, scale = 2)
+    private BigDecimal maximumLtvPercentage;
+
     public Long getLoanTypeId() {
         return loanTypeId;
     }
@@ -79,5 +85,21 @@ public class LoanType {
 
     public void setMaximumLoanAmount(BigDecimal maximumLoanAmount) {
         this.maximumLoanAmount = maximumLoanAmount;
+    }
+
+    public Boolean getCollateralRequired() {
+        return collateralRequired;
+    }
+
+    public void setCollateralRequired(Boolean collateralRequired) {
+        this.collateralRequired = collateralRequired;
+    }
+
+    public BigDecimal getMaximumLtvPercentage() {
+        return maximumLtvPercentage;
+    }
+
+    public void setMaximumLtvPercentage(BigDecimal maximumLtvPercentage) {
+        this.maximumLtvPercentage = maximumLtvPercentage;
     }
 }

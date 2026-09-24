@@ -1,0 +1,237 @@
+.loan-faq {
+  padding: clamp(4rem, 8vw, 7rem) max(5%, calc((100vw - 1280px) / 2 + 5%));
+  border-top: 1px solid #d6e7f5;
+  background: #fff;
+  color: #102f59;
+}
+
+.loan-faq-heading {
+  display: grid;
+  grid-template-columns: 1fr minmax(280px, 0.65fr);
+  align-items: end;
+  gap: 3rem;
+  margin-bottom: 2.5rem;
+}
+
+.loan-faq-heading h2 {
+  max-width: 680px;
+  margin: 0.7rem 0 0;
+  color: #0a315f;
+  font-family: "DM Serif Display", serif;
+  font-size: clamp(2.7rem, 5vw, 4.7rem);
+  font-weight: 400;
+  line-height: 0.98;
+}
+
+.loan-faq-heading > p {
+  margin: 0;
+  color: #66809d;
+  line-height: 1.65;
+}
+
+.loan-faq-list {
+  border-top: 1px solid #dce9f4;
+}
+
+.loan-faq-list details {
+  border-bottom: 1px solid #dce9f4;
+}
+
+.loan-faq-list summary {
+  position: relative;
+  padding: 1.35rem 3rem 1.35rem 0;
+  color: #153a65;
+  font-size: clamp(0.9rem, 2vw, 1.05rem);
+  font-weight: 700;
+  list-style: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.loan-faq-list summary::-webkit-details-marker {
+  display: none;
+}
+
+.loan-faq-list summary::after {
+  content: "+";
+  position: absolute;
+  top: 50%;
+  right: 0.35rem;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #eaf5ff;
+  color: #0968df;
+  font-size: 1.15rem;
+  transform: translateY(-50%);
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+
+.loan-faq-list details[open] summary {
+  color: #0968df;
+}
+
+.loan-faq-list details[open] summary::after {
+  background: #dcedfc;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.loan-faq-list details > div {
+  max-width: 900px;
+  padding: 0 3rem 1.5rem 0;
+  color: #667f9b;
+  line-height: 1.7;
+  animation: shared-faq-answer-in 0.28s ease both;
+}
+
+.loan-faq-list details > div p {
+  margin: 0 0 0.85rem;
+}
+
+.loan-faq-list details > div strong {
+  display: inline-block;
+  margin-bottom: 0.85rem;
+  padding: 0.65rem 0.8rem;
+  border-radius: 8px;
+  background: #edf7ff;
+  color: #175f9f;
+  font-size: 0.82rem;
+}
+
+.customer-site-footer {
+  position: relative;
+  overflow: hidden;
+  padding: 2rem max(4%, calc((100vw - 1280px) / 2 + 4%)) 1.1rem;
+  background: #084b9b;
+  color: #d7e9fb;
+}
+
+.customer-footer-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1.45fr 0.85fr 0.75fr 1.15fr;
+  gap: clamp(1.25rem, 3vw, 2.75rem);
+}
+
+.customer-site-footer .brand {
+  color: #fff;
+  font-size: 1.65rem;
+}
+
+.customer-footer-brand {
+  display: grid;
+  align-content: start;
+  gap: 0.65rem;
+}
+
+.customer-footer-brand strong {
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.customer-footer-brand p,
+.customer-footer-assurance p {
+  max-width: 370px;
+  margin: 0;
+  color: #b9d6f2;
+  font-size: 0.78rem;
+  line-height: 1.7;
+}
+
+.customer-footer-grid > div:not(.customer-footer-brand) {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.customer-footer-grid h3 {
+  margin: 0 0 0.3rem;
+  color: #fff;
+  font-size: 0.82rem;
+}
+
+.customer-footer-grid a {
+  color: #b9d6f2;
+  font-size: 0.75rem;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.customer-footer-grid a:hover {
+  color: #fff;
+  transform: translateX(3px);
+}
+
+.customer-footer-assurance span {
+  margin-top: 0.35rem;
+  padding: 0.48rem 0.7rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #d9efff;
+  font-size: 0.66rem;
+}
+
+.customer-footer-bottom {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-top: 1.75rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  color: #a9c9e9;
+  font-size: 0.66rem;
+}
+
+.customer-footer-bottom > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.4rem;
+}
+
+@keyframes shared-faq-answer-in {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+}
+
+@media (max-width: 680px) {
+  .loan-faq-heading {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .loan-faq-list details > div {
+    padding-right: 0;
+  }
+
+  .customer-footer-grid {
+    grid-template-columns: 1fr;
+    gap: 1.4rem;
+  }
+
+  .customer-footer-bottom {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (min-width: 681px) and (max-width: 1000px) {
+  .customer-footer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loan-faq-list details > div {
+    animation: none;
+    transition: none;
+  }
+}

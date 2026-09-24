@@ -78,7 +78,11 @@ public class LoanApplicationServiceImpl
         application.setRequestedTenureMonths(
                 request.requestedTenureMonths()
         );
-        application.setValuation(request.valuation());
+        application.setValuation(
+                Boolean.TRUE.equals(loanType.collateralRequired())
+                        ? request.valuation()
+                        : null
+        );
         application.setInterestRate(
                 generateInterestRate(
                         loanType,
@@ -115,7 +119,13 @@ public class LoanApplicationServiceImpl
                 || loanType.baseInterestRate() == null
                 || loanType.maximumLoanAmount() == null
                 || loanType.maximumTenureMonths() == null
-                || loanType.maximumTenureMonths() <= 0) {
+                || loanType.maximumTenureMonths() <= 0
+                || loanType.collateralRequired() == null
+                || (Boolean.TRUE.equals(loanType.collateralRequired())
+                && (loanType.maximumLtvPercentage() == null
+                || loanType.maximumLtvPercentage().compareTo(BigDecimal.ZERO) <= 0
+                || loanType.maximumLtvPercentage()
+                .compareTo(BigDecimal.valueOf(100)) > 0))) {
 
             throw new BusinessException(
                     "Loan type limits are unavailable for loan type ID: "
@@ -138,7 +148,37 @@ public class LoanApplicationServiceImpl
                 request.requestedTenureMonths()
         );
 
+        validateCollateral(loanType, request);
+
         return loanType;
+    }
+
+    private void validateCollateral(
+            LoanTypeLimitResponse loanType,
+            CreateLoanApplicationRequest request) {
+
+        if (!Boolean.TRUE.equals(loanType.collateralRequired())) {
+            return;
+        }
+
+        if (request.valuation() == null) {
+            throw new BusinessException(
+                    "Asset valuation is required for " + loanType.loanName()
+            );
+        }
+
+        BigDecimal maximumEligibleAmount = request.valuation()
+                .multiply(loanType.maximumLtvPercentage())
+                .divide(BigDecimal.valueOf(100), 2, RoundingMode.DOWN);
+
+        if (request.requestedAmount().compareTo(maximumEligibleAmount) > 0) {
+            throw new BusinessException(
+                    "Requested amount exceeds the collateral-based limit of "
+                            + maximumEligibleAmount
+                            + " at " + loanType.maximumLtvPercentage()
+                            + "% LTV for " + loanType.loanName()
+            );
+        }
     }
 
     @Override
@@ -418,6 +458,8 @@ public class LoanApplicationServiceImpl
                 application.getInterestRate(),
 
                 application.getValuation(),
+
+                application.getDecisionReason(),
 
                 application.getStatus(),
 

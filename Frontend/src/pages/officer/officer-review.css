@@ -1,0 +1,31 @@
+.review-modal { width: min(800px, 100%); }
+.review-modal > .review-facts { margin-top: 1.4rem; }
+.review-error { margin: 1rem 0 0; }
+.applicant-checks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; margin-top: 1rem; }
+.applicant-checks button { display: grid; gap: .3rem; padding: .9rem 1rem; border: 1px solid #c9dff2; border-radius: 12px; background: #fff; color: #0d65be; text-align: left; cursor: pointer; }
+.applicant-checks button:hover:not(:disabled) { border-color: #68aee8; background: #f1f8ff; }
+.applicant-checks button:disabled { cursor: not-allowed; opacity: .55; }
+.applicant-checks span { color: #7188a0; font-size: .65rem; }
+.applicant-checks b { font-size: .78rem; }
+.review-modal .score-panel { display: grid; grid-template-columns: auto 1fr; gap: 1.25rem; align-items: center; margin-top: .75rem; border-width: 1px; border-style: solid; color: #173653; }
+.review-modal .score-panel > div { display: grid; gap: .2rem; }
+.review-modal .score-panel strong { font-size: 3.2rem; }
+.review-modal .score-panel b { margin: 0; font-size: .9rem; }
+.review-modal .score-panel small, .review-modal .score-panel span { color: inherit; opacity: .75; }
+.score-panel--low { border-color: #a9dec8; background: #e9f8f1; color: #126647 !important; }
+.score-panel--moderate { border-color: #efd98d; background: #fff9df; color: #80610d !important; }
+.score-panel--high { border-color: #f0b7b2; background: #fff0ee; color: #a52c23 !important; }
+.pan-card-preview { margin: .75rem 0 0; padding: .75rem; border: 1px solid #d7e6f2; border-radius: 14px; background: #f7fbff; }
+.pan-card-preview img { display: block; width: 100%; max-height: 360px; object-fit: contain; border-radius: 9px; background: #eaf1f7; }
+.pan-card-preview figcaption { margin-top: .6rem; color: #70869d; font-size: .65rem; text-align: center; }
+.rejection-reason { display: grid; gap: .45rem; margin-top: 1rem; padding: 1rem; border: 1px solid #efc7c4; border-radius: 12px; background: #fff7f6; }
+.rejection-reason label { color: #922c25; font-size: .75rem; font-weight: 800; }
+.rejection-reason textarea { width: 100%; resize: vertical; border: 1px solid #e6b8b4; border-radius: 9px; background: #fff; color: #42211f; padding: .75rem; font: inherit; font-size: .78rem; }
+.rejection-reason textarea:focus { border-color: #c94c43; outline: 3px solid #fde1de; }
+.rejection-reason small { color: #8f635f; font-size: .64rem; }
+.secondary-button { border: 1px solid #d1dfec; background: #fff; color: #4f6e8d; }
+
+@media (max-width: 680px) {
+  .applicant-checks { grid-template-columns: 1fr; }
+  .review-modal .score-panel { grid-template-columns: 1fr 1.5fr; }
+}

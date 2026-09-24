@@ -1,7 +1,8 @@
 package com.loan.loanofficerservice.dto;
 
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,10 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RejectLoanRequest {
-    @NotNull(message = "Valuation is required")
     @Positive(message = "Valuation must be greater than zero")
     private BigDecimal valuation;
+
+    @NotBlank(message = "A rejection reason is required")
+    @Size(max = 500, message = "Rejection reason cannot exceed 500 characters")
+    private String decisionReason;
 }

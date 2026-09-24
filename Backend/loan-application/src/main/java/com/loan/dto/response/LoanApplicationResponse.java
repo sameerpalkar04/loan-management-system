@@ -16,6 +16,7 @@ public record LoanApplicationResponse(
         Integer requestedTenureMonths,
         BigDecimal interestRate,
         BigDecimal valuation,
+        String decisionReason,
 
         ApplicationStatus status,
         LocalDateTime appliedAt,

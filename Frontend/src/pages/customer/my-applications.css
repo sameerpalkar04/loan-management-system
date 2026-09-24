@@ -1,0 +1,307 @@
+.application-row {
+  transition:
+    border-color 0.22s ease,
+    box-shadow 0.22s ease,
+    transform 0.22s ease;
+}
+
+.application-row:hover {
+  border-color: #b7d8f4;
+  box-shadow: 0 14px 34px rgba(29, 92, 154, 0.09);
+  transform: translateY(-2px);
+}
+
+.application-stat {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.application-stat b {
+  color: #102f59;
+  font-size: 0.86rem;
+}
+
+.application-details-trigger {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.application-details-trigger span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #1680e9;
+  box-shadow: 0 0 0 6px #dceeff;
+  transition: box-shadow 0.2s ease;
+}
+
+.application-details-trigger:hover,
+.application-details-trigger:focus-visible {
+  border-color: #a9d1f3;
+  background: #f0f8ff;
+  outline: none;
+  transform: scale(1.08);
+}
+
+.application-details-trigger:hover span,
+.application-details-trigger:focus-visible span {
+  box-shadow: 0 0 0 7px #cce7ff;
+}
+
+.application-details-overlay {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+  background: rgba(5, 31, 65, 0.55);
+  backdrop-filter: blur(8px);
+  animation: application-overlay-in 0.22s ease both;
+}
+
+.application-details-modal {
+  width: min(680px, 100%);
+  max-height: min(90vh, 760px);
+  overflow-y: auto;
+  padding: clamp(1.25rem, 4vw, 2rem);
+  border: 1px solid rgba(255, 255, 255, 0.82);
+  border-radius: 22px;
+  background: #fff;
+  color: #102f59;
+  box-shadow: 0 30px 90px rgba(3, 34, 72, 0.3);
+  animation: application-modal-in 0.32s cubic-bezier(0.22, 0.9, 0.32, 1) both;
+}
+
+.application-details-modal > header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.application-details-modal > header p {
+  margin: 1rem 0 0.3rem;
+  color: #2580d8;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.application-details-modal h2 {
+  margin: 0;
+  font-family: "DM Serif Display", serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 400;
+}
+
+.application-details-modal > header > button {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid #d3e4f2;
+  border-radius: 50%;
+  background: #f3f8fd;
+  color: #4c7298;
+  font-size: 1.35rem;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.application-details-modal > header > button:hover {
+  background: #e4f2ff;
+  transform: rotate(6deg);
+}
+
+.application-details-description {
+  margin: 1rem 0 1.25rem;
+  color: #6c84a0;
+  font-size: 0.76rem;
+  line-height: 1.6;
+}
+
+.application-details-highlight {
+  display: grid;
+  padding: 1.2rem;
+  border-radius: 15px;
+  background: #0b62bf;
+  color: #fff;
+}
+
+.application-details-highlight span,
+.application-details-highlight small {
+  color: #cce7ff;
+  font-size: 0.66rem;
+}
+
+.application-details-highlight strong {
+  margin: 0.2rem 0;
+  font-family: "DM Serif Display", serif;
+  font-size: 2.25rem;
+  font-weight: 400;
+}
+
+.application-details-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  margin: 1.2rem 0;
+  border: 1px solid #deebf5;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.application-details-facts > div {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid #e4edf5;
+}
+
+.application-details-facts > div:nth-child(odd) {
+  border-right: 1px solid #e4edf5;
+}
+
+.application-details-facts dt {
+  color: #7b91aa;
+  font-size: 0.64rem;
+}
+
+.application-details-facts dd {
+  margin: 0;
+  color: #153b66;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.application-details-note {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.8rem 0.9rem;
+  border-radius: 11px;
+  background: #edf7ff;
+  color: #527595;
+}
+
+.application-rejection-reason {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border: 1px solid #f3c8c4;
+  border-radius: 12px;
+  background: #fff4f2;
+}
+
+.application-rejection-reason span {
+  color: #a92b23;
+  font-size: 0.66rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.application-rejection-reason p {
+  margin: 0.45rem 0 0;
+  color: #74322e;
+  font-size: 0.76rem;
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
+.application-details-note span {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: #cce8ff;
+  color: #0968df;
+  font-weight: 800;
+}
+
+.application-details-note p {
+  margin: 0;
+  font-size: 0.68rem;
+  line-height: 1.45;
+}
+
+@keyframes application-overlay-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes application-modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
+}
+
+@media (max-width: 680px) {
+  .application-row {
+    grid-template-columns: 1fr auto;
+  }
+
+  .application-row > div.application-stat {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: 1fr auto;
+  }
+
+  .application-details-trigger {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .application-details-overlay {
+    align-items: end;
+    padding: 0;
+  }
+
+  .application-details-modal {
+    width: 100%;
+    max-height: 92vh;
+    border-radius: 22px 22px 0 0;
+    animation-name: application-sheet-in;
+  }
+
+  .application-details-facts {
+    grid-template-columns: 1fr;
+  }
+
+  .application-details-facts > div:nth-child(odd) {
+    border-right: 0;
+  }
+}
+
+@keyframes application-sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .application-row,
+  .application-details-trigger,
+  .application-details-overlay,
+  .application-details-modal {
+    animation: none;
+    transition: none;
+  }
+}
