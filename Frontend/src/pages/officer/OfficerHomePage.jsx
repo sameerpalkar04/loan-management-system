@@ -11,8 +11,10 @@ import {
   rejectApplication,
 } from "../../api/officerApi";
 import { useAuth } from "../../context/AuthContext";
+import InterestRate from "../../components/common/InterestRate";
 import OfficerLayout from "../../layouts/OfficerLayout";
 import "./officer.css";
+import "./officer-queue-summary.css";
 import "./officer-review.css";
 
 const money = (value) =>
@@ -181,6 +183,16 @@ export default function OfficerHomePage() {
     [applications, filter]
   );
 
+  const applicationCounts = useMemo(
+    () => ({
+      pending: applications.filter((app) => app.status === "PENDING").length,
+      approved: applications.filter((app) => app.status === "APPROVED").length,
+      rejected: applications.filter((app) => app.status === "REJECTED").length,
+      total: applications.length,
+    }),
+    [applications]
+  );
+
   const viewCreditScore = async () => {
     if (scoreVisible) {
       setScoreVisible(false);
@@ -275,11 +287,30 @@ export default function OfficerHomePage() {
           <h1>Application queue</h1>
           <p>Review applicant risk and make a decision without leaving the queue.</p>
         </div>
-        <div className="queue-count">
-          <strong>{applications.filter((app) => app.status === "PENDING").length}</strong>
-          <span>awaiting review</span>
-        </div>
       </div>
+
+      <section className="queue-summary-grid" aria-label="Application queue overview">
+        <article className="queue-summary-card">
+          <span className="queue-summary-card__label">Awaiting review</span>
+          <strong>{applicationCounts.pending}</strong>
+          <small>Ready for assessment</small>
+        </article>
+        <article className="queue-summary-card">
+          <span className="queue-summary-card__label">Approved</span>
+          <strong>{applicationCounts.approved}</strong>
+          <small>Applications approved</small>
+        </article>
+        <article className="queue-summary-card">
+          <span className="queue-summary-card__label">Rejected</span>
+          <strong>{applicationCounts.rejected}</strong>
+          <small>Applications rejected</small>
+        </article>
+        <article className="queue-summary-card">
+          <span className="queue-summary-card__label">Total applications</span>
+          <strong>{applicationCounts.total}</strong>
+          <small>All submitted applications</small>
+        </article>
+      </section>
 
       <div className="queue-filters">
         {["PENDING", "APPROVED", "REJECTED", "ALL"].map((item) => (
@@ -410,7 +441,7 @@ export default function OfficerHomePage() {
             <div className="rate-engine">
               <div>
                 <span>Application interest rate</span>
-                <strong>{approvalRate.toFixed(2)}%* <small>p.a.</small></strong>
+                <strong><InterestRate value={approvalRate} /></strong>
                 <small>* Rate calculated from the selected product and requested tenure.</small>
               </div>
             </div>

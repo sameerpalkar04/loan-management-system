@@ -9,6 +9,7 @@ import {
   createLoanApplication,
 } from "../../api/applicationApi";
 import { getLoanTypes } from "../../api/loanTypeApi";
+import InterestRate from "../../components/common/InterestRate";
 import Logo from "../../components/common/Logo";
 import CustomerLayout from "../../layouts/CustomerLayout";
 import {
@@ -733,7 +734,7 @@ export default function ApplyLoanPage() {
                   {estimatingRate
                     ? "Calculating…"
                     : estimatedRate !== null
-                      ? `${Number(estimatedRate).toFixed(2)}%* p.a.`
+                      ? <InterestRate value={estimatedRate} />
                       : "—"}
                 </strong>
                 <small>
@@ -794,7 +795,7 @@ export default function ApplyLoanPage() {
               <span>Starting interest rate</span>
 
               <b>
-                {selected?.baseInterestRate || "—"}%* p.a.
+                <InterestRate value={selected?.baseInterestRate} />
               </b>
             </div>
 
@@ -991,7 +992,10 @@ export default function ApplyLoanPage() {
 
             <div className="rate-calculator-product">
               <span>{selected?.loanName}</span>
-              <b>{selected?.baseInterestRate}%* starting rate</b>
+              <b>
+                <InterestRate value={selected?.baseInterestRate} />
+                {" starting rate"}
+              </b>
             </div>
 
             <div className="emi-calculator-controls">
@@ -1046,7 +1050,7 @@ export default function ApplyLoanPage() {
                   {calculating
                     ? "Calculating…"
                     : calculatedRate !== null
-                      ? `${Number(calculatedRate).toFixed(2)}%* p.a.`
+                      ? <InterestRate value={calculatedRate} />
                       : "—"}
                 </strong>
                 <small>The rate is calculated from the selected product and tenure.</small>

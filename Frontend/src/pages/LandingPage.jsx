@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getLoanTypes } from "../api/loanTypeApi";
 import Logo from "../components/common/Logo";
+import InterestRate from "../components/common/InterestRate";
 import LoanHelpSections from "../components/common/LoanHelpSections";
 import loanHeroImage from "../assets/loan-hero.png";
 import testimonialFaces from "../assets/testimonial-faces.png";
@@ -113,7 +114,7 @@ export default function LandingPage() {
         </span>
 
         <p>
-          {loan.baseInterestRate}%* <small>p.a.</small>
+          <InterestRate value={loan.baseInterestRate} />
         </p>
 
         <h3>{loan.loanName}</h3>
