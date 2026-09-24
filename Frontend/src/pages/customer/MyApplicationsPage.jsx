@@ -257,13 +257,15 @@ export default function MyApplicationsPage() {
                 </div>
               )}
 
-            <div className="application-details-note">
-              <span aria-hidden="true">i</span>
-              <p>
-                Your application status updates here automatically after the
-                loan officer completes a review.
-              </p>
-            </div>
+            {["PENDING", "UNDER_REVIEW"].includes(selectedApplication.status) && (
+              <div className="application-details-note">
+                <span aria-hidden="true">i</span>
+                <p>
+                  Your application status updates here automatically after the
+                  loan officer completes a review.
+                </p>
+              </div>
+            )}
           </section>
         </div>
       )}

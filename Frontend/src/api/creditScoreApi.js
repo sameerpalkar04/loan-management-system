@@ -5,3 +5,9 @@ export const checkCreditScore = (payload) =>
     method: "POST",
     body: JSON.stringify(payload),
   });
+
+export const getViewedCreditApplications = (applicationIds) =>
+  apiRequest("/api/credit-scores/viewed-applications", {
+    method: "POST",
+    body: JSON.stringify(applicationIds),
+  });

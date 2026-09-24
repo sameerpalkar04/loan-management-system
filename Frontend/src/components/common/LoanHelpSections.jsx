@@ -25,36 +25,28 @@ export default function LoanHelpSections({
             <details>
               <summary>How do I apply for a loan?</summary>
               <div>
-                Log in as a customer, choose a loan type, enter the desired
-                amount and repayment tenure, provide the required valuation
-                details, upload your PAN-card image, and submit the application.
+               To apply for a loan, log in to your account and select a suitable loan type from the available options. Complete the application by providing the required loan and financial details, selecting your preferred repayment tenure, and uploading the necessary documents.
               </div>
             </details>
 
             <details>
               <summary>Can I choose my loan repayment tenure?</summary>
-              <div>
-                Yes. You can select a tenure that suits your repayment
-                preference, as long as it does not exceed the maximum tenure
-                available for the selected loan type.
+               <div>
+               Yes. You can select a repayment tenure based on your financial requirements and repayment preferences. The selected tenure must fall within the maximum repayment period permitted for the chosen loan type.
               </div>
             </details>
 
             <details>
               <summary>What documents are required for a loan application?</summary>
               <div>
-                The current application process requires a PAN-card image.
-                Depending on the loan product, further documents may be
-                requested during review.
+                You are required to provide the documents specified during the loan application process, including valid identification and other supporting documents relevant to the selected loan type.
               </div>
             </details>
 
             <details>
               <summary>How can I track my loan application?</summary>
               <div>
-                After logging in, you can view your submitted applications and
-                their current status, such as Pending, Under Review, Approved,
-                or Rejected.
+                You can track your loan application by logging in to your account and accessing your submitted applications. The current status of each application will be displayed
               </div>
             </details>
 

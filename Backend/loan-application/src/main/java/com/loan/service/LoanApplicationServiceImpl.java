@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 import com.loan.client.LoanTypeClient;
 import com.loan.dto.response.LoanTypeLimitResponse;
@@ -43,9 +42,6 @@ public class LoanApplicationServiceImpl
 
     private static final BigDecimal MAX_TENURE_ADJUSTMENT =
             new BigDecimal("1.00");
-
-    private static final BigDecimal RANDOM_VARIATION_LIMIT =
-            new BigDecimal("0.25");
 
     private static final Set<String> ALLOWED_PAN_CARD_IMAGE_TYPES = Set.of(
             "image/jpeg",
@@ -251,16 +247,8 @@ public class LoanApplicationServiceImpl
                 .multiply(MAX_TENURE_ADJUSTMENT)
                 .multiply(BigDecimal.valueOf(2));
 
-        BigDecimal randomAdjustment = BigDecimal.valueOf(
-                ThreadLocalRandom.current().nextDouble(
-                        RANDOM_VARIATION_LIMIT.negate().doubleValue(),
-                        RANDOM_VARIATION_LIMIT.doubleValue()
-                )
-        );
-
         BigDecimal interestRate = loanType.baseInterestRate()
-                .add(tenureAdjustment)
-                .add(randomAdjustment);
+                .add(tenureAdjustment);
 
         if (interestRate.compareTo(BigDecimal.ZERO) < 0) {
             interestRate = BigDecimal.ZERO;
