@@ -1,0 +1,949 @@
+.customer-workspace {
+  scroll-behavior: smooth;
+}
+
+.application-page {
+  animation: application-page-in 0.45s ease both;
+}
+
+.pending-application-notice {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: fit-content;
+  max-width: 100%;
+  margin-top: 1rem;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid #f0d58f;
+  border-radius: 11px;
+  background: #fff9e8;
+  color: #74530b;
+  box-shadow: 0 8px 24px rgba(133, 96, 12, 0.08);
+  animation: pending-notice-in 0.28s ease both;
+}
+
+.pending-application-notice > span {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #f6c94f;
+  color: #563b00;
+  font-weight: 800;
+}
+
+.pending-application-notice > div {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.pending-application-notice strong {
+  font-size: 0.72rem;
+}
+
+.pending-application-notice small {
+  color: #8a6c26;
+  font-size: 0.64rem;
+  line-height: 1.4;
+}
+
+.application-form input,
+.application-form select,
+.interest-calculator-trigger,
+.rate-calculator-panel input,
+.rate-calculator-panel button {
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.application-form input[aria-invalid="true"] {
+  border-color: #d9554d;
+  box-shadow: 0 0 0 3px rgba(217, 85, 77, 0.1);
+}
+
+.application-form > .button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  box-shadow: none;
+  transform: none;
+}
+
+@keyframes pending-notice-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+.application-field-error {
+  display: block;
+  margin-top: 0.35rem;
+  color: #b42318;
+  font-size: 0.67rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.valuation-guidance {
+  display: block;
+  margin-top: 0.35rem;
+  color: #728aa3;
+  font-size: 0.66rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.valuation-limit {
+  display: block;
+  margin-top: 0.4rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: 8px;
+  background: #edf8f4;
+  color: #177158;
+  font-size: 0.67rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.collateral-not-required {
+  display: grid;
+  gap: 0.3rem;
+  margin-bottom: 1rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid #cce8df;
+  border-radius: 11px;
+  background: #f1faf7;
+}
+
+.collateral-not-required span {
+  color: #628078;
+  font-size: 0.66rem;
+}
+
+.collateral-not-required b {
+  color: #14745d;
+  font-size: 0.76rem;
+}
+
+.interest-calculator-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  margin: 0;
+  padding: 1rem;
+  border: 1px solid #b9d9f4;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f4faff, #e8f5ff);
+  color: #0968df;
+  text-align: left;
+  cursor: pointer;
+}
+
+.application-rate-tools {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(220px, 0.75fr);
+  gap: 0.85rem;
+  align-items: stretch;
+  margin-bottom: 1rem;
+}
+
+.application-rate-tools .interest-calculator-trigger {
+  min-height: 112px;
+}
+
+.applicable-rate-field {
+  display: grid;
+  align-content: center;
+  gap: 0.28rem;
+  min-width: 0;
+  padding: 0.9rem 1rem;
+  border: 1px solid #bcded4;
+  border-radius: 12px;
+  background: #f0faf7;
+}
+
+.applicable-rate-field > span {
+  color: #58776f;
+  font-size: 0.66rem;
+  font-weight: 700;
+}
+
+.applicable-rate-field strong {
+  overflow: hidden;
+  color: #08755b;
+  font-family: "DM Serif Display", serif;
+  font-size: clamp(1.35rem, 3vw, 1.8rem);
+  font-weight: 400;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.applicable-rate-field small {
+  color: #718b84;
+  font-size: 0.61rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.applicable-rate-field--error {
+  border-color: #efc5c1;
+  background: #fff5f4;
+}
+
+.applicable-rate-field--error strong,
+.applicable-rate-field--error small {
+  color: #a63b33;
+}
+
+.interest-calculator-trigger:hover {
+  border-color: #79b9ee;
+  box-shadow: 0 10px 26px rgba(19, 108, 194, 0.12);
+  transform: translateY(-2px);
+}
+
+.interest-calculator-trigger:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  transform: none;
+}
+
+.interest-calculator-trigger > span:first-child {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.interest-calculator-trigger b {
+  font-size: 0.78rem;
+}
+
+.interest-calculator-trigger small {
+  color: #6784a4;
+  font-size: 0.67rem;
+  font-weight: 500;
+}
+
+.interest-calculator-trigger > span:last-child {
+  font-size: 1.15rem;
+}
+
+.applied-rate {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0 0 1rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid #bfe7db;
+  border-radius: 11px;
+  background: #effbf7;
+  animation: rate-result-in 0.35s ease both;
+}
+
+.applied-rate span {
+  color: #52756c;
+  font-size: 0.7rem;
+}
+
+.applied-rate strong {
+  color: #08755b;
+  font-size: 0.82rem;
+}
+
+.rate-calculator-overlay {
+  position: fixed;
+  z-index: 80;
+  inset: 0;
+  background: rgba(5, 30, 61, 0.48);
+  backdrop-filter: blur(7px);
+  animation: rate-overlay-in 0.25s ease both;
+}
+
+.rate-calculator-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: min(720px, 100%);
+  height: 100%;
+  overflow-y: auto;
+  padding: clamp(1.4rem, 4vw, 2.2rem);
+  border-left: 1px solid rgba(255, 255, 255, 0.75);
+  background: #fff;
+  box-shadow: -28px 0 80px rgba(4, 36, 76, 0.22);
+  animation: rate-panel-in 0.38s cubic-bezier(0.22, 0.9, 0.32, 1) both;
+}
+
+.emi-calculator-controls {
+  display: grid;
+  gap: 1.4rem;
+  padding: 1.25rem;
+  border: 1px solid #c7def2;
+  border-radius: 16px;
+  background: #edf7ff;
+}
+
+.emi-slider-field {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.emi-slider-field > span {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  color: #183b62;
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.emi-slider-field output {
+  min-width: 120px;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid #c9dceb;
+  border-radius: 8px;
+  background: #fff;
+  color: #12365e;
+  font-size: 0.75rem;
+  text-align: right;
+}
+
+.rate-calculator-panel .emi-slider-field input[type="range"] {
+  width: 100%;
+  height: 6px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    #0871d5 0 var(--range-progress),
+    #a9cfee var(--range-progress) 100%
+  );
+  box-shadow: none;
+  outline: none;
+  cursor: pointer;
+  accent-color: #0871d5;
+  appearance: none;
+}
+
+.rate-calculator-panel .emi-slider-field input[type="range"]::-webkit-slider-thumb {
+  width: 22px;
+  height: 22px;
+  border: 4px solid #fff;
+  border-radius: 50%;
+  background: #0871d5;
+  box-shadow: 0 0 0 2px #0871d5, 0 4px 12px rgba(9, 95, 177, 0.25);
+  appearance: none;
+}
+
+.rate-calculator-panel .emi-slider-field input[type="range"]::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border: 4px solid #fff;
+  border-radius: 50%;
+  background: #0871d5;
+  box-shadow: 0 0 0 2px #0871d5, 0 4px 12px rgba(9, 95, 177, 0.25);
+}
+
+.rate-calculator-panel .emi-slider-field > .emi-slider-limits {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  width: 100%;
+  margin-top: 0;
+  column-gap: 1rem;
+  color: #6f88a1;
+  font-size: 0.62rem;
+  font-weight: 600;
+}
+
+.rate-calculator-panel .emi-slider-limits span:nth-child(2) {
+  color: #96acc1;
+}
+
+.rate-calculator-panel .emi-slider-limits span:last-child {
+  text-align: right;
+}
+
+.emi-fixed-rate {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #cfe2f2;
+}
+
+.emi-fixed-rate > span {
+  color: #536f8d;
+  font-size: 0.7rem;
+}
+
+.emi-fixed-rate strong {
+  margin-left: auto;
+  color: #075eae;
+  font-size: 1rem;
+}
+
+.emi-fixed-rate small {
+  flex-basis: 100%;
+  color: #7890a7;
+  font-size: 0.61rem;
+  line-height: 1.4;
+}
+
+.emi-repayment-summary {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding: 1.25rem;
+  border: 1px solid #c9ddf0;
+  border-radius: 16px;
+  background: #f7fbff;
+}
+
+.emi-monthly-result {
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #dceeff, #c6e2fb);
+  color: #0758a3;
+  text-align: center;
+}
+
+.emi-monthly-result span {
+  font-size: 0.7rem;
+}
+
+.emi-monthly-result strong {
+  margin-top: 0.25rem;
+  font-family: "DM Serif Display", serif;
+  font-size: clamp(2rem, 6vw, 2.8rem);
+  font-weight: 400;
+}
+
+.emi-repayment-summary dl {
+  display: grid;
+  gap: 0;
+  margin: 0;
+}
+
+.emi-repayment-summary dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid #dce9f4;
+}
+
+.emi-repayment-summary dt {
+  color: #637b94;
+  font-size: 0.72rem;
+}
+
+.emi-repayment-summary dd {
+  margin: 0;
+  color: #143a64;
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.emi-repayment-summary > p {
+  margin: 0;
+  color: #71869c;
+  font-size: 0.61rem;
+  line-height: 1.45;
+}
+
+.emi-repayment-summary > .button {
+  width: 100%;
+}
+
+.rate-calculator-panel > header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.rate-calculator-panel h2 {
+  margin: 0.55rem 0 0;
+  color: #0d315d;
+  font-family: "DM Serif Display", serif;
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  font-weight: 400;
+  line-height: 1;
+}
+
+.rate-calculator-close {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 38px;
+  height: 38px;
+  border: 1px solid #d4e4f2;
+  border-radius: 50%;
+  background: #f5f9fd;
+  color: #496d93;
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+.rate-calculator-close:hover {
+  border-color: #9dc9ec;
+  background: #eaf5ff;
+  transform: rotate(4deg);
+}
+
+.rate-calculator-product {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 1.6rem 0;
+  padding: 0.9rem 1rem;
+  border: 1px solid #d7e8f6;
+  border-radius: 12px;
+  background: #f4f9fe;
+}
+
+.rate-calculator-product span {
+  color: #173b65;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.rate-calculator-product b {
+  color: #0968df;
+  font-size: 0.68rem;
+}
+
+.rate-calculator-panel form {
+  display: grid;
+  gap: 1rem;
+}
+
+.rate-calculator-panel form label {
+  color: #45698e;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.rate-calculator-panel input {
+  display: block;
+  width: 100%;
+  margin-top: 0.4rem;
+  padding: 0.88rem;
+  border: 1px solid #ccdeed;
+  border-radius: 10px;
+  background: #f8fbff;
+  color: #12385f;
+  outline: none;
+}
+
+.rate-calculator-panel input:focus {
+  border-color: #1680e9;
+  box-shadow: 0 0 0 3px #e1f1ff;
+}
+
+.rate-calculator-panel input[aria-invalid="true"] {
+  border-color: #d9554d;
+  box-shadow: 0 0 0 3px rgba(217, 85, 77, 0.1);
+}
+
+.rate-calculator-panel label > small {
+  display: block;
+  margin-top: 0.35rem;
+  color: #7b91a8;
+  font-size: 0.64rem;
+  font-weight: 500;
+}
+
+.rate-calculator-panel label > .calculator-field-error {
+  color: #b42318;
+}
+
+.rate-calculator-panel form > .button,
+.rate-calculator-result .button {
+  width: 100%;
+}
+
+.rate-calculator-result {
+  display: grid;
+  margin-top: 1.4rem;
+  padding: 1.25rem;
+  border: 1px solid #b9dfd3;
+  border-radius: 16px;
+  background: linear-gradient(145deg, #effbf7, #e3f6f1);
+  animation: rate-result-in 0.35s ease both;
+}
+
+.rate-calculator-result > span {
+  color: #55796f;
+  font-size: 0.68rem;
+}
+
+.rate-calculator-result > strong {
+  margin: 0.35rem 0;
+  color: #08755b;
+  font-family: "DM Serif Display", serif;
+  font-size: 2.8rem;
+  font-weight: 400;
+}
+
+.rate-calculator-result > strong small {
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.68rem;
+}
+
+.rate-calculator-result p {
+  margin: 0 0 1rem;
+  color: #617e76;
+  font-size: 0.69rem;
+  line-height: 1.5;
+}
+
+.loan-faq {
+  padding: clamp(4rem, 8vw, 7rem) max(5%, calc((100vw - 1280px) / 2 + 5%));
+  border-top: 1px solid #d6e7f5;
+  background: #fff;
+  color: #102f59;
+}
+
+.loan-faq-heading {
+  display: grid;
+  grid-template-columns: 1fr minmax(280px, 0.65fr);
+  align-items: end;
+  gap: 3rem;
+  margin-bottom: 2.5rem;
+}
+
+.loan-faq-heading h2 {
+  max-width: 680px;
+  margin: 0.7rem 0 0;
+  color: #0a315f;
+  font-family: "DM Serif Display", serif;
+  font-size: clamp(2.7rem, 5vw, 4.7rem);
+  font-weight: 400;
+  line-height: 0.98;
+}
+
+.loan-faq-heading > p {
+  margin: 0;
+  color: #66809d;
+  line-height: 1.65;
+}
+
+.loan-faq-list {
+  border-top: 1px solid #dce9f4;
+}
+
+.loan-faq-list details {
+  border-bottom: 1px solid #dce9f4;
+}
+
+.loan-faq-list summary {
+  position: relative;
+  padding: 1.35rem 3rem 1.35rem 0;
+  color: #153a65;
+  font-size: clamp(0.9rem, 2vw, 1.05rem);
+  font-weight: 700;
+  list-style: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.loan-faq-list summary::-webkit-details-marker {
+  display: none;
+}
+
+.loan-faq-list summary::after {
+  content: "+";
+  position: absolute;
+  top: 50%;
+  right: 0.35rem;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #eaf5ff;
+  color: #0968df;
+  font-size: 1.15rem;
+  transform: translateY(-50%);
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+
+.loan-faq-list details[open] summary {
+  color: #0968df;
+}
+
+.loan-faq-list details[open] summary::after {
+  background: #dcedfc;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.loan-faq-list details > div {
+  max-width: 900px;
+  padding: 0 3rem 1.5rem 0;
+  color: #667f9b;
+  line-height: 1.7;
+  animation: faq-answer-in 0.28s ease both;
+}
+
+.loan-faq-list details > div p {
+  margin: 0 0 0.85rem;
+}
+
+.loan-faq-list details > div strong {
+  display: inline-block;
+  margin-bottom: 0.85rem;
+  padding: 0.65rem 0.8rem;
+  border-radius: 8px;
+  background: #edf7ff;
+  color: #175f9f;
+  font-size: 0.82rem;
+}
+
+.customer-site-footer {
+  position: relative;
+  overflow: hidden;
+  padding: 2rem max(4%, calc((100vw - 1280px) / 2 + 4%)) 1.1rem;
+  background: #084b9b;
+  color: #d7e9fb;
+}
+
+.customer-footer-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1.45fr 0.85fr 0.75fr 1.15fr;
+  gap: clamp(1.25rem, 3vw, 2.75rem);
+}
+
+.customer-site-footer .brand {
+  color: #fff;
+  font-size: 1.65rem;
+}
+
+.customer-footer-brand {
+  display: grid;
+  align-content: start;
+  gap: 0.65rem;
+}
+
+.customer-footer-brand strong {
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.customer-footer-brand p,
+.customer-footer-assurance p {
+  max-width: 370px;
+  margin: 0;
+  color: #b9d6f2;
+  font-size: 0.78rem;
+  line-height: 1.7;
+}
+
+.customer-footer-grid > div:not(.customer-footer-brand) {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.customer-footer-grid h3 {
+  margin: 0 0 0.3rem;
+  color: #fff;
+  font-size: 0.82rem;
+}
+
+.customer-footer-grid a {
+  color: #b9d6f2;
+  font-size: 0.75rem;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.customer-footer-grid a:hover {
+  color: #fff;
+  transform: translateX(3px);
+}
+
+.customer-footer-assurance span {
+  margin-top: 0.35rem;
+  padding: 0.48rem 0.7rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #d9efff;
+  font-size: 0.66rem;
+}
+
+.customer-footer-bottom {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-top: 1.75rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  color: #a9c9e9;
+  font-size: 0.66rem;
+}
+
+.customer-footer-bottom > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.4rem;
+}
+
+@keyframes application-page-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@keyframes faq-answer-in {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes rate-overlay-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes rate-panel-in {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+@keyframes rate-result-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@media (max-width: 680px) {
+  .application-rate-tools {
+    grid-template-columns: 1fr;
+  }
+
+  .application-rate-tools .interest-calculator-trigger {
+    min-height: auto;
+  }
+
+  .emi-slider-field > span,
+  .emi-fixed-rate {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .emi-slider-field output {
+    width: 100%;
+    text-align: left;
+  }
+
+  .emi-fixed-rate strong {
+    margin-left: 0;
+  }
+
+  .interest-calculator-trigger {
+    padding: 0.9rem;
+  }
+
+  .rate-calculator-panel {
+    top: auto;
+    bottom: 0;
+    width: 100%;
+    height: auto;
+    max-height: 92svh;
+    border-top: 1px solid rgba(255, 255, 255, 0.8);
+    border-left: 0;
+    border-radius: 22px 22px 0 0;
+    animation-name: rate-sheet-in;
+  }
+
+  .rate-calculator-panel h2 {
+    font-size: clamp(2rem, 10vw, 2.65rem);
+  }
+
+  .rate-calculator-product {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .applied-rate {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .loan-faq-heading {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .loan-faq-list details > div {
+    padding-right: 0;
+  }
+
+  .customer-footer-grid {
+    grid-template-columns: 1fr;
+    gap: 1.4rem;
+  }
+
+  .customer-footer-bottom {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (min-width: 681px) and (max-width: 1000px) {
+  .customer-footer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@keyframes rate-sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .application-form input,
+  .application-form select,
+  .interest-calculator-trigger,
+  .rate-calculator-overlay,
+  .rate-calculator-panel,
+  .rate-calculator-result,
+  .applied-rate,
+  .application-page,
+  .loan-faq-list details > div {
+    animation: none;
+    transition: none;
+  }
+}

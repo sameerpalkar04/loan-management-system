@@ -1,10 +1,13 @@
 package com.loanmanagement.loantype.dto;
 
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.AssertTrue;
 
 import java.math.BigDecimal;
 
@@ -26,7 +29,22 @@ public class LoanTypeRequest {
     private String description;
 
     @DecimalMin(value = "0.01", message = "Maximum loan amount must be greater than zero")
+    @Digits(integer = 13, fraction = 2, message = "Maximum loan amount must have at most 13 integer digits and 2 decimal places")
     private BigDecimal maximumLoanAmount;
+
+    @NotNull(message = "Collateral requirement is required")
+    private Boolean collateralRequired;
+
+    @DecimalMin(value = "0.01", message = "Maximum LTV percentage must be greater than zero")
+    @DecimalMax(value = "100.00", message = "Maximum LTV percentage cannot exceed 100")
+    @Digits(integer = 3, fraction = 2, message = "Maximum LTV percentage must have at most 2 decimal places")
+    private BigDecimal maximumLtvPercentage;
+
+    @AssertTrue(message = "Maximum LTV percentage is required when collateral is required")
+    public boolean isCollateralConfigurationValid() {
+        return !Boolean.TRUE.equals(collateralRequired)
+                || maximumLtvPercentage != null;
+    }
 
     public String getLoanName() {
         return loanName;
@@ -66,5 +84,21 @@ public class LoanTypeRequest {
 
     public void setMaximumLoanAmount(BigDecimal maximumLoanAmount) {
         this.maximumLoanAmount = maximumLoanAmount;
+    }
+
+    public Boolean getCollateralRequired() {
+        return collateralRequired;
+    }
+
+    public void setCollateralRequired(Boolean collateralRequired) {
+        this.collateralRequired = collateralRequired;
+    }
+
+    public BigDecimal getMaximumLtvPercentage() {
+        return maximumLtvPercentage;
+    }
+
+    public void setMaximumLtvPercentage(BigDecimal maximumLtvPercentage) {
+        this.maximumLtvPercentage = maximumLtvPercentage;
     }
 }

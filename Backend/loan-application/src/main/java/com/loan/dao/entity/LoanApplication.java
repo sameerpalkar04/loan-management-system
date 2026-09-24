@@ -42,7 +42,7 @@ public class LoanApplication {
     @Column(name = "decision_reason", length = 500)
     private String decisionReason;
 
-    @Column(name = "valuation", nullable = false, precision = 15, scale = 2)
+    @Column(name = "valuation", precision = 15, scale = 2)
     private BigDecimal valuation;
 
     @Column(name = "reviewed_at")

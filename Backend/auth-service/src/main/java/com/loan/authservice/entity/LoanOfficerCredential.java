@@ -19,10 +19,14 @@ public class LoanOfficerCredential {
     @Column(name = "officer_email")
     private String email;
 
+    @Column(name = "officer_name")
+    private String name;
+
     @Column(name = "officer_password")
     private String passwordHash;
 
     public Long getOfficerId() { return officerId; }
     public String getEmail() { return email; }
+    public String getName() { return name; }
     public String getPasswordHash() { return passwordHash; }
 }

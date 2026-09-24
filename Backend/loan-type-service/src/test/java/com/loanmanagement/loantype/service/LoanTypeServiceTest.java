@@ -16,6 +16,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -66,6 +67,18 @@ class LoanTypeServiceTest {
 
         assertEquals("Loan type not found with id: 99",
                 exception.getMessage());
+    }
+
+    @Test
+    void shouldDeleteAndFlushExistingLoanType() {
+        LoanType loanType = createLoanType();
+        when(loanTypeRepository.findById(1L))
+                .thenReturn(Optional.of(loanType));
+
+        loanTypeService.deleteLoanType(1L);
+
+        verify(loanTypeRepository).delete(loanType);
+        verify(loanTypeRepository).flush();
     }
 
     private LoanType createLoanType() {

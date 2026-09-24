@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,6 +22,9 @@ import java.util.Locale;
 @Service
 public class CustomerServiceManager
         implements ServiceManager<CustomerRegistrationCommand, CustomerQuery, Long> {
+
+    private static final Logger LOGGER =
+            LoggerFactory.getLogger(CustomerServiceManager.class);
 
     private final CustomerRepository repository;
     private final PasswordEncoder passwordEncoder;
@@ -63,16 +68,38 @@ public class CustomerServiceManager
         customer.setMonthlyIncome(data.getMonthlyIncome());
 
         Customer addedCustomer = repository.save(customer);
-        kafkaTemplate.send(
-                "customer.registered",
-                addedCustomer.getPanNumber(),
-                new CustomerRegisteredEvent(
-                        addedCustomer.getCustomerId(),
-                        addedCustomer.getPanNumber()
-                )
-        );
+        publishCustomerRegisteredEvent(addedCustomer);
 
         return mapToCustomerQuery(addedCustomer);
+    }
+
+    private void publishCustomerRegisteredEvent(Customer customer) {
+        CustomerRegisteredEvent event = new CustomerRegisteredEvent(
+                customer.getCustomerId(),
+                customer.getPanNumber()
+        );
+
+        try {
+            kafkaTemplate.send(
+                    "customer.registered",
+                    customer.getPanNumber(),
+                    event
+            ).whenComplete((result, exception) -> {
+                if (exception != null) {
+                    LOGGER.error(
+                            "Customer {} was registered, but its credit-score event could not be delivered",
+                            customer.getCustomerId(),
+                            exception
+                    );
+                }
+            });
+        } catch (RuntimeException exception) {
+            LOGGER.error(
+                    "Customer {} was registered, but Kafka was unavailable",
+                    customer.getCustomerId(),
+                    exception
+            );
+        }
     }
 
     @Override

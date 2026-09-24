@@ -28,7 +28,6 @@ public class ApproveLoanRequest {
     @Positive(message = "Tenure must be greater than zero")
     private Integer tenureMonths;
 
-    @NotNull(message = "Valuation is required")
     @Positive(message = "Valuation must be greater than zero")
     private BigDecimal valuation;
 

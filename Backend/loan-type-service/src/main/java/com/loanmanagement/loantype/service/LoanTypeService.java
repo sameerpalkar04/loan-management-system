@@ -6,6 +6,7 @@ import com.loanmanagement.loantype.entity.LoanType;
 import com.loanmanagement.loantype.exception.LoanTypeNotFoundException;
 import com.loanmanagement.loantype.repository.LoanTypeRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -61,12 +62,14 @@ public class LoanTypeService {
         return LoanTypeResponse.fromEntity(updatedLoanType);
     }
 
+    @Transactional
     public void deleteLoanType(Long loanTypeId) {
         LoanType loanType = loanTypeRepository.findById(loanTypeId)
                 .orElseThrow(() -> new LoanTypeNotFoundException(
                         "Loan type not found with id: " + loanTypeId));
 
         loanTypeRepository.delete(loanType);
+        loanTypeRepository.flush();
     }
 
     private void updateLoanTypeFields(
@@ -78,5 +81,11 @@ public class LoanTypeService {
         loanType.setMaximumTenureMonths(request.getMaximumTenureMonths());
         loanType.setDescription(request.getDescription());
         loanType.setMaximumLoanAmount(request.getMaximumLoanAmount());
+        loanType.setCollateralRequired(request.getCollateralRequired());
+        loanType.setMaximumLtvPercentage(
+                Boolean.TRUE.equals(request.getCollateralRequired())
+                        ? request.getMaximumLtvPercentage()
+                        : null
+        );
     }
 }

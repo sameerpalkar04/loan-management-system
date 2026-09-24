@@ -20,6 +20,7 @@ public class LoanApplicationResponse {
 
     private BigDecimal requestedAmount;
     private Integer requestedTenureMonths;
+    private BigDecimal interestRate;
 
     private String status;
     private LocalDateTime appliedAt;
