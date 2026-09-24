@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { getMyApplications } from "../../api/applicationApi";
 import { getLoanTypes } from "../../api/loanTypeApi";
+import InterestRate from "../../components/common/InterestRate";
 import LoanHelpSections from "../../components/common/LoanHelpSections";
 import CustomerLayout from "../../layouts/CustomerLayout";
 import "./customer.css";
@@ -231,7 +232,10 @@ export default function MyApplicationsPage() {
                 <dt>Applicable interest</dt>
                 <dd>
                   {selectedApplication.interestRate != null
-                    ? `${Number(selectedApplication.interestRate).toFixed(2)}% p.a.`
+                    ? <InterestRate
+                        value={selectedApplication.interestRate}
+                        showMarker={false}
+                      />
                     : "Pending review"}
                 </dd>
               </div>
