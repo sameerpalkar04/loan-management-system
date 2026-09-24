@@ -8,3 +8,7 @@
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
+
+#ignore m2 and postman
+/.m2/
+/.postman/
