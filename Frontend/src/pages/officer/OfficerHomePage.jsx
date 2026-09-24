@@ -1,5 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { checkCreditScore } from "../../api/creditScoreApi";
+import {
+  checkCreditScore,
+  getViewedCreditApplications,
+} from "../../api/creditScoreApi";
 import { getLoanTypes } from "../../api/loanTypeApi";
 import {
   approveApplication,
@@ -14,6 +17,20 @@ import "./officer-review.css";
 
 const money = (value) =>
   `₹${Number(value || 0).toLocaleString("en-IN")}`;
+
+const maskPanNumber = (panNumber) => {
+  const normalized = String(panNumber || "").trim().toUpperCase();
+  if (normalized.length < 6) return "Not available";
+  return `${normalized.slice(0, 5)}****${normalized.slice(-1)}`;
+};
+
+const dateTime = (value) =>
+  value
+    ? new Intl.DateTimeFormat("en-IN", {
+        dateStyle: "medium",
+        timeStyle: "short",
+      }).format(new Date(value))
+    : "Not recorded";
 
 const getRiskProfile = (score) => {
   if (score >= 750) {
@@ -55,17 +72,39 @@ export default function OfficerHomePage() {
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [filter, setFilter] = useState("PENDING");
+  const [viewedCreditApplications, setViewedCreditApplications] = useState(
+    () => new Set()
+  );
 
-  const refresh = () =>
-    Promise.all([getOfficerApplications(), getLoanTypes()])
-      .then(([apps, loans]) => {
-        setApplications(Array.isArray(apps) ? apps : []);
-        setLoanTypes(Array.isArray(loans) ? loans : []);
-      })
-      .catch((requestError) => setError(requestError.message));
+  const refresh = async () => {
+    try {
+      const [apps, loans] = await Promise.all([
+        getOfficerApplications(),
+        getLoanTypes(),
+      ]);
+      const applicationItems = Array.isArray(apps) ? apps : [];
+
+      setApplications(applicationItems);
+      setLoanTypes(Array.isArray(loans) ? loans : []);
+
+      try {
+        const viewedIds = applicationItems.length
+          ? await getViewedCreditApplications(
+              applicationItems.map((application) => application.applicationId)
+            )
+          : [];
+        setViewedCreditApplications(new Set(viewedIds || []));
+      } catch {
+        setViewedCreditApplications(new Set());
+      }
+    } catch (requestError) {
+      setError(requestError.message);
+    }
+  };
 
   useEffect(() => {
-    refresh();
+    const timer = window.setTimeout(refresh, 0);
+    return () => window.clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -73,7 +112,10 @@ export default function OfficerHomePage() {
 
     const previousOverflow = document.body.style.overflow;
     const closeOnEscape = (event) => {
-      if (event.key === "Escape") setSelected(null);
+      if (event.key === "Escape") {
+        setSelected(null);
+        setError("");
+      }
     };
 
     document.body.style.overflow = "hidden";
@@ -101,6 +143,15 @@ export default function OfficerHomePage() {
     setRejectionReason("");
     setError("");
     setSelected(application);
+  };
+
+  const closeApplication = () => {
+    setSelected(null);
+    setError("");
+    setScore(null);
+    setScoreVisible(false);
+    setPanVisible(false);
+    setRejectionOpen(false);
   };
 
   const product = selected
@@ -138,6 +189,11 @@ export default function OfficerHomePage() {
       });
       setScore(result);
       setScoreVisible(true);
+      setViewedCreditApplications((current) => {
+        const next = new Set(current);
+        next.add(selected.applicationId);
+        return next;
+      });
     } catch (requestError) {
       setError(requestError.message);
     } finally {
@@ -246,6 +302,12 @@ export default function OfficerHomePage() {
                 </span>
                 <h2>{app.applicantName || `Customer #${app.customerId}`}</h2>
                 <p>{loan?.loanName || "Loan application"} · #{app.applicationId}</p>
+                <div className="officer-review-state">
+                  <span>
+                    Credit review: {viewedCreditApplications.has(app.applicationId) ? "Viewed" : "Not viewed"}
+                  </span>
+                  <span>Decision: {app.status}</span>
+                </div>
               </div>
               <div className="officer-application-stat">
                 <span>Requested amount</span>
@@ -271,7 +333,7 @@ export default function OfficerHomePage() {
       {selected && (
         <div
           className="review-overlay"
-          onMouseDown={(event) => event.target === event.currentTarget && setSelected(null)}
+          onMouseDown={(event) => event.target === event.currentTarget && closeApplication()}
         >
           <section className="review-modal" role="dialog" aria-modal="true">
             <header>
@@ -282,7 +344,7 @@ export default function OfficerHomePage() {
                 <h2>{selected.applicantName || `Customer #${selected.customerId}`}</h2>
                 <p>{product?.loanName || "Loan application"} · #{selected.applicationId}</p>
               </div>
-              <button onClick={() => setSelected(null)} aria-label="Close">×</button>
+              <button onClick={closeApplication} aria-label="Close">×</button>
             </header>
 
             {error && (
@@ -296,17 +358,14 @@ export default function OfficerHomePage() {
                 <div><dt>Asset valuation</dt><dd>{selected.valuation ? money(selected.valuation) : "Not required"}</dd></div>
                 <div><dt>Requested tenure</dt><dd>{selected.requestedTenureMonths} months</dd></div>
                 <div><dt>Loan-to-value</dt><dd>{loanToValue == null ? "Not applicable" : `${loanToValue.toFixed(1)}%`}</dd></div>
+                <div><dt>PAN</dt><dd>{maskPanNumber(selected.panNumber)}</dd></div>
               </dl>
             </div>
 
             <div className="applicant-checks">
-              <button type="button" onClick={viewCreditScore} disabled={scoreLoading || !selected.panNumber}>
-                <span>Credit assessment</span>
-                <b>{scoreLoading ? "Checking…" : scoreVisible ? "Hide credit score" : "View credit score"}</b>
-              </button>
               <button type="button" onClick={viewPanCard} disabled={panLoading}>
-                <span>Identity document</span>
-                <b>{panLoading ? "Loading…" : panVisible ? "Hide PAN card" : "View PAN card"}</b>
+                <span>Identity document · {maskPanNumber(selected.panNumber)}</span>
+                <b>{panLoading ? "Loading…" : panVisible ? "Hide PAN Card" : "View PAN Card"}</b>
               </button>
             </div>
 
@@ -317,10 +376,15 @@ export default function OfficerHomePage() {
                   <strong>{score.score}</strong>
                 </div>
                 <div>
-                  <b>{risk.label}</b>
+                  <b>{score.band || "Credit"} · {risk.label}</b>
                   <small>{risk.detail}</small>
-                  <small>PAN {selected.panNumber}</small>
+                  <small>PAN {score.maskedPanNumber || maskPanNumber(selected.panNumber)}</small>
+                  <p>{score.repaymentSummary}</p>
                 </div>
+                <dl className="credit-history-times">
+                  <div><dt>Generated on</dt><dd>{dateTime(score.generatedAt || score.checkedAt)}</dd></div>
+                  <div><dt>Retrieved on</dt><dd>{dateTime(score.retrievedAt)}</dd></div>
+                </dl>
               </div>
             )}
 
@@ -355,8 +419,36 @@ export default function OfficerHomePage() {
               </div>
             )}
 
+            {selected.status !== "PENDING" && (
+              <div className="decision-record">
+                <strong>Decision record</strong>
+                <span>{selected.status} · {dateTime(selected.reviewedAt)}</span>
+                {selected.reviewedByOfficerId && (
+                  <small>Recorded by officer #{selected.reviewedByOfficerId}</small>
+                )}
+                {selected.decisionReason && <p>{selected.decisionReason}</p>}
+                <small className="read-only-indicator">
+                  Read-only · Credit history {viewedCreditApplications.has(selected.applicationId) ? "viewed" : "not viewed"}
+                </small>
+              </div>
+            )}
+
             {selected.status === "PENDING" && (
-              <footer>
+              <footer className="review-decision-controls">
+                <button
+                  className="button credit-history-button"
+                  type="button"
+                  onClick={viewCreditScore}
+                  disabled={scoreLoading || !selected.panNumber}
+                >
+                  {scoreLoading
+                    ? "Retrieving…"
+                    : scoreVisible
+                      ? "Hide Credit History"
+                      : "View Credit History"}
+                </button>
+
+                <div className="decision-buttons">
                 {rejectionOpen ? (
                   <>
                     <button className="button secondary-button" disabled={saving} onClick={() => setRejectionOpen(false)}>Cancel</button>
@@ -368,6 +460,7 @@ export default function OfficerHomePage() {
                 {!rejectionOpen && (
                   <button className="button button--primary" disabled={saving} onClick={() => decide("APPROVED")}>{saving ? "Saving decision…" : `Approve at ${approvalRate.toFixed(2)}%*`}</button>
                 )}
+                </div>
               </footer>
             )}
           </section>

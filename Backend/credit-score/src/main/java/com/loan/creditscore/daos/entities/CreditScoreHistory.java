@@ -34,6 +34,9 @@ public class CreditScoreHistory {
     @Column(name = "APPLICATION_ID", nullable = false)
     private Long applicationId;
 
+    @Column(name = "ACTION", length = 50)
+    private String action;
+
     @Column(name = "CHECKED_AT", nullable = false, updatable = false)
     private LocalDateTime checkedAt;
 
@@ -93,6 +96,14 @@ public class CreditScoreHistory {
 
     public void setApplicationId(Long applicationId) {
         this.applicationId = applicationId;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
     }
 
     public LocalDateTime getCheckedAt() {

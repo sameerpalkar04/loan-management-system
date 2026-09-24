@@ -20,6 +20,23 @@
   line-height: 1.45;
 }
 
+.officer-review-state {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
+  margin-top: .65rem;
+}
+
+.officer-row .officer-review-state span {
+  padding: .28rem .5rem;
+  border: 1px solid #dbe7f2;
+  border-radius: 999px;
+  background: #f7fafc;
+  color: #607991;
+  font-size: .6rem;
+  font-weight: 700;
+}
+
 .officer-application-stat {
   display: grid;
   gap: .45rem;
@@ -76,7 +93,7 @@
 .review-modal { width: min(800px, 100%); }
 .review-modal > .review-facts { margin-top: 1.4rem; }
 .review-error { margin: 1rem 0 0; }
-.applicant-checks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; margin-top: 1rem; }
+.applicant-checks { display: grid; grid-template-columns: 1fr; gap: .75rem; margin-top: 1rem; }
 .applicant-checks button { display: grid; gap: .3rem; padding: .9rem 1rem; border: 1px solid #c9dff2; border-radius: 12px; background: #fff; color: #0d65be; text-align: left; cursor: pointer; }
 .applicant-checks button:hover:not(:disabled) { border-color: #68aee8; background: #f1f8ff; }
 .applicant-checks button:disabled { cursor: not-allowed; opacity: .55; }
@@ -87,6 +104,11 @@
 .review-modal .score-panel strong { font-size: 3.2rem; }
 .review-modal .score-panel b { margin: 0; font-size: .9rem; }
 .review-modal .score-panel small, .review-modal .score-panel span { color: inherit; opacity: .75; }
+.review-modal .score-panel p { margin: .35rem 0 0; color: inherit; font-size: .7rem; line-height: 1.5; }
+.credit-history-times { display: grid; grid-column: 1 / -1; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; margin: .35rem 0 0; padding-top: .8rem; border-top: 1px solid currentColor; }
+.credit-history-times > div { display: grid; gap: .2rem; }
+.credit-history-times dt { opacity: .7; font-size: .61rem; }
+.credit-history-times dd { margin: 0; font-size: .68rem; font-weight: 700; }
 .score-panel--low { border-color: #a9dec8; background: #e9f8f1; color: #126647 !important; }
 .score-panel--moderate { border-color: #efd98d; background: #fff9df; color: #80610d !important; }
 .score-panel--high { border-color: #f0b7b2; background: #fff0ee; color: #a52c23 !important; }
@@ -99,6 +121,18 @@
 .rejection-reason textarea:focus { border-color: #c94c43; outline: 3px solid #fde1de; }
 .rejection-reason small { color: #8f635f; font-size: .64rem; }
 .secondary-button { border: 1px solid #d1dfec; background: #fff; color: #4f6e8d; }
+
+.decision-record { display: grid; gap: .3rem; margin-top: 1rem; padding: .9rem 1rem; border: 1px solid #d8e5f0; border-radius: 12px; background: #f8fbfe; }
+.decision-record strong { color: #173a61; font-size: .76rem; }
+.decision-record span { color: #496b8d; font-size: .7rem; font-weight: 700; }
+.decision-record small { color: #7890a8; font-size: .62rem; }
+.decision-record p { margin: .25rem 0 0; color: #657d95; font-size: .69rem; line-height: 1.5; }
+
+.review-modal > .review-decision-controls { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .75rem; margin-top: 1.2rem; }
+.credit-history-button { border: 1px solid #9ecbf0; background: #edf7ff; color: #0868c9; }
+.credit-history-button:hover:not(:disabled) { border-color: #1680e9; background: #dff0ff; }
+.decision-buttons { display: flex; justify-content: flex-end; gap: .7rem; margin-left: auto; }
+.read-only-indicator { margin-left: auto; color: #678099; font-size: .65rem; font-weight: 700; }
 
 @media (max-width: 680px) {
   .officer-row {
@@ -117,4 +151,10 @@
 
   .applicant-checks { grid-template-columns: 1fr; }
   .review-modal .score-panel { grid-template-columns: 1fr 1.5fr; }
+  .credit-history-times { grid-template-columns: 1fr; }
+  .review-modal > .review-decision-controls,
+  .decision-buttons { align-items: stretch; flex-direction: column; width: 100%; }
+  .decision-buttons { margin-left: 0; }
+  .review-decision-controls .button { width: 100%; }
+  .read-only-indicator { margin-left: 0; }
 }

@@ -21,6 +21,15 @@ const loanDescriptionExcerpt = (description) => {
   return `${shortened.slice(0, lastSpace > 35 ? lastSpace : 56)}.....`;
 };
 
+const loanCardAccents = [
+  "#0871df",
+  "#168a75",
+  "#6d5bd0",
+  "#c97816",
+  "#b64d77",
+  "#0d8592",
+];
+
 const testimonials = [
   {
     quote:
@@ -97,6 +106,7 @@ export default function LandingPage() {
         className="public-loan-card"
         key={`${duplicate ? "duplicate" : "primary"}-${loan.loanTypeId}`}
         aria-hidden={duplicate || undefined}
+        style={{ "--loan-accent": loanCardAccents[index % loanCardAccents.length] }}
       >
         <span className="card-number">
           {String(index + 1).padStart(2, "0")}
@@ -119,7 +129,8 @@ export default function LandingPage() {
           </span>
 
           <Link to="/login" tabIndex={duplicate ? -1 : undefined}>
-            Apply ↗
+            <span>Apply for this</span>
+            <span className="loan-card-arrow" aria-hidden="true">↗</span>
           </Link>
         </footer>
       </article>

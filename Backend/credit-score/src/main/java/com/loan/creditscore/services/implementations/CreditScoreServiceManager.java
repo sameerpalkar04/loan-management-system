@@ -22,6 +22,8 @@ import java.util.Locale;
 public class CreditScoreServiceManager
         implements ServiceManager<SeedCreditScoreCommand, CreditScoreQuery, String> {
 
+    private static final String CREDIT_HISTORY_VIEWED = "CREDIT_HISTORY_VIEWED";
+
     private final CreditScoreRepository creditScoreRepository;
     private final CreditScoreHistoryRepository creditScoreHistoryRepository;
     private final MockCreditScoreGenerator mockCreditScoreGenerator;
@@ -68,10 +70,27 @@ public class CreditScoreServiceManager
         history.setLoanOfficerId(command.getLoanOfficerId());
         history.setOfficerName(command.getOfficerName().trim());
         history.setApplicationId(command.getApplicationId());
+        history.setAction(CREDIT_HISTORY_VIEWED);
 
-        creditScoreHistoryRepository.save(history);
+        CreditScoreHistory savedHistory = creditScoreHistoryRepository.save(history);
 
-        return mapToCreditScoreQuery(creditScore);
+        return mapToCreditScoreQuery(creditScore, savedHistory);
+    }
+
+    public List<Long> getViewedApplicationIds(Collection<Long> applicationIds) {
+        List<Long> validApplicationIds = applicationIds == null
+                ? List.of()
+                : applicationIds.stream()
+                        .filter(id -> id != null && id > 0)
+                        .distinct()
+                        .toList();
+
+        if (validApplicationIds.isEmpty()) {
+            return List.of();
+        }
+
+        return creditScoreHistoryRepository
+                .findViewedApplicationIds(validApplicationIds);
     }
 
     @Override
@@ -119,13 +138,56 @@ public class CreditScoreServiceManager
     private CreditScoreQuery mapToCreditScoreQuery(
             CreditScore creditScore) {
 
+        return mapToCreditScoreQuery(creditScore, null);
+    }
+
+    private CreditScoreQuery mapToCreditScoreQuery(
+            CreditScore creditScore,
+            CreditScoreHistory history) {
+
         CreditScoreQuery query = new CreditScoreQuery();
 
-        query.setPanNumber(creditScore.getPanNumber());
+        query.setMaskedPanNumber(maskPanNumber(creditScore.getPanNumber()));
         query.setScore(creditScore.getScore());
         query.setCheckedAt(creditScore.getCheckedAt());
+        query.setGeneratedAt(creditScore.getCheckedAt());
+        query.setBand(getBand(creditScore.getScore()));
+        query.setRepaymentSummary(getRepaymentSummary(creditScore.getScore()));
+
+        if (history != null) {
+            query.setRetrievedAt(history.getCheckedAt());
+            query.setAction(history.getAction());
+        }
 
         return query;
+    }
+
+    private String maskPanNumber(String panNumber) {
+        if (panNumber == null || panNumber.length() < 6) {
+            return "****";
+        }
+        return panNumber.substring(0, 5) + "****"
+                + panNumber.substring(panNumber.length() - 1);
+    }
+
+    private String getBand(Integer score) {
+        if (score >= 740) return "Excellent";
+        if (score >= 670) return "Good";
+        if (score >= 580) return "Fair";
+        return "Poor";
+    }
+
+    private String getRepaymentSummary(Integer score) {
+        return switch (getBand(score)) {
+            case "Excellent" ->
+                    "Mock profile: recent repayments are on time with no recorded delinquencies.";
+            case "Good" ->
+                    "Mock profile: repayments are generally on time with isolated minor delays.";
+            case "Fair" ->
+                    "Mock profile: some delayed repayments are present; review affordability carefully.";
+            default ->
+                    "Mock profile: repeated repayment delays indicate enhanced review is advisable.";
+        };
     }
 
     private CreditScore getOrCreateCreditScore(String panNumber) {
