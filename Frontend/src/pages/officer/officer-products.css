@@ -1,6 +1,25 @@
 .officer-products article {
   display: flex;
   flex-direction: column;
+  transition: border-color 0.22s ease, background-color 0.22s ease,
+    box-shadow 0.22s ease, transform 0.22s ease;
+}
+
+.officer-products article:hover,
+.officer-products article:focus-within {
+  border-color: #0968df;
+  background: #f3f9ff;
+  box-shadow:
+    0 18px 42px rgba(9, 104, 223, 0.16),
+    0 0 0 3px rgba(9, 104, 223, 0.08);
+  transform: translateY(-4px);
+}
+
+.officer-products article:hover > span,
+.officer-products article:focus-within > span,
+.officer-products article:hover h2,
+.officer-products article:focus-within h2 {
+  color: #0968df;
 }
 
 .officer-products p {
@@ -49,5 +68,11 @@
 @media (max-width: 680px) {
   .officer-products p {
     min-height: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .officer-products article {
+    transition: none;
   }
 }

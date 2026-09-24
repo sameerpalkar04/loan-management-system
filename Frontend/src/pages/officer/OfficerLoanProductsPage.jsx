@@ -5,6 +5,7 @@ import {
   getLoanTypes,
   updateLoanType,
 } from "../../api/loanTypeApi";
+import InterestRate from "../../components/common/InterestRate";
 import OfficerLayout from "../../layouts/OfficerLayout";
 import {
   preventInvalidNumberKey,
@@ -146,7 +147,7 @@ export default function OfficerLoanProductsPage() {
             }}
           >
             <span>
-              {Number(loan.baseInterestRate).toFixed(2)}%* p.a.
+              <InterestRate value={loan.baseInterestRate} />
             </span>
 
             <h2>{loan.loanName}</h2>
