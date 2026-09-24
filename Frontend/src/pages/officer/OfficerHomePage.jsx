@@ -236,23 +236,34 @@ export default function OfficerHomePage() {
         {visible.map((app) => {
           const loan = loanTypes.find((item) => item.loanTypeId === app.loanTypeId);
           return (
-            <button
-              type="button"
+            <article
               className="officer-row"
               key={app.applicationId}
-              onClick={() => openApplication(app)}
             >
-              <div>
+              <div className="officer-application-summary">
                 <span className={`status status--${app.status?.toLowerCase()}`}>
                   {app.status}
                 </span>
                 <h2>{app.applicantName || `Customer #${app.customerId}`}</h2>
                 <p>{loan?.loanName || "Loan application"} · #{app.applicationId}</p>
               </div>
-              <div><span>Requested</span><b>{money(app.requestedAmount)}</b></div>
-              <div><span>Tenure</span><b>{app.requestedTenureMonths} months</b></div>
-              <span className="review-arrow">→</span>
-            </button>
+              <div className="officer-application-stat">
+                <span>Requested amount</span>
+                <b>{money(app.requestedAmount)}</b>
+              </div>
+              <div className="officer-application-stat">
+                <span>Tenure</span>
+                <b>{app.requestedTenureMonths} months</b>
+              </div>
+              <button
+                className="officer-details-trigger"
+                type="button"
+                aria-label={`Review application ${app.applicationId}`}
+                onClick={() => openApplication(app)}
+              >
+                <span />
+              </button>
+            </article>
           );
         })}
       </div>

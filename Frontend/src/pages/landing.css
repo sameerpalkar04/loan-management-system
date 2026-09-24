@@ -31,14 +31,15 @@
 .loan-track { display: flex; align-items: center; width: max-content; will-change: transform; animation: loan-marquee 42s linear infinite; }
 .loan-track:hover { animation-play-state: paused; }
 .loan-group { display: flex; gap: 1rem; padding: 0 .5rem; }
-.public-loan-card { position: relative; flex: 0 0 330px; min-height: 360px; padding: 1.8rem; border: 1px solid #d1e4f5; border-radius: 20px; background: #fff; box-shadow: 0 12px 40px rgba(27, 91, 156, .07); transition: transform .3s, box-shadow .3s; }
+.public-loan-card { position: relative; display: flex; flex: 0 0 330px; flex-direction: column; min-height: 360px; padding: 1.8rem; border: 1px solid #d1e4f5; border-radius: 20px; background: #fff; box-shadow: 0 12px 40px rgba(27, 91, 156, .07); transition: transform .3s, box-shadow .3s; }
 .public-loan-card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(27, 91, 156, .14); }
 .card-number { position: absolute; right: 1.6rem; top: 1.5rem; color: #a4b9ce; font-size: .72rem; }
 .public-loan-card > p { margin: 2.5rem 0 .8rem; color: #0871df; font-family: "DM Serif Display", serif; font-size: 2.35rem; }
 .public-loan-card > p small { font-family: "DM Sans", sans-serif; font-size: .72rem; }
 .public-loan-card h3 { margin: 0 0 .8rem; font-size: 1.45rem; }
 .public-loan-card > div { min-height: 75px; color: #6b829e; line-height: 1.55; }
-.public-loan-card footer { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2.2rem; padding-top: 1.1rem; border-top: 1px solid #e2edf7; font-size: .78rem; }
+.public-loan-card > .loan-description-excerpt { min-height: 0; overflow: hidden; color: #6b829e; line-height: 1.55; text-overflow: clip; white-space: nowrap; }
+.public-loan-card footer { display: flex; justify-content: space-between; gap: 1rem; margin-top: auto; padding-top: 1.1rem; border-top: 1px solid #e2edf7; font-size: .78rem; }
 .public-loan-card footer a { flex: 0 0 auto; color: #0968df; font-weight: 700; }
 
 .rate-disclaimer { width: min(94%, 1800px); margin: 0 auto; overflow: hidden; border-block: 1px solid #cfe2f4; background: rgba(255, 255, 255, .5); color: #5d7897; }
@@ -54,8 +55,37 @@
 .process-section h3 { margin: 0 0 .3rem; }
 .process-section li p { margin: 0; color: #6b829e; }
 
+.testimonial-section { position: relative; overflow: hidden; padding: clamp(4.5rem, 8vw, 7rem) 0; background: linear-gradient(135deg, #064b9b 0%, #0873d5 58%, #0b5eb4 100%); color: #fff; }
+.testimonial-section::before { content: ""; position: absolute; width: 520px; height: 520px; top: -330px; right: -120px; border: 1px solid rgba(255,255,255,.13); border-radius: 50%; box-shadow: 0 0 0 80px rgba(255,255,255,.025), 0 0 0 160px rgba(255,255,255,.018); pointer-events: none; }
+.testimonial-heading { position: relative; z-index: 2; max-width: 1320px; margin: 0 auto; padding: 0 5% 2.8rem; text-align: center; }
+.testimonial-heading .eyebrow { margin-bottom: .8rem; color: #9fd4ff; }
+.testimonial-heading h2 { max-width: 760px; margin: 0 auto; font-family: "DM Serif Display", serif; font-size: clamp(2.8rem, 5vw, 4.6rem); font-weight: 400; line-height: 1; text-wrap: balance; }
+.testimonial-heading > p:last-child { max-width: 590px; margin: 1.1rem auto 0; color: #cae6ff; font-size: .9rem; line-height: 1.65; }
+.testimonial-marquee { position: relative; z-index: 1; width: 100%; margin: 0 auto; overflow: hidden; padding: .5rem 0 1rem; }
+.testimonial-track { display: flex; align-items: stretch; width: max-content; transform: translate3d(0, 0, 0); backface-visibility: hidden; will-change: transform; animation: testimonial-marquee 72s linear infinite; }
+.testimonial-track:hover { animation-play-state: paused; }
+.testimonial-group { display: flex; align-items: stretch; gap: 1rem; padding: 0 .5rem; }
+.testimonial-card { display: flex; flex: 0 0 350px; flex-direction: column; min-height: 340px; padding: 1.6rem; border: 1px solid rgba(255,255,255,.8); border-radius: 20px; background: #fff; color: #12365f; box-shadow: 0 18px 45px rgba(2,34,73,.18); }
+.testimonial-quote-mark { height: 34px; color: #3b9cf0; font-family: "DM Serif Display", serif; font-size: 3.2rem; line-height: .9; }
+.testimonial-card blockquote { flex: 1; margin: .7rem 0 1.5rem; color: #47698c; font-size: .83rem; line-height: 1.7; }
+.testimonial-card footer { display: flex; align-items: center; gap: .8rem; padding-top: 1rem; border-top: 1px solid #e0edf7; }
+.testimonial-card footer > span:last-child { display: grid; gap: .22rem; min-width: 0; }
+.testimonial-card footer b { color: #102f59; font-size: .78rem; }
+.testimonial-card footer small { overflow: hidden; color: #7892ad; font-size: .64rem; text-overflow: ellipsis; white-space: nowrap; }
+.testimonial-avatar { flex: 0 0 auto; width: 54px; height: 54px; border: 3px solid #e1f1ff; border-radius: 50%; background-repeat: no-repeat; background-size: 300% 200%; box-shadow: 0 5px 14px rgba(20,91,157,.15); }
+.testimonial-avatar--1 { background-position: 0 0; }
+.testimonial-avatar--2 { background-position: 50% 0; }
+.testimonial-avatar--3 { background-position: 100% 0; }
+.testimonial-avatar--4 { background-position: 0 100%; }
+.testimonial-avatar--5 { background-position: 50% 100%; }
+.testimonial-avatar--6 { background-position: 100% 100%; }
+
 @keyframes loan-marquee { to { transform: translateX(-50%); } }
 @keyframes rate-disclaimer { to { transform: translateX(-50%); } }
+@keyframes testimonial-marquee {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
 
 @media (max-width: 850px) {
   .landing-nav nav > a:not(.nav-signin) { display: none; }
@@ -83,12 +113,18 @@
   .public-loan-card { flex-basis: 84vw; }
   .section-heading { align-items: flex-start; flex-direction: column; gap: 1rem; }
   .process-section { padding-top: 5rem; padding-bottom: 5rem; }
+  .testimonial-heading { padding-inline: 6%; }
+  .testimonial-heading > p:last-child { font-size: .82rem; }
+  .testimonial-marquee { width: 100%; }
+  .testimonial-card { flex-basis: 84vw; min-height: 360px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .loan-marquee { overflow-x: auto; scrollbar-width: none; mask-image: none; -webkit-mask-image: none; }
   .loan-marquee::-webkit-scrollbar { display: none; }
-  .loan-track, .rate-disclaimer__track { animation: none; }
+  .loan-track, .rate-disclaimer__track, .testimonial-track { animation: none; }
   .rate-disclaimer { overflow-x: auto; scrollbar-width: none; }
   .rate-disclaimer::-webkit-scrollbar { display: none; }
+  .testimonial-marquee { overflow-x: auto; scrollbar-width: none; mask-image: none; -webkit-mask-image: none; }
+  .testimonial-marquee::-webkit-scrollbar { display: none; }
 }

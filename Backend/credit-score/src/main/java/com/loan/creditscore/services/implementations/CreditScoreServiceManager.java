@@ -46,19 +46,7 @@ public class CreditScoreServiceManager
 
         String panNumber = normalizePanNumber(command.getPanNumber());
 
-        CreditScore creditScore = creditScoreRepository
-                .findById(panNumber)
-                .orElseGet(() -> {
-
-                    Integer generatedScore =
-                            mockCreditScoreGenerator.generateScore(panNumber);
-
-                    CreditScore newCreditScore = new CreditScore();
-                    newCreditScore.setPanNumber(panNumber);
-                    newCreditScore.setScore(generatedScore);
-
-                    return creditScoreRepository.save(newCreditScore);
-                });
+        CreditScore creditScore = getOrCreateCreditScore(panNumber);
 
         return mapToCreditScoreQuery(creditScore);
     }
@@ -72,11 +60,7 @@ public class CreditScoreServiceManager
 
         String panNumber = normalizePanNumber(command.getPanNumber());
 
-        CreditScore creditScore = creditScoreRepository
-                .findById(panNumber)
-                .orElseThrow(() -> new CreditScoreNotFoundException(
-                        "Credit score not found for PAN number: " + panNumber
-                ));
+        CreditScore creditScore = getOrCreateCreditScore(panNumber);
 
         CreditScoreHistory history = new CreditScoreHistory();
         history.setPanNumber(creditScore.getPanNumber());
@@ -142,6 +126,19 @@ public class CreditScoreServiceManager
         query.setCheckedAt(creditScore.getCheckedAt());
 
         return query;
+    }
+
+    private CreditScore getOrCreateCreditScore(String panNumber) {
+        return creditScoreRepository
+                .findById(panNumber)
+                .orElseGet(() -> {
+                    CreditScore creditScore = new CreditScore();
+                    creditScore.setPanNumber(panNumber);
+                    creditScore.setScore(
+                            mockCreditScoreGenerator.generateScore(panNumber)
+                    );
+                    return creditScoreRepository.save(creditScore);
+                });
     }
 
     private String normalizePanNumber(String panNumber) {

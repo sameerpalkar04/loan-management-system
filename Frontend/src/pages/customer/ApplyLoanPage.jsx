@@ -45,6 +45,8 @@ export default function ApplyLoanPage() {
   const [calculating, setCalculating] = useState(false);
   const [calculatedRate, setCalculatedRate] = useState(null);
   const [estimatedRate, setEstimatedRate] = useState(null);
+  const [estimatingRate, setEstimatingRate] = useState(false);
+  const [estimatedRateError, setEstimatedRateError] = useState("");
 
   const navigate = useNavigate();
   const allowNavigationRef = useRef(false);
@@ -72,6 +74,60 @@ export default function ApplyLoanPage() {
   const selected = loanTypes.find(
     (loan) => loan.loanTypeId === Number(form.loanTypeId)
   );
+
+  const productMaximumAmount = Number(selected?.maximumLoanAmount || 1);
+  const collateralMaximumAmount =
+    selected?.collateralRequired && Number(form.valuation) > 0
+      ? (Number(form.valuation) * Number(selected.maximumLtvPercentage)) / 100
+      : productMaximumAmount;
+  const calculatorMaximumAmount = Math.max(
+    1,
+    Math.floor(Math.min(productMaximumAmount, collateralMaximumAmount))
+  );
+  const calculatorMinimumAmount = 0;
+  const calculatorMaximumTenure = Math.max(
+    1,
+    Number(selected?.maximumTenureMonths || 1)
+  );
+
+  useEffect(() => {
+    const tenure = Number(form.requestedTenureMonths);
+    const tenureIsValid =
+      form.requestedTenureMonths !== "" &&
+      Number.isInteger(tenure) &&
+      tenure > 0 &&
+      tenure <= Number(selected?.maximumTenureMonths || 0);
+
+    if (!selected || !tenureIsValid) {
+      return undefined;
+    }
+
+    let active = true;
+    const timer = window.setTimeout(async () => {
+      setEstimatingRate(true);
+      setEstimatedRateError("");
+
+      try {
+        const response = await calculateInterestRate({
+          loanTypeId: Number(selected.loanTypeId),
+          requestedTenureMonths: tenure,
+        });
+        if (active) setEstimatedRate(response.interestRate);
+      } catch (requestError) {
+        if (active) {
+          setEstimatedRate(null);
+          setEstimatedRateError(requestError.message);
+        }
+      } finally {
+        if (active) setEstimatingRate(false);
+      }
+    }, 350);
+
+    return () => {
+      active = false;
+      window.clearTimeout(timer);
+    };
+  }, [form.requestedTenureMonths, selected]);
 
   useEffect(() => {
     if (!calculatorOpen) return undefined;
@@ -181,6 +237,8 @@ export default function ApplyLoanPage() {
         ),
       });
       setEstimatedRate(null);
+      setEstimatedRateError("");
+      setEstimatingRate(false);
     }
 
     if (name === "requestedAmount") {
@@ -193,7 +251,6 @@ export default function ApplyLoanPage() {
           value
         ),
       }));
-      setEstimatedRate(null);
     }
 
     if (name === "valuation") {
@@ -214,13 +271,29 @@ export default function ApplyLoanPage() {
         requestedTenureMonths: validateTenure(value),
       }));
       setEstimatedRate(null);
+      setEstimatedRateError("");
+      setEstimatingRate(false);
     }
   };
 
   const openCalculator = () => {
+    const currentAmount = Number(form.requestedAmount);
+    const currentTenure = Number(form.requestedTenureMonths);
+
     setCalculator({
-      requestedAmount: form.requestedAmount,
-      requestedTenureMonths: form.requestedTenureMonths,
+      requestedAmount:
+        form.requestedAmount !== "" && Number.isFinite(currentAmount)
+          ? String(
+              Math.min(
+                calculatorMaximumAmount,
+                Math.max(calculatorMinimumAmount, currentAmount)
+              )
+            )
+          : String(calculatorMinimumAmount),
+      requestedTenureMonths:
+        currentTenure >= 1 && currentTenure <= calculatorMaximumTenure
+          ? String(currentTenure)
+          : String(Math.min(12, calculatorMaximumTenure)),
     });
     setCalculatorError("");
     setCalculatedRate(null);
@@ -228,44 +301,82 @@ export default function ApplyLoanPage() {
   };
 
   const updateCalculator = (event) => {
+    const { name, value } = event.target;
     setCalculator((old) => ({
       ...old,
-      [event.target.name]: event.target.value,
+      [name]: value,
     }));
     setCalculatorError("");
-    setCalculatedRate(null);
-  };
-
-  const calculateRate = async (event) => {
-    event.preventDefault();
-
-    const amountError = validateAmount(calculator.requestedAmount);
-    const tenureError = validateTenure(
-      calculator.requestedTenureMonths
-    );
-
-    if (amountError || tenureError) {
-      setCalculatorError(amountError || tenureError);
-      return;
-    }
-
-    setCalculating(true);
-    setCalculatorError("");
-
-    try {
-      const response = await calculateInterestRate({
-        loanTypeId: Number(form.loanTypeId),
-        requestedTenureMonths: Number(
-          calculator.requestedTenureMonths
-        ),
-      });
-      setCalculatedRate(response.interestRate);
-    } catch (requestError) {
-      setCalculatorError(requestError.message);
-    } finally {
+    if (name === "requestedTenureMonths") {
+      setCalculatedRate(null);
       setCalculating(false);
     }
   };
+
+  useEffect(() => {
+    if (!calculatorOpen || !selected) return undefined;
+
+    const tenure = Number(calculator.requestedTenureMonths);
+    if (
+      !Number.isInteger(tenure) ||
+      tenure < 1 ||
+      tenure > calculatorMaximumTenure
+    ) {
+      return undefined;
+    }
+
+    let active = true;
+    const timer = window.setTimeout(async () => {
+      setCalculating(true);
+      setCalculatorError("");
+      try {
+        const response = await calculateInterestRate({
+          loanTypeId: Number(selected.loanTypeId),
+          requestedTenureMonths: tenure,
+        });
+        if (active) setCalculatedRate(response.interestRate);
+      } catch (requestError) {
+        if (active) setCalculatorError(requestError.message);
+      } finally {
+        if (active) setCalculating(false);
+      }
+    }, 250);
+
+    return () => {
+      active = false;
+      window.clearTimeout(timer);
+    };
+  }, [
+    calculator.requestedTenureMonths,
+    calculatorMaximumTenure,
+    calculatorOpen,
+    selected,
+  ]);
+
+  const calculatorPrincipal = Number(calculator.requestedAmount || 0);
+  const calculatorMonths = Number(calculator.requestedTenureMonths || 0);
+  const calculatorMonthlyRate = Number(calculatedRate || 0) / 1200;
+  const monthlyEmi =
+    calculatorPrincipal > 0 && calculatorMonths > 0
+      ? calculatorMonthlyRate > 0
+        ? (calculatorPrincipal *
+            calculatorMonthlyRate *
+            (1 + calculatorMonthlyRate) ** calculatorMonths) /
+          ((1 + calculatorMonthlyRate) ** calculatorMonths - 1)
+        : calculatorPrincipal / calculatorMonths
+      : 0;
+  const totalPayable = monthlyEmi * calculatorMonths;
+  const totalInterest = Math.max(0, totalPayable - calculatorPrincipal);
+  const amountSliderProgress =
+    calculatorMaximumAmount === calculatorMinimumAmount
+      ? 100
+      : ((calculatorPrincipal - calculatorMinimumAmount) /
+          (calculatorMaximumAmount - calculatorMinimumAmount)) *
+        100;
+  const tenureSliderProgress =
+    calculatorMaximumTenure === 1
+      ? 100
+      : ((calculatorMonths - 1) / (calculatorMaximumTenure - 1)) * 100;
 
   const applyCalculatedRate = () => {
     setForm((old) => ({
@@ -582,46 +693,53 @@ export default function ApplyLoanPage() {
               </label>
             </div>
 
-            <button
-              className="interest-calculator-trigger"
-              type="button"
-              onClick={openCalculator}
-              disabled={
-                !selected ||
-                (selected.collateralRequired &&
-                  Boolean(
-                    validateValuation(
-                      form.valuation,
-                      selected,
-                      "",
-                      true
-                    )
-                  ))
-              }
-            >
-              <span>
-                <b>Calculate your applicable interest</b>
-                <small>
-                  {selected?.collateralRequired &&
-                  validateValuation(
-                    form.valuation,
-                    selected,
-                    "",
-                    true
-                  )
-                    ? "Enter a valid asset valuation first to compare rates."
-                    : "Compare tenures before submitting your application."}
-                </small>
-              </span>
-              <span aria-hidden="true">→</span>
-            </button>
+            <div className="application-rate-tools">
+              <button
+                className="interest-calculator-trigger"
+                type="button"
+                onClick={openCalculator}
+                disabled={
+                  !selected ||
+                  (selected.collateralRequired &&
+                    Boolean(
+                      validateValuation(
+                        form.valuation,
+                        selected,
+                        "",
+                        true
+                      )
+                    ))
+                }
+              >
+                <span>
+                  <b>Use rate calculator</b>
+                  <small>Compare different repayment tenures.</small>
+                </span>
+                <span aria-hidden="true">→</span>
+              </button>
 
-            {estimatedRate !== null && (
-              <div className="applied-rate">
-                <span>Estimated applicable rate</span>
-                <strong>{Number(estimatedRate).toFixed(2)}%* p.a.</strong>
+              <div
+                className={`applicable-rate-field ${
+                  estimatedRateError ? "applicable-rate-field--error" : ""
+                }`}
+                aria-live="polite"
+              >
+                <span>Estimated applicable interest rate</span>
+                <strong>
+                  {estimatingRate
+                    ? "Calculating…"
+                    : estimatedRate !== null
+                      ? `${Number(estimatedRate).toFixed(2)}%* p.a.`
+                      : "—"}
+                </strong>
+                <small>
+                  {estimatedRateError ||
+                    (form.requestedTenureMonths
+                      ? "This is an estimated rate only. Your final rate may vary."
+                      : "Enter a valid tenure to view your estimated rate.")}
+                </small>
               </div>
-            )}
+            </div>
 
             <label className="file-field">
               PAN card image
@@ -853,7 +971,7 @@ export default function ApplyLoanPage() {
               <div>
                 <p className="eyebrow">RATE ESTIMATOR</p>
                 <h2 id="rate-calculator-title">
-                  Find your applicable rate.
+                  Plan your monthly repayment.
                 </h2>
               </div>
 
@@ -872,94 +990,103 @@ export default function ApplyLoanPage() {
               <b>{selected?.baseInterestRate}%* starting rate</b>
             </div>
 
-            <form onSubmit={calculateRate}>
-              <label>
-                Requested amount
+            <div className="emi-calculator-controls">
+              <label className="emi-slider-field">
+                <span>
+                  Loan amount
+                  <output>₹{formatCurrency(calculator.requestedAmount)}</output>
+                </span>
                 <input
                   autoFocus
                   name="requestedAmount"
-                  type="number"
-                  min="1"
-                  max={selected?.maximumLoanAmount}
+                  type="range"
+                  min={calculatorMinimumAmount}
+                  max={calculatorMaximumAmount}
+                  step="1"
                   value={calculator.requestedAmount}
                   onChange={updateCalculator}
-                  onKeyDown={preventInvalidNumberKey}
-                  onPaste={preventInvalidNumberPaste}
-                  placeholder="Enter requested amount"
-                  aria-invalid={Boolean(
-                    validateAmount(calculator.requestedAmount)
-                  )}
-                  required
+                  style={{ "--range-progress": `${amountSliderProgress}%` }}
                 />
-                <small>
-                  Maximum ₹{formatCurrency(selected?.maximumLoanAmount)}
+                <small className="emi-slider-limits">
+                  <span>₹{formatCurrency(calculatorMinimumAmount)}</span>
+                  <span aria-hidden="true">—</span>
+                  <span>₹{formatCurrency(calculatorMaximumAmount)}</span>
                 </small>
-                {validateAmount(calculator.requestedAmount) && (
-                  <small className="calculator-field-error">
-                    {validateAmount(calculator.requestedAmount)}
-                  </small>
-                )}
               </label>
 
-              <label>
-                Tenure in months
+              <label className="emi-slider-field">
+                <span>
+                  Loan tenure
+                  <output>{calculator.requestedTenureMonths} months</output>
+                </span>
                 <input
                   name="requestedTenureMonths"
-                  type="number"
+                  type="range"
                   min="1"
-                  max={selected?.maximumTenureMonths}
+                  max={calculatorMaximumTenure}
                   step="1"
                   value={calculator.requestedTenureMonths}
                   onChange={updateCalculator}
-                  onKeyDown={preventInvalidNumberKey}
-                  onPaste={preventInvalidNumberPaste}
-                  placeholder="Enter tenure"
-                  aria-invalid={Boolean(
-                    validateTenure(calculator.requestedTenureMonths)
-                  )}
-                  required
+                  style={{ "--range-progress": `${tenureSliderProgress}%` }}
                 />
-                <small>
-                  Maximum {selected?.maximumTenureMonths} months
+                <small className="emi-slider-limits">
+                  <span>1 month</span>
+                  <span aria-hidden="true">—</span>
+                  <span>{calculatorMaximumTenure} months</span>
                 </small>
-                {validateTenure(calculator.requestedTenureMonths) && (
-                  <small className="calculator-field-error">
-                    {validateTenure(calculator.requestedTenureMonths)}
-                  </small>
-                )}
               </label>
+
+              <div className="emi-fixed-rate" aria-live="polite">
+                <span>Estimated interest rate</span>
+                <strong>
+                  {calculating
+                    ? "Calculating…"
+                    : calculatedRate !== null
+                      ? `${Number(calculatedRate).toFixed(2)}%* p.a.`
+                      : "—"}
+                </strong>
+                <small>The rate is calculated from the selected product and tenure.</small>
+              </div>
 
               {calculatorError && (
                 <p className="form-error">{calculatorError}</p>
               )}
+            </div>
+
+            <div className="emi-repayment-summary" aria-live="polite">
+              <div className="emi-monthly-result">
+                <span>Your estimated monthly EMI</span>
+                <strong>₹{formatCurrency(Math.round(monthlyEmi))}</strong>
+              </div>
+
+              <dl>
+                <div>
+                  <dt>Total amount payable</dt>
+                  <dd>₹{formatCurrency(Math.round(totalPayable))}</dd>
+                </div>
+                <div>
+                  <dt>Total interest</dt>
+                  <dd>₹{formatCurrency(Math.round(totalInterest))}</dd>
+                </div>
+                <div>
+                  <dt>Principal amount</dt>
+                  <dd>₹{formatCurrency(Math.round(calculatorPrincipal))}</dd>
+                </div>
+              </dl>
+
+              <p>* Estimates only. Final repayment terms may vary after review.</p>
 
               <button
                 className="button button--primary"
-                disabled={calculating}
+                type="button"
+                disabled={
+                  calculatedRate === null || calculating || calculatorPrincipal <= 0
+                }
+                onClick={applyCalculatedRate}
               >
-                {calculating ? "Calculating…" : "Calculate rate"}
+                Use this plan →
               </button>
-            </form>
-
-            {calculatedRate !== null && (
-              <div className="rate-calculator-result" aria-live="polite">
-                <span>Your estimated applicable rate</span>
-                <strong>
-                  {Number(calculatedRate).toFixed(2)}%* <small>p.a.</small>
-                </strong>
-                <p>
-                  Based on the selected loan and tenure. The final rate
-                  is confirmed when your application is submitted.
-                </p>
-                <button
-                  className="button button--primary"
-                  type="button"
-                  onClick={applyCalculatedRate}
-                >
-                  Apply this rate →
-                </button>
-              </div>
-            )}
+            </div>
           </aside>
         </div>
       )}

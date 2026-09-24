@@ -4,16 +4,73 @@ import { getLoanTypes } from "../api/loanTypeApi";
 import Logo from "../components/common/Logo";
 import LoanHelpSections from "../components/common/LoanHelpSections";
 import loanHeroImage from "../assets/loan-hero.png";
+import testimonialFaces from "../assets/testimonial-faces.png";
 import "./landing.css";
 
-const landingLoanDescriptions = {
-  "Home Loan": "A home loan for your next chapter.",
-  "Car Loan": "Drive your plans forward.",
-  "Education Loan": "Invest in your future.",
-  "Personal Loan": "Finance for life's important moments.",
-  "Gold Loan": "Unlock value from your gold.",
-  "Business Loan": "Fuel your business growth.",
+const loanDescriptionExcerpt = (description) => {
+  const firstLine = String(description || "")
+    .split(/\r?\n/)[0]
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (!firstLine) return "Flexible finance for your next move.";
+  if (firstLine.length <= 56) return firstLine;
+
+  const shortened = firstLine.slice(0, 56);
+  const lastSpace = shortened.lastIndexOf(" ");
+  return `${shortened.slice(0, lastSpace > 35 ? lastSpace : 56)}.....`;
 };
+
+const testimonials = [
+  {
+    quote:
+      "I needed funds urgently for a family expense. Luma Finance made the gold loan application simple, and I was able to get the financial support I needed without a complicated process.",
+    name: "Priya S.",
+    location: "Mumbai",
+    product: "Gold Loan",
+    face: 1,
+  },
+  {
+    quote:
+      "Getting an education loan through Luma Finance made it easier for me to manage my college expenses. The application process was straightforward, and I could focus more on my studies.",
+    name: "Rahul M.",
+    location: "Pune",
+    product: "Education Loan",
+    face: 2,
+  },
+  {
+    quote:
+      "I had been planning to buy my first car for a long time. The car loan from Luma Finance helped me make the purchase without putting too much pressure on my savings.",
+    name: "Neha K.",
+    location: "Bengaluru",
+    product: "Car Loan",
+    face: 3,
+  },
+  {
+    quote:
+      "I needed additional funds for an unexpected expense. The personal loan application with Luma Finance was convenient, and the process was easy to understand.",
+    name: "Amit R.",
+    location: "Delhi",
+    product: "Personal Loan",
+    face: 4,
+  },
+  {
+    quote:
+      "The business loan from Luma Finance helped me arrange the funds needed to expand my small business. It gave me the flexibility to invest in new equipment and grow my operations.",
+    name: "Suresh P.",
+    location: "Ahmedabad",
+    product: "Business Loan",
+    face: 5,
+  },
+  {
+    quote:
+      "Buying a home felt like a big step for my family. The home loan from Luma Finance helped us plan our finances and move closer to owning our dream home.",
+    name: "Ananya & Karan",
+    location: "Hyderabad",
+    product: "Home Loan",
+    face: 6,
+  },
+];
 
 export default function LandingPage() {
   const [loans, setLoans] = useState([]);
@@ -51,9 +108,8 @@ export default function LandingPage() {
 
         <h3>{loan.loanName}</h3>
 
-        <div>
-          {landingLoanDescriptions[loan.loanName] ||
-            "Flexible finance designed for your next move."}
+        <div className="loan-description-excerpt" title={loan.description || ""}>
+          {loanDescriptionExcerpt(loan.description)}
         </div>
 
         <footer>
@@ -69,6 +125,29 @@ export default function LandingPage() {
       </article>
     ));
 
+  const renderTestimonials = (duplicate = false) =>
+    testimonials.map((testimonial) => (
+      <article
+        className="testimonial-card"
+        key={`${duplicate ? "duplicate" : "primary"}-${testimonial.name}`}
+        aria-hidden={duplicate || undefined}
+      >
+        <span className="testimonial-quote-mark" aria-hidden="true">“</span>
+        <blockquote>{testimonial.quote}</blockquote>
+        <footer>
+          <span
+            className={`testimonial-avatar testimonial-avatar--${testimonial.face}`}
+            style={{ backgroundImage: `url(${testimonialFaces})` }}
+            aria-hidden="true"
+          />
+          <span>
+            <b>{testimonial.name}</b>
+            <small>{testimonial.location} · {testimonial.product}</small>
+          </span>
+        </footer>
+      </article>
+    ));
+
   return (
     <main className="landing-page">
       <div className="ambient ambient--one" />
@@ -80,6 +159,7 @@ export default function LandingPage() {
         <nav>
           <a href="#loans">Loans</a>
           <a href="#process">How it works</a>
+          <a href="#loan-faq">FAQs</a>
 
           <Link className="nav-signin" to="/login">
             Sign in <span>↗</span>
@@ -259,6 +339,26 @@ export default function LandingPage() {
             </li>
           ))}
         </ol>
+      </section>
+
+      <section className="testimonial-section" aria-labelledby="testimonial-heading">
+        <div className="testimonial-heading">
+          <p className="eyebrow">CUSTOMER STORIES</p>
+          <h2 id="testimonial-heading">Here’s what our customers have to say.</h2>
+          <p>
+            Real experiences from customers building their next chapter with
+            clear, straightforward lending.
+          </p>
+        </div>
+
+        <div className="testimonial-marquee">
+          <div className="testimonial-track">
+            <div className="testimonial-group">{renderTestimonials()}</div>
+            <div className="testimonial-group" aria-hidden="true">
+              {renderTestimonials(true)}
+            </div>
+          </div>
+        </div>
       </section>
 
       <LoanHelpSections />

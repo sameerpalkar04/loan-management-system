@@ -137,7 +137,7 @@
   justify-content: space-between;
   gap: 1rem;
   width: 100%;
-  margin-bottom: 1rem;
+  margin: 0;
   padding: 1rem;
   border: 1px solid #b9d9f4;
   border-radius: 12px;
@@ -145,6 +145,63 @@
   color: #0968df;
   text-align: left;
   cursor: pointer;
+}
+
+.application-rate-tools {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(220px, 0.75fr);
+  gap: 0.85rem;
+  align-items: stretch;
+  margin-bottom: 1rem;
+}
+
+.application-rate-tools .interest-calculator-trigger {
+  min-height: 112px;
+}
+
+.applicable-rate-field {
+  display: grid;
+  align-content: center;
+  gap: 0.28rem;
+  min-width: 0;
+  padding: 0.9rem 1rem;
+  border: 1px solid #bcded4;
+  border-radius: 12px;
+  background: #f0faf7;
+}
+
+.applicable-rate-field > span {
+  color: #58776f;
+  font-size: 0.66rem;
+  font-weight: 700;
+}
+
+.applicable-rate-field strong {
+  overflow: hidden;
+  color: #08755b;
+  font-family: "DM Serif Display", serif;
+  font-size: clamp(1.35rem, 3vw, 1.8rem);
+  font-weight: 400;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.applicable-rate-field small {
+  color: #718b84;
+  font-size: 0.61rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.applicable-rate-field--error {
+  border-color: #efc5c1;
+  background: #fff5f4;
+}
+
+.applicable-rate-field--error strong,
+.applicable-rate-field--error small {
+  color: #a63b33;
 }
 
 .interest-calculator-trigger:hover {
@@ -214,7 +271,7 @@
   position: absolute;
   top: 0;
   right: 0;
-  width: min(460px, 100%);
+  width: min(720px, 100%);
   height: 100%;
   overflow-y: auto;
   padding: clamp(1.4rem, 4vw, 2.2rem);
@@ -222,6 +279,194 @@
   background: #fff;
   box-shadow: -28px 0 80px rgba(4, 36, 76, 0.22);
   animation: rate-panel-in 0.38s cubic-bezier(0.22, 0.9, 0.32, 1) both;
+}
+
+.emi-calculator-controls {
+  display: grid;
+  gap: 1.4rem;
+  padding: 1.25rem;
+  border: 1px solid #c7def2;
+  border-radius: 16px;
+  background: #edf7ff;
+}
+
+.emi-slider-field {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.emi-slider-field > span {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  color: #183b62;
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.emi-slider-field output {
+  min-width: 120px;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid #c9dceb;
+  border-radius: 8px;
+  background: #fff;
+  color: #12365e;
+  font-size: 0.75rem;
+  text-align: right;
+}
+
+.rate-calculator-panel .emi-slider-field input[type="range"] {
+  width: 100%;
+  height: 6px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    #0871d5 0 var(--range-progress),
+    #a9cfee var(--range-progress) 100%
+  );
+  box-shadow: none;
+  outline: none;
+  cursor: pointer;
+  accent-color: #0871d5;
+  appearance: none;
+}
+
+.rate-calculator-panel .emi-slider-field input[type="range"]::-webkit-slider-thumb {
+  width: 22px;
+  height: 22px;
+  border: 4px solid #fff;
+  border-radius: 50%;
+  background: #0871d5;
+  box-shadow: 0 0 0 2px #0871d5, 0 4px 12px rgba(9, 95, 177, 0.25);
+  appearance: none;
+}
+
+.rate-calculator-panel .emi-slider-field input[type="range"]::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border: 4px solid #fff;
+  border-radius: 50%;
+  background: #0871d5;
+  box-shadow: 0 0 0 2px #0871d5, 0 4px 12px rgba(9, 95, 177, 0.25);
+}
+
+.rate-calculator-panel .emi-slider-field > .emi-slider-limits {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  width: 100%;
+  margin-top: 0;
+  column-gap: 1rem;
+  color: #6f88a1;
+  font-size: 0.62rem;
+  font-weight: 600;
+}
+
+.rate-calculator-panel .emi-slider-limits span:nth-child(2) {
+  color: #96acc1;
+}
+
+.rate-calculator-panel .emi-slider-limits span:last-child {
+  text-align: right;
+}
+
+.emi-fixed-rate {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #cfe2f2;
+}
+
+.emi-fixed-rate > span {
+  color: #536f8d;
+  font-size: 0.7rem;
+}
+
+.emi-fixed-rate strong {
+  margin-left: auto;
+  color: #075eae;
+  font-size: 1rem;
+}
+
+.emi-fixed-rate small {
+  flex-basis: 100%;
+  color: #7890a7;
+  font-size: 0.61rem;
+  line-height: 1.4;
+}
+
+.emi-repayment-summary {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding: 1.25rem;
+  border: 1px solid #c9ddf0;
+  border-radius: 16px;
+  background: #f7fbff;
+}
+
+.emi-monthly-result {
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #dceeff, #c6e2fb);
+  color: #0758a3;
+  text-align: center;
+}
+
+.emi-monthly-result span {
+  font-size: 0.7rem;
+}
+
+.emi-monthly-result strong {
+  margin-top: 0.25rem;
+  font-family: "DM Serif Display", serif;
+  font-size: clamp(2rem, 6vw, 2.8rem);
+  font-weight: 400;
+}
+
+.emi-repayment-summary dl {
+  display: grid;
+  gap: 0;
+  margin: 0;
+}
+
+.emi-repayment-summary dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid #dce9f4;
+}
+
+.emi-repayment-summary dt {
+  color: #637b94;
+  font-size: 0.72rem;
+}
+
+.emi-repayment-summary dd {
+  margin: 0;
+  color: #143a64;
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.emi-repayment-summary > p {
+  margin: 0;
+  color: #71869c;
+  font-size: 0.61rem;
+  line-height: 1.45;
+}
+
+.emi-repayment-summary > .button {
+  width: 100%;
 }
 
 .rate-calculator-panel > header {
@@ -600,6 +845,29 @@
 }
 
 @media (max-width: 680px) {
+  .application-rate-tools {
+    grid-template-columns: 1fr;
+  }
+
+  .application-rate-tools .interest-calculator-trigger {
+    min-height: auto;
+  }
+
+  .emi-slider-field > span,
+  .emi-fixed-rate {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .emi-slider-field output {
+    width: 100%;
+    text-align: left;
+  }
+
+  .emi-fixed-rate strong {
+    margin-left: 0;
+  }
+
   .interest-calculator-trigger {
     padding: 0.9rem;
   }
