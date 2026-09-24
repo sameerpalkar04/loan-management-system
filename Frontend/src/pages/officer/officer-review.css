@@ -2,7 +2,13 @@
   grid-template-columns: 1.5fr .75fr .6fr 40px;
   gap: clamp(1rem, 3vw, 2.5rem);
   padding: 1.45rem 1.7rem;
-  cursor: default;
+  cursor: pointer;
+}
+
+.officer-row:focus-visible {
+  border-color: #1680e9;
+  outline: 3px solid #cce7ff;
+  outline-offset: 3px;
 }
 
 .officer-application-summary .status {
@@ -77,16 +83,16 @@
   transition: box-shadow .2s ease;
 }
 
-.officer-details-trigger:hover,
-.officer-details-trigger:focus-visible {
+.officer-row:hover .officer-details-trigger,
+.officer-row:focus-visible .officer-details-trigger {
   border-color: #a9d1f3;
   background: #f0f8ff;
   outline: none;
   transform: scale(1.08);
 }
 
-.officer-details-trigger:hover span,
-.officer-details-trigger:focus-visible span {
+.officer-row:hover .officer-details-trigger span,
+.officer-row:focus-visible .officer-details-trigger span {
   box-shadow: 0 0 0 7px #cce7ff;
 }
 

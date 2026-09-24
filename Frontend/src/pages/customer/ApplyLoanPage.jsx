@@ -52,6 +52,10 @@ export default function ApplyLoanPage() {
   const allowNavigationRef = useRef(false);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, []);
+
+  useEffect(() => {
     getLoanTypes()
       .then((data) => {
         setLoanTypes(data);
@@ -943,7 +947,7 @@ export default function ApplyLoanPage() {
         </div>
 
         <div className="customer-footer-bottom">
-          <span>© 2026 luma.finance. All rights reserved.</span>
+          <span>© 2026 LoanPoint. All rights reserved.</span>
           <div>
             <span>Privacy</span>
             <span>Terms</span>

@@ -145,6 +145,13 @@ export default function OfficerHomePage() {
     setSelected(application);
   };
 
+  const handleApplicationKeyDown = (event, application) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      openApplication(application);
+    }
+  };
+
   const closeApplication = () => {
     setSelected(null);
     setError("");
@@ -297,6 +304,11 @@ export default function OfficerHomePage() {
             <article
               className="officer-row"
               key={app.applicationId}
+              role="button"
+              tabIndex={0}
+              aria-label={`Review application ${app.applicationId}`}
+              onClick={() => openApplication(app)}
+              onKeyDown={(event) => handleApplicationKeyDown(event, app)}
             >
               <div className="officer-application-summary">
                 <span className={`status status--${app.status?.toLowerCase()}`}>
@@ -319,14 +331,12 @@ export default function OfficerHomePage() {
                 <span>Tenure</span>
                 <b>{app.requestedTenureMonths} months</b>
               </div>
-              <button
+              <span
                 className="officer-details-trigger"
-                type="button"
-                aria-label={`Review application ${app.applicationId}`}
-                onClick={() => openApplication(app)}
+                aria-hidden="true"
               >
                 <span />
-              </button>
+              </span>
             </article>
           );
         })}
