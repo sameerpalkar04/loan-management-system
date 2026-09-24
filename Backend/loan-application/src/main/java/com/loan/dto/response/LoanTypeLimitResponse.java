@@ -10,7 +10,5 @@ public record LoanTypeLimitResponse(
         String loanName,
         BigDecimal baseInterestRate,
         BigDecimal maximumLoanAmount,
-        Integer maximumTenureMonths,
-        Boolean collateralRequired,
-        BigDecimal maximumLtvPercentage) {
+        Integer maximumTenureMonths) {
 }

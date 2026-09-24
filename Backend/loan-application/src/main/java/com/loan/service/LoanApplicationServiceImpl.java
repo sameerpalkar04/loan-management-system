@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import com.loan.client.LoanTypeClient;
 import com.loan.dto.response.LoanTypeLimitResponse;
@@ -43,6 +44,9 @@ public class LoanApplicationServiceImpl
     private static final BigDecimal MAX_TENURE_ADJUSTMENT =
             new BigDecimal("1.00");
 
+    private static final BigDecimal RANDOM_VARIATION_LIMIT =
+            new BigDecimal("0.25");
+
     private static final Set<String> ALLOWED_PAN_CARD_IMAGE_TYPES = Set.of(
             "image/jpeg",
             "image/png"
@@ -74,11 +78,7 @@ public class LoanApplicationServiceImpl
         application.setRequestedTenureMonths(
                 request.requestedTenureMonths()
         );
-        application.setValuation(
-                Boolean.TRUE.equals(loanType.collateralRequired())
-                        ? request.valuation()
-                        : null
-        );
+        application.setValuation(request.valuation());
         application.setInterestRate(
                 generateInterestRate(
                         loanType,
@@ -115,13 +115,7 @@ public class LoanApplicationServiceImpl
                 || loanType.baseInterestRate() == null
                 || loanType.maximumLoanAmount() == null
                 || loanType.maximumTenureMonths() == null
-                || loanType.maximumTenureMonths() <= 0
-                || loanType.collateralRequired() == null
-                || (Boolean.TRUE.equals(loanType.collateralRequired())
-                && (loanType.maximumLtvPercentage() == null
-                || loanType.maximumLtvPercentage().compareTo(BigDecimal.ZERO) <= 0
-                || loanType.maximumLtvPercentage()
-                .compareTo(BigDecimal.valueOf(100)) > 0))) {
+                || loanType.maximumTenureMonths() <= 0) {
 
             throw new BusinessException(
                     "Loan type limits are unavailable for loan type ID: "
@@ -144,37 +138,7 @@ public class LoanApplicationServiceImpl
                 request.requestedTenureMonths()
         );
 
-        validateCollateral(loanType, request);
-
         return loanType;
-    }
-
-    private void validateCollateral(
-            LoanTypeLimitResponse loanType,
-            CreateLoanApplicationRequest request) {
-
-        if (!Boolean.TRUE.equals(loanType.collateralRequired())) {
-            return;
-        }
-
-        if (request.valuation() == null) {
-            throw new BusinessException(
-                    "Asset valuation is required for " + loanType.loanName()
-            );
-        }
-
-        BigDecimal maximumEligibleAmount = request.valuation()
-                .multiply(loanType.maximumLtvPercentage())
-                .divide(BigDecimal.valueOf(100), 2, RoundingMode.DOWN);
-
-        if (request.requestedAmount().compareTo(maximumEligibleAmount) > 0) {
-            throw new BusinessException(
-                    "Requested amount exceeds the collateral-based limit of "
-                            + maximumEligibleAmount
-                            + " at " + loanType.maximumLtvPercentage()
-                            + "% LTV for " + loanType.loanName()
-            );
-        }
     }
 
     @Override
@@ -247,8 +211,16 @@ public class LoanApplicationServiceImpl
                 .multiply(MAX_TENURE_ADJUSTMENT)
                 .multiply(BigDecimal.valueOf(2));
 
+        BigDecimal randomAdjustment = BigDecimal.valueOf(
+                ThreadLocalRandom.current().nextDouble(
+                        RANDOM_VARIATION_LIMIT.negate().doubleValue(),
+                        RANDOM_VARIATION_LIMIT.doubleValue()
+                )
+        );
+
         BigDecimal interestRate = loanType.baseInterestRate()
-                .add(tenureAdjustment);
+                .add(tenureAdjustment)
+                .add(randomAdjustment);
 
         if (interestRate.compareTo(BigDecimal.ZERO) < 0) {
             interestRate = BigDecimal.ZERO;
