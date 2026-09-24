@@ -10,3 +10,6 @@ export const rejectApplication = (applicationId, payload) => apiRequest(`/api/lo
     method: "PUT", 
     body: JSON.stringify(payload) 
 });
+export const getPanCardImage = (applicationId) => apiRequest(`/api/loan-officer/applications/${applicationId}/pan-card-image`, {
+    responseType: "blob"
+});

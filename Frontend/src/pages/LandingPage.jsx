@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { getLoanTypes } from "../api/loanTypeApi";
 import Logo from "../components/common/Logo";
 import LoanHelpSections from "../components/common/LoanHelpSections";
+import loanHeroImage from "../assets/loan-hero.png";
 import "./landing.css";
 
 const landingLoanDescriptions = {
@@ -87,6 +88,13 @@ export default function LandingPage() {
       </header>
 
       <section className="landing-hero">
+        <img
+          className="hero-image"
+          src={loanHeroImage}
+          alt="A couple planning their future with a phone and tablet"
+        />
+        <div className="hero-scrim" aria-hidden="true" />
+
         <div className="hero-copy">
           <p className="eyebrow">RETAIL LENDING, REIMAGINED</p>
 

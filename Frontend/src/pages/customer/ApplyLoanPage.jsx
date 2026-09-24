@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Link,
   useNavigate,
@@ -10,6 +10,11 @@ import {
 } from "../../api/applicationApi";
 import { getLoanTypes } from "../../api/loanTypeApi";
 import Logo from "../../components/common/Logo";
+import CustomerLayout from "../../layouts/CustomerLayout";
+import {
+  preventInvalidNumberKey,
+  preventInvalidNumberPaste,
+} from "../../utils/numberInput";
 import "./customer.css";
 import "./apply-loan.css";
 
@@ -42,6 +47,7 @@ export default function ApplyLoanPage() {
   const [estimatedRate, setEstimatedRate] = useState(null);
 
   const navigate = useNavigate();
+  const allowNavigationRef = useRef(false);
 
   useEffect(() => {
     getLoanTypes()
@@ -325,6 +331,7 @@ export default function ApplyLoanPage() {
         panCardImage
       );
 
+      allowNavigationRef.current = true;
       navigate("/customer/applications", {
         state: {
           notice:
@@ -354,37 +361,64 @@ export default function ApplyLoanPage() {
     !amountError &&
     !tenureError &&
     !valuationError;
+  const hasPendingDraft = Boolean(
+    form.requestedAmount ||
+      form.requestedTenureMonths ||
+      form.valuation ||
+      panCardImage ||
+      calculator.requestedAmount ||
+      calculator.requestedTenureMonths
+  );
+
+  useEffect(() => {
+    if (!hasPendingDraft) return undefined;
+
+    const warning =
+      "You have a pending application. If you leave now, the details you entered will be lost. Do you want to continue?";
+
+    const warnBeforeUnload = (event) => {
+      if (allowNavigationRef.current) return;
+      event.preventDefault();
+      event.returnValue = "";
+    };
+
+    const guardNavigation = (event) => {
+      if (allowNavigationRef.current) return;
+
+      const navigationTarget = event.target.closest(
+        "a[href], [data-navigation='sign-out']"
+      );
+      if (!navigationTarget) return;
+
+      if (navigationTarget.matches("a[href]")) {
+        const destination = new URL(navigationTarget.href, window.location.href);
+        const currentLocation = `${window.location.pathname}${window.location.search}`;
+        const nextLocation = `${destination.pathname}${destination.search}`;
+
+        if (destination.origin !== window.location.origin) return;
+        if (currentLocation === nextLocation) return;
+      }
+
+      if (!window.confirm(warning)) {
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
+
+      allowNavigationRef.current = true;
+    };
+
+    window.addEventListener("beforeunload", warnBeforeUnload);
+    document.addEventListener("click", guardNavigation, true);
+
+    return () => {
+      window.removeEventListener("beforeunload", warnBeforeUnload);
+      document.removeEventListener("click", guardNavigation, true);
+    };
+  }, [hasPendingDraft]);
 
   return (
-    <main className="customer-workspace">
-      <header className="customer-header">
-        <Logo />
-
-        <nav>
-          <Link to="/customer/loan-types">
-            Loan types
-          </Link>
-
-          <Link
-            className="active"
-            to="/customer/apply"
-          >
-            Apply
-          </Link>
-
-          <Link to="/customer/applications">
-            My applications
-          </Link>
-        </nav>
-
-        <Link
-          className="header-back"
-          to="/customer/loan-types"
-        >
-          ← Back
-        </Link>
-      </header>
-
+    <CustomerLayout active="apply">
       <section className="application-page">
         <div className="application-heading">
           <p className="eyebrow">NEW APPLICATION</p>
@@ -395,6 +429,19 @@ export default function ApplyLoanPage() {
             Your profile is attached automatically. Complete the
             request and upload your PAN card.
           </p>
+
+          {hasPendingDraft && (
+            <div className="pending-application-notice" role="status">
+              <span aria-hidden="true">!</span>
+              <div>
+                <strong>Pending application</strong>
+                <small>
+                  Your entries have not been submitted yet. Leaving this page
+                  will discard them.
+                </small>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="application-layout">
@@ -434,6 +481,8 @@ export default function ApplyLoanPage() {
                   step="0.01"
                   value={form.valuation}
                   onChange={update}
+                  onKeyDown={preventInvalidNumberKey}
+                  onPaste={preventInvalidNumberPaste}
                   placeholder="e.g. 650000"
                   aria-invalid={Boolean(fieldErrors.valuation)}
                   required
@@ -491,6 +540,8 @@ export default function ApplyLoanPage() {
                   max={selected?.maximumLoanAmount}
                   value={form.requestedAmount}
                   onChange={update}
+                  onKeyDown={preventInvalidNumberKey}
+                  onPaste={preventInvalidNumberPaste}
                   placeholder="e.g. 500000"
                   aria-invalid={Boolean(fieldErrors.requestedAmount)}
                   required
@@ -514,6 +565,8 @@ export default function ApplyLoanPage() {
                   step="1"
                   value={form.requestedTenureMonths}
                   onChange={update}
+                  onKeyDown={preventInvalidNumberKey}
+                  onPaste={preventInvalidNumberPaste}
                   placeholder="e.g. 48"
                   aria-invalid={Boolean(
                     fieldErrors.requestedTenureMonths
@@ -830,6 +883,8 @@ export default function ApplyLoanPage() {
                   max={selected?.maximumLoanAmount}
                   value={calculator.requestedAmount}
                   onChange={updateCalculator}
+                  onKeyDown={preventInvalidNumberKey}
+                  onPaste={preventInvalidNumberPaste}
                   placeholder="Enter requested amount"
                   aria-invalid={Boolean(
                     validateAmount(calculator.requestedAmount)
@@ -856,6 +911,8 @@ export default function ApplyLoanPage() {
                   step="1"
                   value={calculator.requestedTenureMonths}
                   onChange={updateCalculator}
+                  onKeyDown={preventInvalidNumberKey}
+                  onPaste={preventInvalidNumberPaste}
                   placeholder="Enter tenure"
                   aria-invalid={Boolean(
                     validateTenure(calculator.requestedTenureMonths)
@@ -906,6 +963,6 @@ export default function ApplyLoanPage() {
           </aside>
         </div>
       )}
-    </main>
+    </CustomerLayout>
   );
 }

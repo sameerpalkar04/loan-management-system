@@ -1,15 +1,27 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { getCurrentCustomer } from "../api/customerApi";
 import Logo from "../components/common/Logo";
 import { useAuth } from "../context/AuthContext";
 import "./authenticated-layout.css";
 
-export default function OfficerLayout({ active, children }) {
+export default function CustomerLayout({ active, children }) {
+  const [customer, setCustomer] = useState(null);
   const [profileOpen, setProfileOpen] = useState(false);
   const [navigationOpen, setNavigationOpen] = useState(false);
   const profileMenuRef = useRef(null);
   const { session, signOut } = useAuth();
-  const officerName = session?.displayName || "Loan officer";
+
+  const customerName =
+    [customer?.firstName, customer?.lastName].filter(Boolean).join(" ") ||
+    session?.displayName ||
+    "Customer";
+
+  useEffect(() => {
+    getCurrentCustomer()
+      .then(setCustomer)
+      .catch(() => setCustomer(null));
+  }, []);
 
   useEffect(() => {
     const closeProfileMenu = (event) => {
@@ -23,12 +35,12 @@ export default function OfficerLayout({ active, children }) {
   }, []);
 
   return (
-    <main className="officer-workspace authenticated-workspace">
+    <main className="customer-workspace authenticated-workspace">
       <header className="authenticated-mobile-header">
         <Logo />
         <button
           type="button"
-          aria-label="Toggle officer navigation"
+          aria-label="Toggle customer navigation"
           aria-expanded={navigationOpen}
           onClick={() => setNavigationOpen((open) => !open)}
         >
@@ -38,49 +50,56 @@ export default function OfficerLayout({ active, children }) {
         </button>
       </header>
 
-      <div className="authenticated-layout officer-authenticated-layout">
+      <div className="authenticated-layout customer-authenticated-layout">
         <aside className={navigationOpen ? "navigation-open" : ""}>
           <div className="authenticated-sidebar-brand">
             <Logo />
-            <span>Loan officer workspace</span>
+            <span>Customer portal</span>
           </div>
 
-          <nav aria-label="Loan officer navigation">
+          <nav aria-label="Customer navigation">
             <Link
               className={`authenticated-side-link ${
-                active === "queue" ? "authenticated-side-link--active" : ""
+                active === "loans" ? "authenticated-side-link--active" : ""
               }`}
-              to="/officer/dashboard"
+              to="/customer/loan-types"
+              onClick={() => setNavigationOpen(false)}
+            >
+              <span aria-hidden="true">⌂</span>
+              Loan products
+            </Link>
+            <Link
+              className={`authenticated-side-link ${
+                active === "apply" ? "authenticated-side-link--active" : ""
+              }`}
+              to="/customer/apply"
+              onClick={() => setNavigationOpen(false)}
+            >
+              <span aria-hidden="true">＋</span>
+              Apply for a loan
+            </Link>
+            <Link
+              className={`authenticated-side-link ${
+                active === "applications"
+                  ? "authenticated-side-link--active"
+                  : ""
+              }`}
+              to="/customer/applications"
               onClick={() => setNavigationOpen(false)}
             >
               <span aria-hidden="true">▤</span>
-              Application queue
-            </Link>
-            <Link
-              className={`authenticated-side-link ${
-                active === "products" ? "authenticated-side-link--active" : ""
-              }`}
-              to="/officer/loan-products"
-              onClick={() => setNavigationOpen(false)}
-            >
-              <span aria-hidden="true">◇</span>
-              Manage loan types
+              My applications
             </Link>
           </nav>
-
-          <div className="sidebar-tip">
-            You are signed in with approval rights. Decisions and product
-            changes are recorded against your account.
-          </div>
 
           <div className="authenticated-account" ref={profileMenuRef}>
             {profileOpen && (
               <div className="authenticated-account-menu">
                 <div>
                   <span>Signed in as</span>
-                  <strong>{officerName}</strong>
+                  <strong>{customerName}</strong>
                 </div>
-                <button type="button" onClick={signOut}>
+                <button type="button" data-navigation="sign-out" onClick={signOut}>
                   Sign out
                 </button>
               </div>
@@ -89,7 +108,7 @@ export default function OfficerLayout({ active, children }) {
             <button
               className="authenticated-profile-trigger"
               type="button"
-              aria-label={`Account menu for ${officerName}`}
+              aria-label={`Account menu for ${customerName}`}
               aria-expanded={profileOpen}
               onClick={() => setProfileOpen((open) => !open)}
             >
@@ -100,19 +119,17 @@ export default function OfficerLayout({ active, children }) {
                 </svg>
               </span>
               <span className="authenticated-profile-copy">
-                <b>{officerName}</b>
+                <b>{customerName}</b>
                 <small>Signed in</small>
               </span>
               <span className="authenticated-profile-chevron" aria-hidden="true">
-                ⌃
+               ⌃
               </span>
             </button>
           </div>
         </aside>
 
-        <section className="authenticated-content officer-authenticated-content">
-          {children}
-        </section>
+        <div className="authenticated-content">{children}</div>
       </div>
     </main>
   );

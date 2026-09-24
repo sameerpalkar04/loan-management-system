@@ -1,0 +1,9 @@
+.add-product-button { flex: 0 0 auto; }
+.product-actions { display: grid; grid-template-columns: 1fr auto; gap: .55rem; margin-top: .8rem; }
+.officer-products article .product-actions button { margin: 0; padding: .65rem .8rem; border: 1px solid #cbdff2; border-radius: 9px; background: #f4f9ff; color: #0968df; font-weight: 700; cursor: pointer; }
+.officer-products article .product-actions .delete-product-button { border-color: #efcac6; background: #fff7f6; color: #b42318; }
+
+@media (max-width: 680px) {
+  .officer-products-title { gap: 1.25rem; }
+  .add-product-button { width: 100%; }
+}

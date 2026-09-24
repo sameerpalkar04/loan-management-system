@@ -459,6 +459,8 @@ public class LoanApplicationServiceImpl
 
                 application.getValuation(),
 
+                application.getDecisionReason(),
+
                 application.getStatus(),
 
                 application.getAppliedAt(),

@@ -1,10 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getLoanTypes } from "../../api/loanTypeApi";
-import { getCurrentCustomer } from "../../api/customerApi";
-import Logo from "../../components/common/Logo";
 import LoanHelpSections from "../../components/common/LoanHelpSections";
-import { useAuth } from "../../context/AuthContext";
+import CustomerLayout from "../../layouts/CustomerLayout";
 import "./customer.css";
 import "./customer-home.css";
 
@@ -17,15 +15,6 @@ export default function CustomerHomePage() {
   const [loanTypes, setLoanTypes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [customer, setCustomer] = useState(null);
-  const [profileOpen, setProfileOpen] = useState(false);
-  const profileMenuRef = useRef(null);
-  const { signOut } = useAuth();
-
-  const customerName =
-    [customer?.firstName, customer?.lastName].filter(Boolean).join(" ") ||
-    "Customer";
-
   useEffect(() => {
     getLoanTypes()
       .then((data) =>
@@ -37,83 +26,8 @@ export default function CustomerHomePage() {
       .finally(() => setLoading(false));
   }, []);
 
-  useEffect(() => {
-    getCurrentCustomer()
-      .then(setCustomer)
-      .catch(() => setCustomer(null));
-  }, []);
-
-  useEffect(() => {
-    const closeProfileMenu = (event) => {
-      if (!profileMenuRef.current?.contains(event.target)) {
-        setProfileOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", closeProfileMenu);
-    return () => document.removeEventListener("mousedown", closeProfileMenu);
-  }, []);
-
   return (
-    <main className="customer-workspace">
-      <header className="customer-header">
-        <Logo />
-
-        <nav>
-          <Link
-            className="active"
-            to="/customer/loan-types"
-          >
-            Loan types
-          </Link>
-
-          <Link to="/customer/apply">
-            Apply
-          </Link>
-
-          <Link to="/customer/applications">
-            My applications
-          </Link>
-        </nav>
-
-        <div className="customer-account" ref={profileMenuRef}>
-          <button
-            className="customer-profile"
-            type="button"
-            aria-label={`Account menu for ${customerName}`}
-            aria-expanded={profileOpen}
-            onClick={() => setProfileOpen((open) => !open)}
-          >
-            <div className="customer-avatar" aria-hidden="true">
-              <svg viewBox="0 0 48 48">
-                <circle cx="24" cy="18" r="8" />
-                <path d="M10 42c1.5-8.5 6.2-13 14-13s12.5 4.5 14 13" />
-              </svg>
-            </div>
-            <div className="customer-profile-copy">
-              <strong>{customerName}</strong>
-              <span>Signed in</span>
-            </div>
-
-            <span className="customer-profile-chevron" aria-hidden="true">
-              &#8964;
-            </span>
-          </button>
-
-          {profileOpen && (
-            <div className="customer-account-menu">
-              <div>
-                <span>Signed in as</span>
-                <strong>{customerName}</strong>
-              </div>
-              <button type="button" onClick={signOut}>
-                Sign out
-              </button>
-            </div>
-          )}
-        </div>
-      </header>
-
+    <CustomerLayout active="loans">
       <section className="customer-main">
         <div className="customer-hero">
           <div>
@@ -225,6 +139,6 @@ export default function CustomerHomePage() {
       </section>
 
       <LoanHelpSections customerView showFaq={false} />
-    </main>
+    </CustomerLayout>
   );
 }

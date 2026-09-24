@@ -25,6 +25,7 @@ public class LoanApplicationResponse {
     private LocalDateTime appliedAt;
     private LocalDateTime reviewedAt;
     private BigDecimal valuation;
+    private String decisionReason;
     private String applicantName;
     private String panNumber;
 }

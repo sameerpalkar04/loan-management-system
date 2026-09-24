@@ -103,11 +103,8 @@
 .customer-site-footer {
   position: relative;
   overflow: hidden;
-  padding: clamp(3.5rem, 7vw, 6rem) max(5%, calc((100vw - 1280px) / 2 + 5%)) 1.8rem;
-  background:
-    radial-gradient(circle at 100% 0, rgba(28, 132, 235, 0.35), transparent 28%),
-    radial-gradient(circle at 0 100%, rgba(18, 116, 218, 0.24), transparent 24%),
-    linear-gradient(135deg, #0961d2, #06397e 60%, #052d68);
+  padding: 2rem max(4%, calc((100vw - 1280px) / 2 + 4%)) 1.1rem;
+  background: #084b9b;
   color: #d7e9fb;
 }
 
@@ -116,7 +113,7 @@
   z-index: 1;
   display: grid;
   grid-template-columns: 1.45fr 0.85fr 0.75fr 1.15fr;
-  gap: clamp(2rem, 5vw, 5rem);
+  gap: clamp(1.25rem, 3vw, 2.75rem);
 }
 
 .customer-site-footer .brand {
@@ -127,7 +124,7 @@
 .customer-footer-brand {
   display: grid;
   align-content: start;
-  gap: 1rem;
+  gap: 0.65rem;
 }
 
 .customer-footer-brand strong {
@@ -148,7 +145,7 @@
   display: flex;
   align-items: flex-start;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.5rem;
 }
 
 .customer-footer-grid h3 {
@@ -185,8 +182,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 1.5rem;
-  margin-top: clamp(3rem, 7vw, 5rem);
-  padding-top: 1.5rem;
+  margin-top: 1.75rem;
+  padding-top: 0.9rem;
   border-top: 1px solid rgba(255, 255, 255, 0.15);
   color: #a9c9e9;
   font-size: 0.66rem;
@@ -217,7 +214,7 @@
 
   .customer-footer-grid {
     grid-template-columns: 1fr;
-    gap: 2.2rem;
+    gap: 1.4rem;
   }
 
   .customer-footer-bottom {

@@ -1,8 +1,29 @@
 import { useEffect, useState } from "react";
-import { getLoanTypes, updateLoanType } from "../../api/loanTypeApi";
+import {
+  createLoanType,
+  deleteLoanType,
+  getLoanTypes,
+  updateLoanType,
+} from "../../api/loanTypeApi";
 import OfficerLayout from "../../layouts/OfficerLayout";
+import {
+  preventInvalidNumberKey,
+  preventInvalidNumberPaste,
+} from "../../utils/numberInput";
 import "./officer.css";
 import "./officer-products.css";
+import "./officer-product-actions.css";
+
+const newLoanType = {
+  loanName: "",
+  baseInterestRate: "",
+  maximumLoanAmount: "",
+  maximumTenureMonths: "",
+  collateralRequired: false,
+  maximumLtvPercentage: "",
+  description: "",
+  isNew: true,
+};
 
 export default function OfficerLoanProductsPage() {
   const [loans, setLoans] = useState([]);
@@ -33,17 +54,16 @@ export default function OfficerLoanProductsPage() {
     setError("");
 
     try {
-      const updated = await updateLoanType(
-        editing.loanTypeId,
-        editing
-      );
+      const updated = editing.isNew
+        ? await createLoanType(editing)
+        : await updateLoanType(editing.loanTypeId, editing);
 
       setLoans((items) =>
-        items.map((item) =>
-          item.loanTypeId === editing.loanTypeId
-            ? updated
-            : item
-        )
+        editing.isNew
+          ? [...items, updated]
+          : items.map((item) =>
+              item.loanTypeId === editing.loanTypeId ? updated : item
+            )
       );
 
       setEditing(null);
@@ -54,19 +74,46 @@ export default function OfficerLoanProductsPage() {
     }
   };
 
+  const remove = async (loan) => {
+    if (!window.confirm(`Delete ${loan.loanName}? This cannot be undone.`)) {
+      return;
+    }
+
+    setSaving(true);
+    setError("");
+    try {
+      await deleteLoanType(loan.loanTypeId);
+      setLoans((items) =>
+        items.filter((item) => item.loanTypeId !== loan.loanTypeId)
+      );
+    } catch (requestError) {
+      setError(requestError.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
     <OfficerLayout active="products">
-      <div className="officer-title">
+      <div className="officer-title officer-products-title">
         <div>
           <p className="eyebrow">PRODUCT CATALOGUE</p>
 
-          <h1>Edit loan types</h1>
+          <h1>Manage loan types</h1>
 
           <p>
             Base rates and limits feed customer pages and automatic
             application pricing.
           </p>
         </div>
+
+        <button
+          className="button button--primary add-product-button"
+          type="button"
+          onClick={() => setEditing({ ...newLoanType })}
+        >
+          + Create loan type
+        </button>
       </div>
 
       {error && (
@@ -123,9 +170,18 @@ export default function OfficerLoanProductsPage() {
               </b>
             </div>
 
-            <button onClick={() => setEditing({ ...loan })}>
-              Edit rate & limits
-            </button>
+            <footer className="product-actions">
+              <button onClick={() => setEditing({ ...loan, isNew: false })}>
+                Edit rate & limits
+              </button>
+              <button
+                className="delete-product-button"
+                disabled={saving}
+                onClick={() => remove(loan)}
+              >
+                Delete
+              </button>
+            </footer>
           </article>
         ))}
       </div>
@@ -143,7 +199,7 @@ export default function OfficerLoanProductsPage() {
               <div>
                 <p className="eyebrow">PRODUCT SETTINGS</p>
 
-                <h2>{editing.loanName}</h2>
+                <h2>{editing.isNew ? "Create loan type" : editing.loanName}</h2>
               </div>
 
               <button
@@ -173,6 +229,8 @@ export default function OfficerLoanProductsPage() {
                 min=".01"
                 value={editing.baseInterestRate}
                 onChange={update}
+                onKeyDown={preventInvalidNumberKey}
+                onPaste={preventInvalidNumberPaste}
                 required
               />
             </label>
@@ -186,6 +244,8 @@ export default function OfficerLoanProductsPage() {
                   min="1"
                   value={editing.maximumLoanAmount}
                   onChange={update}
+                  onKeyDown={preventInvalidNumberKey}
+                  onPaste={preventInvalidNumberPaste}
                   required
                 />
               </label>
@@ -198,6 +258,8 @@ export default function OfficerLoanProductsPage() {
                   min="1"
                   value={editing.maximumTenureMonths}
                   onChange={update}
+                  onKeyDown={preventInvalidNumberKey}
+                  onPaste={preventInvalidNumberPaste}
                   required
                 />
               </label>
@@ -229,6 +291,8 @@ export default function OfficerLoanProductsPage() {
                   step="0.01"
                   value={editing.maximumLtvPercentage || ""}
                   onChange={update}
+                  onKeyDown={preventInvalidNumberKey}
+                  onPaste={preventInvalidNumberPaste}
                   required
                 />
               </label>
@@ -254,7 +318,11 @@ export default function OfficerLoanProductsPage() {
               className="button button--primary"
               disabled={saving}
             >
-              {saving ? "Saving…" : "Save product changes"}
+              {saving
+                ? "Saving…"
+                : editing.isNew
+                  ? "Create loan type"
+                  : "Save product changes"}
             </button>
           </form>
         </div>

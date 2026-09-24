@@ -2,6 +2,10 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { registerCustomer } from "../api/customerApi";
 import Logo from "../components/common/Logo";
+import {
+  preventInvalidNumberKey,
+  preventInvalidNumberPaste,
+} from "../utils/numberInput";
 import "./auth.css";
 
 const MONTHS = [
@@ -387,6 +391,8 @@ export default function RegisterPage() {
                 min="0"
                 value={form.monthlyIncome}
                 onChange={update}
+                onKeyDown={preventInvalidNumberKey}
+                onPaste={preventInvalidNumberPaste}
                 required
               />
             </label>

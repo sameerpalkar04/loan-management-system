@@ -82,7 +82,7 @@ public class LoanOfficerActionServiceImpl implements LoanOfficerActionService {
                 applicationId,
                 new LoanApplicationDecisionRequest(
                         "REJECTED",
-                        null,
+                        request.getDecisionReason().trim(),
                         null,
                         null,
                         null,
