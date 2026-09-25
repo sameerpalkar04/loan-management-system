@@ -278,6 +278,22 @@ When a customer registers, Customer Service publishes a `customer.registered` Ka
 
 ## 💻 Development Commands
 
+### Start all backend services in order
+
+With Oracle and Kafka already running, launch all eight Spring services in dependency order:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\start-services.ps1
+```
+
+The launcher waits for each configured service port before starting the next service: Service Registry, API Gateway, Auth Service, Customer Service, Credit Score Service, Loan Type Service, Loan Application Service, and Loan Officer Service.
+
+Stop every process started by the launcher with:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\stop-services.ps1
+```
+
 Frontend:
 
 ```powershell

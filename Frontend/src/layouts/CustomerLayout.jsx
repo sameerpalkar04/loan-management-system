@@ -5,6 +5,7 @@ import Logo from "../components/common/Logo";
 import { useAuth } from "../context/AuthContext";
 import "./authenticated-layout.css";
 
+// Renders shared navigation and account controls for customer pages.
 export default function CustomerLayout({ active, children }) {
   const [customer, setCustomer] = useState(null);
   const [profileOpen, setProfileOpen] = useState(false);

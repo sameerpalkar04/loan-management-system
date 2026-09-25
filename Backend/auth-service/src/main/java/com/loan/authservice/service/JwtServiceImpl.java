@@ -12,6 +12,7 @@ import java.time.Instant;
 import java.util.Date;
 
 @Service
+// Generates signed JWT access tokens for customer and officer identities.
 public class JwtServiceImpl implements JwtService {
 
     private final SecretKey signingKey;
@@ -28,15 +29,18 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
+    // Creates a JWT that carries a customer identity.
     public String generateCustomerAccessToken(Long customerId) {
         return generateAccessToken(UserRole.CUSTOMER, customerId);
     }
 
     @Override
+    // Creates a JWT that carries an officer identity.
     public String generateOfficerAccessToken(Long officerId) {
         return generateAccessToken(UserRole.LOAN_OFFICER, officerId);
     }
 
+    // Builds the common signed token payload for either user role.
     private String generateAccessToken(UserRole role, Long profileId) {
         Instant now = Instant.now();
         var builder = Jwts.builder()
@@ -56,6 +60,7 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
+    // Returns the configured access-token lifetime in seconds.
     public long getAccessTokenExpirySeconds() {
         return expirySeconds;
     }

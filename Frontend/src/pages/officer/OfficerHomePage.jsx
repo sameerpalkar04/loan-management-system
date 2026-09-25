@@ -17,18 +17,22 @@ import "./officer.css";
 import "./officer-queue-summary.css";
 import "./officer-review.css";
 
+// Formats monetary values using Indian number grouping.
 const money = (value) =>
   `₹${Number(value || 0).toLocaleString("en-IN")}`;
 
+// Masks the middle characters of a PAN for historical displays.
 const maskPanNumber = (panNumber) => {
   const normalized = String(panNumber || "").trim().toUpperCase();
   if (normalized.length < 6) return "Not available";
   return `${normalized.slice(0, 5)}****${normalized.slice(-1)}`;
 };
 
+// Identifies applications whose officer decision is complete.
 const hasFinalDecision = (status) =>
   status === "APPROVED" || status === "REJECTED";
 
+// Selects the appropriate PAN presentation for an application state.
 const panNumberForApplication = (application) => {
   const panNumber = application?.panNumber;
   return hasFinalDecision(application?.status)
@@ -36,6 +40,7 @@ const panNumberForApplication = (application) => {
     : String(panNumber || "").trim().toUpperCase() || "Not available";
 };
 
+// Formats server timestamps for officer review details.
 const dateTime = (value) =>
   value
     ? new Intl.DateTimeFormat("en-IN", {
@@ -44,6 +49,7 @@ const dateTime = (value) =>
       }).format(new Date(value))
     : "Not recorded";
 
+// Converts a score into the visual risk guidance used by the review modal.
 const getRiskProfile = (score) => {
   if (score >= 750) {
     return {
@@ -68,6 +74,7 @@ const getRiskProfile = (score) => {
   };
 };
 
+// Renders the status icon used by an application-queue summary card.
 const QueueSummaryIcon = ({ type }) => {
   const commonProps = {
     "aria-hidden": true,
@@ -94,6 +101,7 @@ const QueueSummaryIcon = ({ type }) => {
   return <svg {...commonProps}><rect x="6" y="4" width="12" height="16" rx="2" /><path d="M9 9h6M9 13h6M9 17h4" /></svg>;
 };
 
+// Manages the officer queue, application review modal, and decisions.
 export default function OfficerHomePage() {
   const { session } = useAuth();
   const [applications, setApplications] = useState([]);
@@ -114,6 +122,7 @@ export default function OfficerHomePage() {
     () => new Set()
   );
 
+  // Refreshes applications, loan products, and prior credit-review indicators.
   const refresh = async () => {
     try {
       const [apps, loans] = await Promise.all([
@@ -172,6 +181,7 @@ export default function OfficerHomePage() {
     [panImageUrl]
   );
 
+  // Resets review state before opening a selected application.
   const openApplication = (application) => {
     setScore(null);
     setScoreVisible(false);
@@ -183,6 +193,7 @@ export default function OfficerHomePage() {
     setSelected(application);
   };
 
+  // Supports keyboard activation of queue rows.
   const handleApplicationKeyDown = (event, application) => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
@@ -190,6 +201,7 @@ export default function OfficerHomePage() {
     }
   };
 
+  // Closes the review modal and clears its transient state.
   const closeApplication = () => {
     setSelected(null);
     setError("");
@@ -229,6 +241,7 @@ export default function OfficerHomePage() {
     [applications]
   );
 
+  // Retrieves and reveals the credit score for the application under review.
   const viewCreditScore = async () => {
     if (scoreVisible) {
       setScoreVisible(false);
@@ -258,6 +271,7 @@ export default function OfficerHomePage() {
     }
   };
 
+  // Toggles the submitted PAN-card image, loading it only once per review.
   const viewPanCard = async () => {
     if (panVisible) {
       setPanVisible(false);
@@ -282,6 +296,7 @@ export default function OfficerHomePage() {
     }
   };
 
+  // Records an approval or rejection and refreshes the officer queue.
   const decide = async (decision) => {
     if (decision === "REJECTED" && !rejectionReason.trim()) {
       setError("Please enter a reason before rejecting the application.");

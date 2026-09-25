@@ -16,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/credit-scores")
+// Provides officer-only credit-score review operations.
 public class CreditScoreController {
 
     private final CreditScoreServiceManager creditScoreServiceManager;
@@ -27,6 +28,7 @@ public class CreditScoreController {
     }
 
     @PostMapping("/check")
+    // Retrieves a score and writes an audit entry for the officer lookup.
     public ResponseEntity<CreditScoreQuery> checkCreditScore(
             @RequestHeader("X-User-Role") String role,
             @RequestHeader("X-Officer-Id") Long officerId,
@@ -43,6 +45,7 @@ public class CreditScoreController {
     }
 
     @PostMapping("/viewed-applications")
+    // Returns supplied application identifiers that already have credit-review activity.
     public ResponseEntity<List<Long>> getViewedApplications(
             @RequestHeader("X-User-Role") String role,
             @RequestBody List<Long> applicationIds) {

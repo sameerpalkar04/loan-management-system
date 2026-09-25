@@ -7,6 +7,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 @Component
+// Consumes customer-registration events to provision deterministic credit scores.
 public class CustomerRegisteredListener {
 
     private final CreditScoreServiceManager creditScoreServiceManager;
@@ -17,6 +18,7 @@ public class CustomerRegisteredListener {
     }
 
     @KafkaListener(topics = "customer.registered")
+    // Seeds the score associated with the newly registered PAN.
     public void onCustomerRegistered(CustomerRegisteredEvent event) {
         creditScoreServiceManager.add(
                 new SeedCreditScoreCommand(event.getPanNumber())

@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import Logo from "./Logo";
 import "./loan-help.css";
 
+// Renders reusable support, privacy, and footer content for customer pages.
 export default function LoanHelpSections({
   customerView = false,
   showFaq = true,

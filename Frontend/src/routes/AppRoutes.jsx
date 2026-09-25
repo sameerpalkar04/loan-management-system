@@ -9,6 +9,7 @@ import MyApplicationsPage from "../pages/customer/MyApplicationsPage";
 import OfficerHomePage from "../pages/officer/OfficerHomePage";
 import OfficerLoanProductsPage from "../pages/officer/OfficerLoanProductsPage";
 
+// Redirects unauthenticated or unauthorized users away from protected pages.
 function ProtectedRoute({ role, children }) {
   const { session } = useAuth();
   if (!session) return <Navigate to="/login" replace />;
@@ -16,6 +17,7 @@ function ProtectedRoute({ role, children }) {
   return children;
 }
 
+// Defines the public, customer, and officer route map.
 export default function AppRoutes() {
   return <Routes>
     <Route path="/" element={<LandingPage />} />

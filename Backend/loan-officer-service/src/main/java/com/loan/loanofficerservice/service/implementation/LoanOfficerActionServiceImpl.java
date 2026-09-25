@@ -18,6 +18,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+// Coordinates officer actions with the application and customer services.
 public class LoanOfficerActionServiceImpl implements LoanOfficerActionService {
 
     private static final String LOAN_APPLICATION_PATH =
@@ -27,6 +28,7 @@ public class LoanOfficerActionServiceImpl implements LoanOfficerActionService {
     private final LoadBalancerClient loadBalancerClient;
 
     @Override
+    // Lists applications after enriching them with applicant details.
     public List<LoanApplicationResponse> viewAllApplications() {
         List<LoanApplicationResponse> applications = client()
                 .get()
@@ -41,6 +43,7 @@ public class LoanOfficerActionServiceImpl implements LoanOfficerActionService {
     }
 
     @Override
+    // Retrieves and enriches one application for officer review.
     public LoanApplicationResponse viewApplicationById(Long applicationId) {
         LoanApplicationResponse application = client()
                 .get()
@@ -52,6 +55,7 @@ public class LoanOfficerActionServiceImpl implements LoanOfficerActionService {
     }
 
     @Override
+    // Converts an officer approval into the application-service decision request.
     public void approveApplication(
             Long officerId,
             Long applicationId,
@@ -72,6 +76,7 @@ public class LoanOfficerActionServiceImpl implements LoanOfficerActionService {
     }
 
     @Override
+    // Converts an officer rejection into the application-service decision request.
     public void rejectApplication(
             Long officerId,
             Long applicationId,
@@ -91,6 +96,7 @@ public class LoanOfficerActionServiceImpl implements LoanOfficerActionService {
         );
     }
 
+    // Sends a final decision to the application service.
     private void updateDecision(
             Long officerId,
             Long applicationId,
@@ -106,6 +112,7 @@ public class LoanOfficerActionServiceImpl implements LoanOfficerActionService {
                 .toBodilessEntity();
     }
 
+    // Creates a load-balanced client for the application service.
     private RestClient client() {
         ServiceInstance instance = loadBalancerClient
                 .choose("loan-application-service");
@@ -122,6 +129,7 @@ public class LoanOfficerActionServiceImpl implements LoanOfficerActionService {
     }
 
 
+    // Adds applicant identity data and masks PANs after final decisions.
     private LoanApplicationResponse enrichApplication(LoanApplicationResponse application) {
         if (application == null || application.getCustomerId() == null) {
             return application;
@@ -142,6 +150,7 @@ public class LoanOfficerActionServiceImpl implements LoanOfficerActionService {
         return application;
     }
 
+    // Returns a full PAN for active review or a masked value for history.
     private String panNumberForApplication(String panNumber, String status) {
         if (!isFinalDecision(status)) {
             return panNumber;
@@ -156,12 +165,14 @@ public class LoanOfficerActionServiceImpl implements LoanOfficerActionService {
                 + normalized.substring(normalized.length() - 1);
     }
 
+    // Identifies statuses for which the officer decision is final.
     private boolean isFinalDecision(String status) {
         return "APPROVED".equalsIgnoreCase(status)
                 || "REJECTED".equalsIgnoreCase(status);
     }
 
 
+    // Creates a load-balanced client for the customer service.
     private RestClient customerClient() {
         ServiceInstance instance = loadBalancerClient.choose("customer-service");
         if (instance == null) {

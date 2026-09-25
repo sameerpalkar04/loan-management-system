@@ -14,10 +14,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/loan-officer")
 @RequiredArgsConstructor
+// Orchestrates officer-facing application review actions.
 public class LoanOfficerController {
     private final LoanOfficerActionService loanOfficerActionService;
 
     @GetMapping("/applications")
+    // Lists applications enriched with customer review data.
     public ResponseEntity<List<LoanApplicationResponse>> viewAllApplications() {
         return ResponseEntity.ok(
                 loanOfficerActionService.viewAllApplications()
@@ -25,6 +27,7 @@ public class LoanOfficerController {
     }
 
     @GetMapping("/applications/{applicationId}")
+    // Retrieves one enriched application for review.
     public ResponseEntity<LoanApplicationResponse> viewApplicationById(
             @PathVariable Long applicationId
     ) {
@@ -34,6 +37,7 @@ public class LoanOfficerController {
     }
 
     @PutMapping("/applications/{applicationId}/approve")
+    // Sends an approval decision and approved terms to the application service.
     public ResponseEntity<Void> approveApplication(
             @RequestHeader("X-Officer-Id") Long officerId,
             @PathVariable Long applicationId,
@@ -49,6 +53,7 @@ public class LoanOfficerController {
     }
 
     @PutMapping("/applications/{applicationId}/reject")
+    // Sends a rejection decision and reason to the application service.
     public ResponseEntity<Void> rejectApplication(
             @RequestHeader("X-Officer-Id") Long officerId,
             @PathVariable Long applicationId,
@@ -64,6 +69,7 @@ public class LoanOfficerController {
     }
 
     @GetMapping("/applications/{applicationId}/pan-card-image")
+    // Proxies a submitted PAN-card image for an authorized officer review.
     public ResponseEntity<byte[]> viewPanCardImage(
             @RequestHeader("X-User-Role") String role,
             @PathVariable Long applicationId
@@ -73,6 +79,7 @@ public class LoanOfficerController {
         return loanOfficerActionService.viewPanCardImage(applicationId);
     }
 
+    // Guards PAN document retrieval against non-officer callers.
     private void requireLoanOfficer(String role) {
         if (!"LOAN_OFFICER".equalsIgnoreCase(role)) {
             throw new ResponseStatusException(

@@ -4,6 +4,7 @@ import Logo from "../components/common/Logo";
 import { useAuth } from "../context/AuthContext";
 import "./authenticated-layout.css";
 
+// Renders shared navigation and account controls for officer pages.
 export default function OfficerLayout({ active, children }) {
   const [profileOpen, setProfileOpen] = useState(false);
   const [navigationOpen, setNavigationOpen] = useState(false);

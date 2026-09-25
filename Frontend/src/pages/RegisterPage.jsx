@@ -27,6 +27,7 @@ const YEARS_PER_PAGE = 12;
 const CURRENT_YEAR = new Date().getFullYear();
 const FIRST_YEAR = 1900;
 
+// Provides the custom, keyboard-accessible date-of-birth picker.
 function DateOfBirthPicker({ value, onChange }) {
   const valueParts = value ? value.split("-") : ["", "", ""];
   const [parts, setParts] = useState({
@@ -48,6 +49,7 @@ function DateOfBirthPicker({ value, onChange }) {
       ).getDate()
     : 31;
 
+  // Updates one date segment and emits a normalized ISO date when complete.
   const updatePart = (name, nextValue) => {
     const nextParts = { ...parts, [name]: nextValue };
 
@@ -193,6 +195,7 @@ function DateOfBirthPicker({ value, onChange }) {
   );
 }
 
+// Collects and submits the customer registration details.
 export default function RegisterPage() {
   const [form, setForm] = useState({
     firstName: "",
@@ -212,12 +215,14 @@ export default function RegisterPage() {
   const panIsInvalid =
     form.panNumber.length > 0 && !/^[A-Za-z0-9]{10}$/.test(form.panNumber);
 
+  // Updates a single registration field from an input event.
   const update = (event) =>
     setForm((old) => ({
       ...old,
       [event.target.name]: event.target.value,
     }));
 
+  // Registers the customer and redirects to the sign-in page on success.
   const submit = async (event) => {
     event.preventDefault();
     setError("");

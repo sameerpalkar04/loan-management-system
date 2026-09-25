@@ -22,6 +22,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/loan-applications")
+// Handles loan application submission, review retrieval, and status transitions.
 public class LoanApplicationController {
 
     private final LoanApplicationServices loanApplicationService;
@@ -32,6 +33,7 @@ public class LoanApplicationController {
     }
 
     @PostMapping("/calculate-interest-rate")
+    // Calculates an indicative rate for a customer-provided request.
     public ResponseEntity<InterestRateCalculationResponse>
     calculateInterestRate(
             @RequestHeader("X-User-Role") String role,
@@ -44,6 +46,7 @@ public class LoanApplicationController {
     }
 
     @PostMapping
+    // Creates a customer application with its mandatory PAN-card image.
     public ResponseEntity<LoanApplicationResponse> createApplication(
             @RequestHeader("X-Customer-Id") Long customerId,
             @RequestHeader("X-User-Role") String role,
@@ -68,6 +71,7 @@ public class LoanApplicationController {
     }
 
     @GetMapping("/me")
+    // Lists applications belonging to the authenticated customer.
     public ResponseEntity<List<LoanApplicationResponse>> getMyApplications(
             @RequestHeader("X-Customer-Id") Long customerId,
             @RequestHeader("X-User-Role") String role) {
@@ -79,6 +83,7 @@ public class LoanApplicationController {
     }
 
     @GetMapping
+    // Lists all applications for the officer workflow.
     public ResponseEntity<List<LoanApplicationResponse>> getAllApplications(
             @RequestHeader("X-User-Role") String role) {
         requireRole(role, "LOAN_OFFICER");
@@ -89,6 +94,7 @@ public class LoanApplicationController {
     }
 
     @GetMapping("/pending")
+    // Lists applications that still require an officer decision.
     public ResponseEntity<List<LoanApplicationResponse>> getPendingApplications(
             @RequestHeader("X-User-Role") String role) {
         requireRole(role, "LOAN_OFFICER");
@@ -99,6 +105,7 @@ public class LoanApplicationController {
     }
 
     @GetMapping("/{applicationId}")
+    // Retrieves one application for officer review.
     public ResponseEntity<LoanApplicationResponse> getApplicationById(
             @RequestHeader("X-User-Role") String role,
             @PathVariable Long applicationId) {
@@ -110,6 +117,7 @@ public class LoanApplicationController {
     }
 
     @PatchMapping("/{applicationId}/status")
+    // Records an officer's application decision and related terms.
     public ResponseEntity<LoanApplicationResponse> updateApplicationStatus(
             @RequestHeader("X-Officer-Id") Long officerId,
             @RequestHeader("X-User-Role") String role,
@@ -126,6 +134,7 @@ public class LoanApplicationController {
         );
     }
 
+    // Enforces the role required by an application endpoint.
     private void requireRole(String actualRole, String requiredRole) {
         if (!requiredRole.equalsIgnoreCase(actualRole)) {
             throw new ResponseStatusException(
@@ -136,6 +145,7 @@ public class LoanApplicationController {
     }
 
     @GetMapping("/{applicationId}/pan-card-image")
+    // Streams the submitted PAN-card image to an authorized officer.
     public ResponseEntity<byte[]> getPanCardImage(
             @RequestHeader("X-User-Role") String role,
             @PathVariable Long applicationId

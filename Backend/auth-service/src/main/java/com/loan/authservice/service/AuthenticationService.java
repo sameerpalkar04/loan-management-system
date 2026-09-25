@@ -16,6 +16,7 @@ import java.util.Locale;
 
 @Service
 @Transactional(readOnly = true)
+// Verifies credentials and creates role-aware authentication responses.
 public class AuthenticationService {
 
     private final CustomerCredentialRepository customerCredentialRepository;
@@ -33,6 +34,7 @@ public class AuthenticationService {
         this.jwtService = jwtService;
     }
 
+    // Authenticates a customer using a normalized email and password hash.
     public AuthResponse loginCustomer(LoginRequest request) {
         CustomerCredential customer = customerCredentialRepository
                 .findByEmailIgnoreCase(normalizeEmail(request.email()))
@@ -53,6 +55,7 @@ public class AuthenticationService {
         );
     }
 
+    // Authenticates a loan officer using a normalized email and password hash.
     public AuthResponse loginOfficer(LoginRequest request) {
         LoanOfficerCredential officer = loanOfficerCredentialRepository
                 .findByEmailIgnoreCase(normalizeEmail(request.email()))
@@ -75,6 +78,7 @@ public class AuthenticationService {
         );
     }
 
+    // Produces a stable, case-insensitive email lookup key.
     private String normalizeEmail(String email) {
         return email.trim().toLowerCase(Locale.ROOT);
     }

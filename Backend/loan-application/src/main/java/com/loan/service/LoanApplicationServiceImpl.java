@@ -32,6 +32,7 @@ import java.util.Set;
 
 @Service
 @Transactional
+// Implements application validation, pricing, decisions, and document storage.
 public class LoanApplicationServiceImpl
         implements LoanApplicationServices {
 
@@ -63,6 +64,7 @@ public class LoanApplicationServiceImpl
     }
 
     @Override
+    // Validates and persists a new customer loan application.
     public LoanApplicationResponse createApplication(
             Long customerId,
             CreateLoanApplicationRequest request, MultipartFile panCardImage) {
@@ -105,6 +107,7 @@ public class LoanApplicationServiceImpl
         return toResponse(savedApplication);
     }
 
+    // Verifies that a request obeys the selected product's lending limits.
     private LoanTypeLimitResponse validateLoanTypeConstraints(
             CreateLoanApplicationRequest request) {
 
@@ -143,6 +146,7 @@ public class LoanApplicationServiceImpl
 
     @Override
     @Transactional(readOnly = true)
+    // Calculates an indicative interest rate without creating an application.
     public InterestRateCalculationResponse calculateInterestRate(
             CalculateInterestRateRequest request) {
 
@@ -160,6 +164,7 @@ public class LoanApplicationServiceImpl
         );
     }
 
+    // Validates the product data required for rate calculation.
     private void validateLoanTypeForRateCalculation(
             LoanTypeLimitResponse loanType,
             Long loanTypeId) {
@@ -176,6 +181,7 @@ public class LoanApplicationServiceImpl
         }
     }
 
+    // Ensures the requested repayment term does not exceed the product limit.
     private void validateTenure(
             LoanTypeLimitResponse loanType,
             Integer tenureMonths) {
@@ -192,6 +198,7 @@ public class LoanApplicationServiceImpl
         }
     }
 
+    // Applies the product base rate and tenure adjustment.
     private BigDecimal generateInterestRate(
             LoanTypeLimitResponse loanType,
             Integer tenureMonths) {
@@ -231,6 +238,7 @@ public class LoanApplicationServiceImpl
 
     @Override
     @Transactional(readOnly = true)
+    // Retrieves one application by identifier.
     public LoanApplicationResponse getApplicationById(
             Long applicationId) {
 
@@ -239,6 +247,7 @@ public class LoanApplicationServiceImpl
 
     @Override
     @Transactional(readOnly = true)
+    // Lists applications belonging to a customer, newest first.
     public List<LoanApplicationResponse> getCustomerApplications(
             Long customerId) {
 
@@ -251,6 +260,7 @@ public class LoanApplicationServiceImpl
 
     @Override
     @Transactional(readOnly = true)
+    // Lists all applications for the officer queue.
     public List<LoanApplicationResponse> getAllApplications() {
 
         return loanApplicationRepository
@@ -262,6 +272,7 @@ public class LoanApplicationServiceImpl
 
     @Override
     @Transactional(readOnly = true)
+    // Lists applications that have not received a final decision.
     public List<LoanApplicationResponse> getPendingApplications() {
 
         return loanApplicationRepository
@@ -274,6 +285,7 @@ public class LoanApplicationServiceImpl
     }
 
     @Override
+    // Applies an officer decision and creates loan history for approvals.
     public LoanApplicationResponse updateApplicationStatus(
             Long officerId,
             Long applicationId,
@@ -330,6 +342,7 @@ public class LoanApplicationServiceImpl
         return toResponse(savedApplication);
     }
 
+    // Creates the active-loan history record for an approved application.
     private void createLoanHistory(
             LoanApplication application,
             UpdateApplicationStatus request) {
@@ -373,6 +386,7 @@ public class LoanApplicationServiceImpl
         loanHistoryRepository.save(history);
     }
 
+    // Ensures approvals include all required loan terms.
     private void validateApprovalTerms(UpdateApplicationStatus request) {
 
         if (request.approvedPrincipal() == null
@@ -385,6 +399,7 @@ public class LoanApplicationServiceImpl
         }
     }
 
+    // Loads an application or raises the domain not-found error.
     private LoanApplication findApplication(
             Long applicationId) {
 
@@ -398,6 +413,7 @@ public class LoanApplicationServiceImpl
                 );
     }
 
+    // Converts persistent application data to its API response shape.
     private LoanApplicationResponse toResponse(
             LoanApplication application) {
 
@@ -429,6 +445,7 @@ public class LoanApplicationServiceImpl
         );
     }
 
+    // Restricts PAN uploads to the supported image types and maximum size.
     private void validatePanCardImage(MultipartFile panCardImage) {
 
         if (panCardImage == null || panCardImage.isEmpty()) {
@@ -453,6 +470,7 @@ public class LoanApplicationServiceImpl
 
     @Override
     @Transactional(readOnly = true)
+    // Returns the stored PAN-card image and its metadata.
     public PanCardImageResponse getPanCardImage(Long applicationId) {
         LoanApplication application = findApplication(applicationId);
 

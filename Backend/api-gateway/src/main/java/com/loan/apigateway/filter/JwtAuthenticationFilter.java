@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
+// Validates bearer tokens and forwards trusted identity headers downstream.
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final SecretKey signingKey;
@@ -40,11 +41,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
+    // Leaves authentication endpoints outside JWT filtering.
     protected boolean shouldNotFilter(HttpServletRequest request) {
         return request.getServletPath().startsWith("/api/v1/auth/");
     }
 
     @Override
+    // Validates a token and wraps the request with role and profile headers.
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
@@ -125,6 +128,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
     }
 
+    // Exposes gateway-derived identity headers without mutating the original request.
     private static class IdentityHeaderRequestWrapper
             extends HttpServletRequestWrapper {
 

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Locale;
 
 @Service
+// Manages customer registration, profile retrieval, and registration events.
 public class CustomerServiceManager
         implements ServiceManager<CustomerRegistrationCommand, CustomerQuery, Long> {
 
@@ -40,6 +41,7 @@ public class CustomerServiceManager
     }
 
     @Override
+    // Validates, normalizes, and persists a customer before publishing its event.
     public CustomerQuery add(CustomerRegistrationCommand data) {
 
         String email = data.getEmail().trim().toLowerCase(Locale.ROOT);
@@ -73,6 +75,7 @@ public class CustomerServiceManager
         return mapToCustomerQuery(addedCustomer);
     }
 
+    // Publishes the event that triggers credit-score provisioning.
     private void publishCustomerRegisteredEvent(Customer customer) {
         CustomerRegisteredEvent event = new CustomerRegisteredEvent(
                 customer.getCustomerId(),
@@ -103,6 +106,7 @@ public class CustomerServiceManager
     }
 
     @Override
+    // Returns all persisted customer profiles.
     public Collection<CustomerQuery> getAll() {
 
         List<Customer> customers = repository.findAll();
@@ -116,6 +120,7 @@ public class CustomerServiceManager
     }
 
     @Override
+    // Returns one customer profile when it exists.
     public CustomerQuery get(Long id) {
         return repository.findById(id)
                 .map(this::mapToCustomerQuery)
@@ -132,6 +137,7 @@ public class CustomerServiceManager
         return null;
     }
 
+    // Maps the persistence entity to the customer API response.
     private CustomerQuery mapToCustomerQuery(Customer customer) {
 
         CustomerQuery query = new CustomerQuery();

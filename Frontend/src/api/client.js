@@ -1,5 +1,6 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+// Sends authenticated requests to backend services and normalizes error responses.
 export async function apiRequest(path, options = {}) {
   const token = localStorage.getItem("access_token") || sessionStorage.getItem("access_token");
   const isFormData = options.body instanceof FormData;

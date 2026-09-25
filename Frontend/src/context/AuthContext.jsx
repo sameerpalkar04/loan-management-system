@@ -3,6 +3,7 @@ import { loginCustomer, loginOfficer } from "../api/authApi";
 
 const AuthContext = createContext(null);
 
+// Extracts the customer identifier from a gateway-issued access token.
 const getCustomerIdFromToken = (token) => {
   try {
     const payload = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
@@ -16,6 +17,7 @@ const getCustomerIdFromToken = (token) => {
   }
 };
 
+// Shares the authenticated session and sign-in actions across the application.
 export function AuthProvider({ children }) {
   const [session, setSession] = useState(() => {
     const token = localStorage.getItem("access_token") || sessionStorage.getItem("access_token");
@@ -32,6 +34,7 @@ export function AuthProvider({ children }) {
       : null;
   });
 
+  // Authenticates a user and stores the resulting session in the chosen browser storage.
   const signIn = async (role, email, password, remember = true) => {
     const response = role === "LOAN_OFFICER" ? await loginOfficer(email, password) : await loginCustomer(email, password);
     const nextSession = {
@@ -59,6 +62,7 @@ export function AuthProvider({ children }) {
     return nextSession;
   };
 
+  // Clears the active browser session and its stored token.
   const signOut = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("user_role");
@@ -77,7 +81,7 @@ export function AuthProvider({ children }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-// This hook is deliberately exported alongside the provider so consumers share one context instance.
+// Retrieves the shared authentication context; it remains colocated with the provider intentionally.
 // eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
   const context = useContext(AuthContext);

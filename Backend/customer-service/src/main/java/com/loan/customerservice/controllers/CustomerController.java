@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/customers")
+// Handles customer registration and profile retrieval.
 public class CustomerController {
 
     private final CustomerServiceManager customerServiceManager;
@@ -20,6 +21,7 @@ public class CustomerController {
     }
 
     @PostMapping("/register")
+    // Creates a customer profile and publishes the registration workflow.
     public ResponseEntity<CustomerQuery> registerCustomer(
             @Valid @RequestBody CustomerRegistrationCommand command) {
 
@@ -29,11 +31,13 @@ public class CustomerController {
     }
 
     @GetMapping("/{customerId}")
+    // Returns the profile for a customer identifier.
             public ResponseEntity<CustomerQuery> getCustomer(@PathVariable Long customerId) {
             return ResponseEntity.ofNullable(customerServiceManager.get(customerId));
     }
 
     @GetMapping("/me")
+    // Returns the profile associated with the gateway-supplied customer identity.
     public ResponseEntity<CustomerQuery> getCurrentCustomer(
             @RequestHeader("X-Customer-Id") Long customerId) {
         return ResponseEntity.ofNullable(customerServiceManager.get(customerId));

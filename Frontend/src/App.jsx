@@ -4,6 +4,7 @@ import AppRoutes from "./routes/AppRoutes";
 import "./styles/tokens.css";
 import "./styles/global.css";
 
+// Composes application-wide routing and authentication state.
 export default function App() {
   return <BrowserRouter>
   <AuthProvider>

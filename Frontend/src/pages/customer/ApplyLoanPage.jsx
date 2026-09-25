@@ -19,9 +19,11 @@ import {
 import "./customer.css";
 import "./apply-loan.css";
 
+// Formats loan amounts for form summaries and calculator output.
 const formatCurrency = (value) =>
   Number(value || 0).toLocaleString("en-IN");
 
+// Coordinates loan-product selection, validation, EMI calculation, and submission.
 export default function ApplyLoanPage() {
   const [searchParams] = useSearchParams();
   const [loanTypes, setLoanTypes] = useState([]);
@@ -151,6 +153,7 @@ export default function ApplyLoanPage() {
     };
   }, [calculatorOpen]);
 
+  // Validates a requested amount against the selected product and collateral limits.
   const validateAmount = (
     value,
     loan = selected,
@@ -175,6 +178,7 @@ export default function ApplyLoanPage() {
     return "";
   };
 
+  // Validates a requested tenure against the selected product maximum.
   const validateTenure = (value, loan = selected) => {
     if (value === "") return "";
     if (!Number.isInteger(Number(value)) || Number(value) <= 0)
@@ -184,6 +188,7 @@ export default function ApplyLoanPage() {
     return "";
   };
 
+  // Validates required collateral valuation and its loan-to-value relationship.
   const validateValuation = (
     value,
     loan = selected,
@@ -214,6 +219,7 @@ export default function ApplyLoanPage() {
     return "";
   };
 
+  // Updates application form state and resets dependent validation feedback.
   const update = (event) => {
     const { name, value } = event.target;
 
@@ -281,6 +287,7 @@ export default function ApplyLoanPage() {
     }
   };
 
+  // Opens the EMI calculator with the current application values.
   const openCalculator = () => {
     const currentAmount = Number(form.requestedAmount);
     const currentTenure = Number(form.requestedTenureMonths);
@@ -305,6 +312,7 @@ export default function ApplyLoanPage() {
     setCalculatorOpen(true);
   };
 
+  // Updates an EMI-calculator control while enforcing its numeric constraints.
   const updateCalculator = (event) => {
     const { name, value } = event.target;
     setCalculator((old) => ({
@@ -383,6 +391,7 @@ export default function ApplyLoanPage() {
       ? 100
       : ((calculatorMonths - 1) / (calculatorMaximumTenure - 1)) * 100;
 
+  // Applies the calculated interest rate back to the loan application form.
   const applyCalculatedRate = () => {
     setForm((old) => ({
       ...old,
@@ -405,6 +414,7 @@ export default function ApplyLoanPage() {
     setCalculatorOpen(false);
   };
 
+  // Submits a validated application and its PAN-card image.
   const submit = async (event) => {
     event.preventDefault();
 

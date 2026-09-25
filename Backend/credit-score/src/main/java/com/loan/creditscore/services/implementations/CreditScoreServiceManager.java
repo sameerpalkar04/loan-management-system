@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Locale;
 
 @Service
+// Manages mock credit scores and the audit trail for officer lookups.
 public class CreditScoreServiceManager
         implements ServiceManager<SeedCreditScoreCommand, CreditScoreQuery, String> {
 
@@ -44,6 +45,7 @@ public class CreditScoreServiceManager
      * If a score already exists for the PAN, it returns the existing score.
      */
     @Override
+    // Seeds a score for a newly registered customer's PAN.
     public CreditScoreQuery add(SeedCreditScoreCommand command) {
 
         String panNumber = normalizePanNumber(command.getPanNumber());
@@ -77,6 +79,7 @@ public class CreditScoreServiceManager
         return mapToCreditScoreQuery(creditScore, savedHistory);
     }
 
+    // Finds requested applications that already have a credit-view audit row.
     public List<Long> getViewedApplicationIds(Collection<Long> applicationIds) {
         List<Long> validApplicationIds = applicationIds == null
                 ? List.of()
@@ -94,6 +97,7 @@ public class CreditScoreServiceManager
     }
 
     @Override
+    // Returns all known credit-score records.
     public Collection<CreditScoreQuery> getAll() {
 
         List<CreditScore> creditScores = creditScoreRepository.findAll();
@@ -110,6 +114,7 @@ public class CreditScoreServiceManager
     }
 
     @Override
+    // Retrieves a score by normalized PAN number.
     public CreditScoreQuery get(String panNumber) {
 
         String normalizedPanNumber = normalizePanNumber(panNumber);
@@ -135,12 +140,14 @@ public class CreditScoreServiceManager
         return null;
     }
 
+    // Maps a score to the privacy-safe response representation.
     private CreditScoreQuery mapToCreditScoreQuery(
             CreditScore creditScore) {
 
         return mapToCreditScoreQuery(creditScore, null);
     }
 
+    // Maps a score and optional retrieval audit row to the API response.
     private CreditScoreQuery mapToCreditScoreQuery(
             CreditScore creditScore,
             CreditScoreHistory history) {
@@ -162,6 +169,7 @@ public class CreditScoreServiceManager
         return query;
     }
 
+    // Masks the middle digits of a PAN before exposing it to callers.
     private String maskPanNumber(String panNumber) {
         if (panNumber == null || panNumber.length() < 6) {
             return "****";
@@ -170,6 +178,7 @@ public class CreditScoreServiceManager
                 + panNumber.substring(panNumber.length() - 1);
     }
 
+    // Maps numeric scores to the UI's risk-band label.
     private String getBand(Integer score) {
         if (score >= 740) return "Excellent";
         if (score >= 670) return "Good";
@@ -177,6 +186,7 @@ public class CreditScoreServiceManager
         return "Poor";
     }
 
+    // Supplies a mock repayment summary appropriate for the score band.
     private String getRepaymentSummary(Integer score) {
         return switch (getBand(score)) {
             case "Excellent" ->
@@ -190,6 +200,7 @@ public class CreditScoreServiceManager
         };
     }
 
+    // Returns an existing score or deterministically provisions a new one.
     private CreditScore getOrCreateCreditScore(String panNumber) {
         return creditScoreRepository
                 .findById(panNumber)
@@ -203,6 +214,7 @@ public class CreditScoreServiceManager
                 });
     }
 
+    // Normalizes PAN input before repository access.
     private String normalizePanNumber(String panNumber) {
         return panNumber.trim().toUpperCase(Locale.ROOT);
     }

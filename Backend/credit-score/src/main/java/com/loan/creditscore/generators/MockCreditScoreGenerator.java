@@ -5,8 +5,10 @@ import org.springframework.stereotype.Component;
 import java.util.Locale;
 
 @Component
+// Produces repeatable mock credit scores from normalized PAN numbers.
 public class MockCreditScoreGenerator {
 
+    // Maps a PAN hash into the standard 300–900 credit-score range.
     public Integer generateScore(String panNumber) {
 
         String normalizedPan = panNumber

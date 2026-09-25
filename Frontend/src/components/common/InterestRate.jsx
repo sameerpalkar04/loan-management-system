@@ -1,5 +1,6 @@
 import "./interest-rate.css";
 
+// Formats a numeric annual rate using the product-card rate treatment.
 export default function InterestRate({ value, showMarker = true }) {
   const numericValue = Number(value);
 

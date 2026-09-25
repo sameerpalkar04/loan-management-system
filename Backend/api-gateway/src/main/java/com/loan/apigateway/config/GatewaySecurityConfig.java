@@ -10,6 +10,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+// Declares stateless gateway authorization rules for public and role-protected routes.
 public class GatewaySecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -19,6 +20,7 @@ public class GatewaySecurityConfig {
     }
 
     @Bean
+    // Builds the gateway security chain and inserts JWT validation before authentication.
     public SecurityFilterChain securityFilterChain(HttpSecurity http)
             throws Exception {
 

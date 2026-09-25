@@ -25,6 +25,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/loan-types")
 @Validated
+// Exposes public loan-product browsing and officer-only catalogue management.
 public class LoanTypeController {
 
     private final LoanTypeService loanTypeService;
@@ -34,11 +35,13 @@ public class LoanTypeController {
     }
 
     @GetMapping
+    // Lists all available loan products.
     public ResponseEntity<List<LoanTypeResponse>> getAllLoanTypes() {
         return ResponseEntity.ok(loanTypeService.getAllLoanTypes());
     }
 
     @GetMapping("/search")
+    // Searches loan products by name.
     public ResponseEntity<List<LoanTypeResponse>> searchLoanTypes(
             @RequestParam String name) {
 
@@ -46,6 +49,7 @@ public class LoanTypeController {
     }
 
     @GetMapping("/{loanTypeId}")
+    // Returns one loan product by identifier.
     public ResponseEntity<LoanTypeResponse> getLoanTypeById(
             @PathVariable @Positive(message = "Loan type ID must be greater than zero")
             Long loanTypeId) {
@@ -54,6 +58,7 @@ public class LoanTypeController {
     }
 
     @PostMapping
+    // Creates a loan product after confirming the caller is an officer.
     public ResponseEntity<LoanTypeResponse> createLoanType(
             @RequestHeader("X-User-Role") String role,
             @Valid @RequestBody LoanTypeRequest request) {
@@ -66,6 +71,7 @@ public class LoanTypeController {
     }
 
     @PutMapping("/{loanTypeId}")
+    // Updates an existing loan product after confirming the caller is an officer.
     public ResponseEntity<LoanTypeResponse> updateLoanType(
             @RequestHeader("X-User-Role") String role,
             @PathVariable @Positive(message = "Loan type ID must be greater than zero")
@@ -78,6 +84,7 @@ public class LoanTypeController {
     }
 
     @DeleteMapping("/{loanTypeId}")
+    // Deletes a loan product after confirming the caller is an officer.
     public ResponseEntity<Void> deleteLoanType(
             @RequestHeader("X-User-Role") String role,
             @PathVariable @Positive(message = "Loan type ID must be greater than zero")
@@ -88,6 +95,7 @@ public class LoanTypeController {
         return ResponseEntity.noContent().build();
     }
 
+    // Rejects catalogue mutations from non-officer callers.
     private void requireLoanOfficer(String role) {
         if (!"LOAN_OFFICER".equalsIgnoreCase(role)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,

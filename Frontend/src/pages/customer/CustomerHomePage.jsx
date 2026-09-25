@@ -7,11 +7,13 @@ import CustomerLayout from "../../layouts/CustomerLayout";
 import "./customer.css";
 import "./customer-home.css";
 
+// Formats currency values for the customer loan catalogue.
 const formatCurrency = (value) =>
   new Intl.NumberFormat("en-IN", {
     maximumFractionDigits: 0,
   }).format(value || 0);
 
+// Displays available loan products for a signed-in customer.
 export default function CustomerHomePage() {
   const [loanTypes, setLoanTypes] = useState([]);
   const [loading, setLoading] = useState(true);

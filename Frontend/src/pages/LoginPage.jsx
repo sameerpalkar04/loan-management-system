@@ -4,6 +4,7 @@ import Logo from "../components/common/Logo";
 import { useAuth } from "../context/AuthContext";
 import "./auth.css";
 
+// Handles role-specific sign-in and post-login navigation.
 export default function LoginPage() {
   const [role, setRole] = useState("CUSTOMER");
   const [email, setEmail] = useState("");
@@ -17,6 +18,7 @@ export default function LoginPage() {
 
   const officer = role === "LOAN_OFFICER";
 
+  // Switches role while clearing errors from the previous sign-in attempt.
   const switchRole = (nextRole) => {
     setRole(nextRole);
     setEmail("");
@@ -24,6 +26,7 @@ export default function LoginPage() {
     setError("");
   };
 
+  // Authenticates the selected role and redirects to its workspace.
   const submit = async (event) => {
     event.preventDefault();
 

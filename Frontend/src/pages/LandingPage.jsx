@@ -8,6 +8,7 @@ import loanHeroImage from "../assets/loan-hero.png";
 import testimonialFaces from "../assets/testimonial-faces.png";
 import "./landing.css";
 
+// Creates a compact, word-safe preview of a loan description.
 const loanDescriptionExcerpt = (description) => {
   const firstLine = String(description || "")
     .split(/\r?\n/)[0]
@@ -82,6 +83,7 @@ const testimonials = [
   },
 ];
 
+// Renders the public marketing page and its dynamic product previews.
 export default function LandingPage() {
   const [loans, setLoans] = useState([]);
   const [live, setLive] = useState(false);
@@ -101,6 +103,7 @@ export default function LandingPage() {
       });
   }, []);
 
+  // Renders a duplicated card sequence to keep the product carousel continuous.
   const renderLoanCards = (duplicate = false) =>
     loans.map((loan, index) => (
       <article
@@ -137,6 +140,7 @@ export default function LandingPage() {
       </article>
     ));
 
+  // Renders a duplicated testimonial sequence to keep its marquee continuous.
   const renderTestimonials = (duplicate = false) =>
     testimonials.map((testimonial) => (
       <article

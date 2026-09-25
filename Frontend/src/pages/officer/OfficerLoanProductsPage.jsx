@@ -15,6 +15,7 @@ import "./officer.css";
 import "./officer-products.css";
 import "./officer-product-actions.css";
 
+// Provides default state for a new loan-product editor.
 const newLoanType = {
   loanName: "",
   baseInterestRate: "",
@@ -26,6 +27,7 @@ const newLoanType = {
   isNew: true,
 };
 
+// Lets loan officers create, edit, and remove loan products.
 export default function OfficerLoanProductsPage() {
   const [loans, setLoans] = useState([]);
   const [editing, setEditing] = useState(null);
@@ -39,6 +41,7 @@ export default function OfficerLoanProductsPage() {
       .catch((requestError) => setError(requestError.message));
   }, []);
 
+  // Updates a loan-product editor field, including the collateral toggle.
   const update = (event) =>
     setEditing((loan) => ({
       ...loan,
@@ -50,6 +53,7 @@ export default function OfficerLoanProductsPage() {
           : event.target.value,
     }));
 
+  // Persists a new or edited loan product and refreshes its local card.
   const save = async (event) => {
     event.preventDefault();
     setSaving(true);
@@ -77,6 +81,7 @@ export default function OfficerLoanProductsPage() {
     }
   };
 
+  // Confirms and removes a loan product from the catalogue.
   const remove = async (loan) => {
     if (!window.confirm(`Delete ${loan.loanName}? This cannot be undone.`)) {
       return;

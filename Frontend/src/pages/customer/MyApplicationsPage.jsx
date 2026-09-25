@@ -8,9 +8,11 @@ import CustomerLayout from "../../layouts/CustomerLayout";
 import "./customer.css";
 import "./my-applications.css";
 
+// Formats application amounts using Indian number grouping.
 const formatCurrency = (value) =>
   `₹${Number(value || 0).toLocaleString("en-IN")}`;
 
+// Formats application timestamps for the customer history view.
 const formatDate = (value) =>
   value
     ? new Date(value).toLocaleDateString("en-IN", {
@@ -20,6 +22,7 @@ const formatDate = (value) =>
       })
     : "Not available";
 
+// Lists a customer's submitted applications and their decision details.
 export default function MyApplicationsPage() {
   const [applications, setApplications] = useState([]);
   const [loanTypes, setLoanTypes] = useState([]);
@@ -69,10 +72,12 @@ export default function MyApplicationsPage() {
       )
     : null;
 
+  // Opens the read-only detail panel for a selected application.
   const openApplicationDetails = (application) => {
     setSelectedApplication(application);
   };
 
+  // Supports keyboard activation of application rows.
   const handleApplicationKeyDown = (event, application) => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
