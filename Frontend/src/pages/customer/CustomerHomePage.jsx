@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getLoanTypes } from "../../api/loanTypeApi";
+import InterestRate from "../../components/common/InterestRate";
 import LoanHelpSections from "../../components/common/LoanHelpSections";
 import CustomerLayout from "../../layouts/CustomerLayout";
 import "./customer.css";
@@ -84,8 +85,7 @@ export default function CustomerHomePage() {
                 <div className="card-shimmer" />
 
                 <p className="loan-rate">
-                  {loanType.baseInterestRate}%*{" "}
-                  <span>p.a.</span>
+                  <InterestRate value={loanType.baseInterestRate} />
                 </p>
 
                 <h2>{loanType.loanName}</h2>
@@ -96,7 +96,7 @@ export default function CustomerHomePage() {
                 </p>
 
                 <div className="loan-details">
-                  <div>
+                  <div className="loan-stat">
                     <span>Maximum amount</span>
 
                     <b>
@@ -107,7 +107,7 @@ export default function CustomerHomePage() {
                     </b>
                   </div>
 
-                  <div>
+                  <div className="loan-stat">
                     <span>Maximum tenure</span>
 
                     <b>
@@ -115,16 +115,16 @@ export default function CustomerHomePage() {
                     </b>
                   </div>
 
-                  <div>
-                    <span>Collateral</span>
-
-                    <b>
-                      {loanType.collateralRequired
-                        ? `${loanType.maximumLtvPercentage}% LTV`
-                        : "Not required"}
-                    </b>
-                  </div>
                 </div>
+
+                <p className="loan-collateral">
+                  <span>Collateral</span>
+                  <b>
+                    {loanType.collateralRequired
+                      ? `${loanType.maximumLtvPercentage}% LTV`
+                      : "Not required"}
+                  </b>
+                </p>
 
                 <Link
                   className="loan-apply"
