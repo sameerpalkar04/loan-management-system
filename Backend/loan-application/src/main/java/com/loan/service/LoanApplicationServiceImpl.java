@@ -456,6 +456,13 @@ public class LoanApplicationServiceImpl
     public PanCardImageResponse getPanCardImage(Long applicationId) {
         LoanApplication application = findApplication(applicationId);
 
+        if (application.getStatus() == ApplicationStatus.APPROVED
+                || application.getStatus() == ApplicationStatus.REJECTED) {
+            throw new BusinessException(
+                    "PAN-card images are available only while an application is awaiting a decision"
+            );
+        }
+
         if (application.getPanCardImage() == null) {
             throw new ResourceNotFoundException(
                     "PAN-card image not found for application: " + applicationId

@@ -8,10 +8,11 @@
 .queue-summary-card {
   position: relative;
   display: grid;
-  align-content: start;
-  gap: 0.55rem;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 0.9rem;
   min-height: 152px;
-  padding: 1.35rem;
+  padding: 1.15rem;
   overflow: hidden;
   border: 1px solid #cbddeb;
   border-radius: 16px;
@@ -21,34 +22,65 @@
     transform 0.22s ease;
 }
 
-.queue-summary-card::before {
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  height: 3px;
-  content: "";
-  background: #0968df;
+.queue-summary-card--awaiting {
+  --summary-color: #b77900;
+  --summary-icon-background: #fff1bd;
+}
+
+.queue-summary-card--approved {
+  --summary-color: #0b9364;
+  --summary-icon-background: #d9f5e9;
+}
+
+.queue-summary-card--rejected {
+  --summary-color: #cf3636;
+  --summary-icon-background: #fee2e2;
+}
+
+.queue-summary-card--total {
+  --summary-color: #63758b;
+  --summary-icon-background: #e8edf3;
 }
 
 .queue-summary-card:hover {
-  border-color: #8fc0ed;
+  border-color: color-mix(in srgb, var(--summary-color) 35%, #cbddeb);
   box-shadow:
     0 16px 32px rgba(19, 74, 132, 0.14),
-    0 0 0 3px rgba(9, 104, 223, 0.06);
+    0 0 0 3px color-mix(in srgb, var(--summary-color) 10%, transparent);
   transform: translateY(-3px);
+}
+
+.queue-summary-card__icon {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--summary-icon-background);
+  color: var(--summary-color);
+}
+
+.queue-summary-card__icon svg {
+  width: 23px;
+  height: 23px;
+}
+
+.queue-summary-card__content {
+  display: grid;
+  align-content: start;
+  gap: 0.42rem;
+  min-width: 0;
 }
 
 .queue-summary-card__label {
   display: block;
-  overflow: hidden;
-  color: #557391;
+  color: var(--summary-color);
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.03em;
-  text-overflow: ellipsis;
   text-transform: uppercase;
-  white-space: nowrap;
+  line-height: 1.25;
+  white-space: normal;
 }
 
 .queue-summary-card strong {
@@ -57,10 +89,10 @@
   font-size: clamp(2.7rem, 4vw, 3.5rem);
   font-weight: 400;
   line-height: 0.95;
+  white-space: nowrap;
 }
 
 .queue-summary-card small {
-  margin-top: auto;
   color: #7890a8;
   font-size: 0.73rem;
   line-height: 1.4;

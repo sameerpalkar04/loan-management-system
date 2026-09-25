@@ -26,6 +26,16 @@ const maskPanNumber = (panNumber) => {
   return `${normalized.slice(0, 5)}****${normalized.slice(-1)}`;
 };
 
+const hasFinalDecision = (status) =>
+  status === "APPROVED" || status === "REJECTED";
+
+const panNumberForApplication = (application) => {
+  const panNumber = application?.panNumber;
+  return hasFinalDecision(application?.status)
+    ? maskPanNumber(panNumber)
+    : String(panNumber || "").trim().toUpperCase() || "Not available";
+};
+
 const dateTime = (value) =>
   value
     ? new Intl.DateTimeFormat("en-IN", {
@@ -56,6 +66,32 @@ const getRiskProfile = (score) => {
     label: "Higher risk profile",
     detail: "Additional review recommended",
   };
+};
+
+const QueueSummaryIcon = ({ type }) => {
+  const commonProps = {
+    "aria-hidden": true,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 2,
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+  };
+
+  if (type === "awaiting") {
+    return <svg {...commonProps}><path d="M7 3h8l3 3v8" /><path d="M7 3v14h5" /><path d="M10 8h4M10 12h3" /><circle cx="17" cy="17" r="4" /><path d="M17 15v2l1.5 1" /></svg>;
+  }
+
+  if (type === "approved") {
+    return <svg {...commonProps}><circle cx="12" cy="12" r="8" /><path d="m8.5 12 2.2 2.2 4.8-4.8" /></svg>;
+  }
+
+  if (type === "rejected") {
+    return <svg {...commonProps}><circle cx="12" cy="12" r="8" /><path d="m9 9 6 6m0-6-6 6" /></svg>;
+  }
+
+  return <svg {...commonProps}><rect x="6" y="4" width="12" height="16" rx="2" /><path d="M9 9h6M9 13h6M9 17h4" /></svg>;
 };
 
 export default function OfficerHomePage() {
@@ -290,25 +326,37 @@ export default function OfficerHomePage() {
       </div>
 
       <section className="queue-summary-grid" aria-label="Application queue overview">
-        <article className="queue-summary-card">
-          <span className="queue-summary-card__label">Awaiting review</span>
-          <strong>{applicationCounts.pending}</strong>
-          <small>Ready for assessment</small>
+        <article className="queue-summary-card queue-summary-card--awaiting">
+          <span className="queue-summary-card__icon"><QueueSummaryIcon type="awaiting" /></span>
+          <div className="queue-summary-card__content">
+            <span className="queue-summary-card__label">Awaiting review</span>
+            <strong>{applicationCounts.pending}</strong>
+            <small>Ready for<br />assessment</small>
+          </div>
         </article>
-        <article className="queue-summary-card">
-          <span className="queue-summary-card__label">Approved</span>
-          <strong>{applicationCounts.approved}</strong>
-          <small>Applications approved</small>
+        <article className="queue-summary-card queue-summary-card--approved">
+          <span className="queue-summary-card__icon"><QueueSummaryIcon type="approved" /></span>
+          <div className="queue-summary-card__content">
+            <span className="queue-summary-card__label">Approved</span>
+            <strong>{applicationCounts.approved}</strong>
+            <small>Applications<br />approved</small>
+          </div>
         </article>
-        <article className="queue-summary-card">
-          <span className="queue-summary-card__label">Rejected</span>
-          <strong>{applicationCounts.rejected}</strong>
-          <small>Applications rejected</small>
+        <article className="queue-summary-card queue-summary-card--rejected">
+          <span className="queue-summary-card__icon"><QueueSummaryIcon type="rejected" /></span>
+          <div className="queue-summary-card__content">
+            <span className="queue-summary-card__label">Rejected</span>
+            <strong>{applicationCounts.rejected}</strong>
+            <small>Applications<br />rejected</small>
+          </div>
         </article>
-        <article className="queue-summary-card">
-          <span className="queue-summary-card__label">Total applications</span>
-          <strong>{applicationCounts.total}</strong>
-          <small>All submitted applications</small>
+        <article className="queue-summary-card queue-summary-card--total">
+          <span className="queue-summary-card__icon"><QueueSummaryIcon type="total" /></span>
+          <div className="queue-summary-card__content">
+            <span className="queue-summary-card__label">All applications</span>
+            <strong>{applicationCounts.total}</strong>
+            <small>All submitted applications</small>
+          </div>
         </article>
       </section>
 
@@ -401,16 +449,18 @@ export default function OfficerHomePage() {
                 <div><dt>Asset valuation</dt><dd>{selected.valuation ? money(selected.valuation) : "Not required"}</dd></div>
                 <div><dt>Requested tenure</dt><dd>{selected.requestedTenureMonths} months</dd></div>
                 <div><dt>Loan-to-value</dt><dd>{loanToValue == null ? "Not applicable" : `${loanToValue.toFixed(1)}%`}</dd></div>
-                <div><dt>PAN</dt><dd>{maskPanNumber(selected.panNumber)}</dd></div>
+                <div><dt>PAN</dt><dd>{panNumberForApplication(selected)}</dd></div>
               </dl>
             </div>
 
-            <div className="applicant-checks">
-              <button type="button" onClick={viewPanCard} disabled={panLoading}>
-                <span>Identity document · {maskPanNumber(selected.panNumber)}</span>
-                <b>{panLoading ? "Loading…" : panVisible ? "Hide PAN Card" : "View PAN Card"}</b>
-              </button>
-            </div>
+            {!hasFinalDecision(selected.status) && (
+              <div className="applicant-checks">
+                <button type="button" onClick={viewPanCard} disabled={panLoading}>
+                  <span>Identity document · {panNumberForApplication(selected)}</span>
+                  <b>{panLoading ? "Loading…" : panVisible ? "Hide PAN Card" : "View PAN Card"}</b>
+                </button>
+              </div>
+            )}
 
             {scoreVisible && score && (
               <div className={`score-panel score-panel--${risk.tone}`}>

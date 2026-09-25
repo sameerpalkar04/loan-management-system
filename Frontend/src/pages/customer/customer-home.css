@@ -94,22 +94,60 @@
 .loan-type-card {
   display: flex;
   flex-direction: column;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.loan-type-grid {
+  perspective: 1200px;
 }
 
 .loan-type-card .loan-rate {
-  font-family: "DM Sans", sans-serif;
+  font-family: "DM Serif Display", serif;
+  font-size: 1.8rem;
+  font-weight: 400;
+  letter-spacing: normal;
+}
+
+/* Override the legacy .loan-rate span rule so the shared rate component
+   retains the same proportions used by officer loan-type cards. */
+.loan-type-card .loan-rate .interest-rate {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.loan-type-card .loan-rate .interest-rate__value {
+  font: inherit;
+}
+
+.loan-type-card .loan-rate .interest-rate__percent {
+  margin-left: 0.06em;
+  font-family: inherit;
+  font-size: 0.7em;
   font-weight: 700;
-  letter-spacing: -0.03em;
+}
+
+.loan-type-card .loan-rate .interest-rate__marker {
+  margin-left: 0.08em;
+  font-family: inherit;
+  font-size: 0.48em;
+  line-height: 1;
+}
+
+.loan-type-card .loan-rate .interest-rate__annual {
+  margin-left: 0.3em;
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.42em;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
 .loan-type-card:hover,
 .loan-type-card:focus-within {
-  border-color: #0968df;
-  background: #f3f9ff;
-  box-shadow:
-    0 18px 42px rgba(9, 104, 223, 0.18),
-    0 0 0 3px rgba(9, 104, 223, 0.1);
-  transform: translateY(-6px);
+  border-color: #d7e4ef;
+  background: #fff;
+  box-shadow: 0 18px 42px rgba(9, 104, 223, 0.16);
+  transform: translateY(-10px) scale(1.015);
 }
 
 .loan-type-card:hover .loan-rate,

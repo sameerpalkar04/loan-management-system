@@ -136,9 +136,29 @@ public class LoanOfficerActionServiceImpl implements LoanOfficerActionService {
         if (customer != null) {
             application.setApplicantName(
                     (customer.firstName() + " " + customer.lastName()).trim());
-            application.setPanNumber(customer.panNumber());
+            application.setPanNumber(panNumberForApplication(
+                    customer.panNumber(), application.getStatus()));
         }
         return application;
+    }
+
+    private String panNumberForApplication(String panNumber, String status) {
+        if (!isFinalDecision(status)) {
+            return panNumber;
+        }
+
+        String normalized = panNumber == null ? "" : panNumber.trim().toUpperCase();
+        if (normalized.length() < 6) {
+            return "Not available";
+        }
+
+        return normalized.substring(0, 5) + "****"
+                + normalized.substring(normalized.length() - 1);
+    }
+
+    private boolean isFinalDecision(String status) {
+        return "APPROVED".equalsIgnoreCase(status)
+                || "REJECTED".equalsIgnoreCase(status);
     }
 
 
