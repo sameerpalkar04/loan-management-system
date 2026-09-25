@@ -1,0 +1,31 @@
+.interest-rate {
+  display: inline-flex;
+  align-items: baseline;
+  color: inherit;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.interest-rate__value {
+  font: inherit;
+}
+
+.interest-rate__percent {
+  margin-left: 0.06em;
+  font-size: 0.7em;
+  font-weight: 700;
+}
+
+.interest-rate__marker {
+  margin-left: 0.08em;
+  font-size: 0.48em;
+  line-height: 1;
+}
+
+.interest-rate__annual {
+  margin-left: 0.3em;
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.42em;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
